@@ -1,0 +1,21 @@
+services:
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    env_file:
+      - .env.local
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: file:./data/haft.db
+      STORAGE_DIR: ./storage
+    volumes:
+      - haft-data:/app/data
+      - haft-storage:/app/storage
+      - haft-backups:/app/backups
+    restart: unless-stopped
+
+volumes:
+  haft-data:
+  haft-storage:
+  haft-backups:

@@ -1,0 +1,82 @@
+---
+description: مرزهای معماری و قوانین وابستگی بین لایه‌ها و ماژول‌ها
+alwaysApply: true
+---
+
+# مرزهای معماری
+
+## چهار لایه با جریان یک‌طرفه
+
+```
+app/  →  modules/  →  server/  →  shared/
+```
+
+| از | می‌تواند import کند از |
+| --- | --- |
+| `app/` | `modules/*` (پیش‌فرض `index.ts`)، `server/`، `shared/` |
+| `modules/x` | `server/`، `shared/`، و `modules/y` از `index.ts` آن |
+| `server/` | `shared/` |
+| `shared/` | فقط `shared/` |
+
+هر جهت دیگری ممنوع است و ESLint خطا می‌دهد.
+
+## ماژول‌ها بسته‌اند
+
+```ts
+// ✅ صفحات سرور
+import { calculateProgress } from "@/modules/treasury";
+
+// ✅ فایل "use client" و لایه domain — مسیر داخلی تا server-only وارد مرورگر نشود
+import { matchesAgeRange } from "@/modules/children/domain/child-age";
+```
+
+صفحات Server Component از `index.ts` وارد می‌کنند. فایل `"use client"` و `domain/`
+حق ندارند از `index.ts` ماژول دیگر import کنند، چون آن barrel سرویس سرور را همراه می‌آورد.
+
+## ساختار اجباری هر ماژول
+
+```
+modules/<name>/
+├── index.ts        تنها دروازه عمومی
+├── domain/         منطق خالص؛ بدون دیتابیس، بدون React، تست‌دار
+├── repo/           تنها جای دسترسی به دیتابیس
+├── service/        ارکستراسیون و تراکنش
+├── actions/        Server Actions؛ مرز ورودی
+├── schema/         اسکیماهای Zod
+└── ui/             کامپوننت‌های مخصوص همین ماژول
+```
+
+## مسئولیت لایه‌ها
+
+- `app/` **نازک** است: فقط مسیریابی و چیدمان. اگر در `page.tsx` محاسبه قیمت یا
+  کوئری دیتابیس دیدی، آن باگ معماری است.
+- `domain/` **خالص** است. حق ندارد `@/server/db` یا `react` را import کند.
+  دلیل: منطق مالی باید با تست واحد سریع پوشش داده شود.
+- `repo/` فقط خواندن و نوشتن؛ بدون منطق کسب‌وکار.
+- `service/` چسب اجزا؛ تراکنش‌ها اینجا باز می‌شوند.
+- `actions/` فقط: بررسی سشن → بررسی نقش → اعتبارسنجی Zod → صدا زدن سرویس.
+- `shared/` هیچ دانشی از دامنه ندارد. کامپوننتی که بداند «گنجینه» چیست به
+  `modules/<x>/ui/` تعلق دارد.
+
+## گراف وابستگی ماژول‌ها نباید دور داشته باشد
+
+اگر برای فیچری نیاز به وابستگی معکوس پیدا کردی، یعنی منطق در ماژول اشتباهی نشسته.
+وابستگی معکوس اضافه نکن؛ منطق را جابه‌جا کن.
+
+## Server Action در برابر Route Handler
+
+پیش‌فرض **Server Action** است. Route Handler فقط برای وبهوک بیرونی،
+سرو فایل، یا پاسخ غیر‌HTML (مثل تصویر QR).
+
+## Server Action خام ننویس
+
+همه اکشن‌ها با `createAction` از `@/server/actions/action-kit` ساخته می‌شوند تا
+احراز هویت، مجوز، اعتبارسنجی و شکل خروجی یکدست بماند.
+
+خروجی همه اکشن‌ها یک نوع است:
+
+```ts
+type ActionResult<T> =
+  | { ok: true; data: T }
+  | { ok: false; error: string; fieldErrors?: Record<string, string[]> };
+```

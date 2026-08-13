@@ -1,0 +1,258 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+  دیزاین توکن‌های برند «هفت منظومه»
+  ------------------------------------------------------------------
+  قانون: هیچ رنگ hard-coded در کامپوننت‌ها مجاز نیست. همه رنگ‌ها از
+  همین توکن‌ها می‌آیند. مستندات کامل: docs/04-ui/design-system.md
+*/
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* --- پایه: کاغذ گرم و جوهر گرم، نه سفید/سیاه خالص --- */
+  --background: #fbf9f6;
+  --foreground: #1c1917;
+
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+
+  --popover: #ffffff;
+  --popover-foreground: #1c1917;
+
+  /* --- برند اصلی: شب‌آبی منظومه --- */
+  --primary: #16233f;
+  --primary-foreground: #fbf9f6;
+
+  /* --- ثانویه: شنی گرم --- */
+  --secondary: #ede4d6;
+  --secondary-foreground: #3c2f21;
+
+  --muted: #f2eee8;
+  --muted-foreground: #6b6257;
+
+  /* --- تاکید: طلایی، فقط به‌عنوان لهجه و نه رنگ غالب --- */
+  --accent: #c8a24a;
+  --accent-foreground: #1c1917;
+
+  --destructive: #b3261e;
+  --destructive-foreground: #fbf9f6;
+
+  --success: #2e7d5b;
+  --success-foreground: #fbf9f6;
+
+  --warning: #b8860b;
+  --warning-foreground: #1c1917;
+
+  --info: #2a5d8f;
+  --info-foreground: #fbf9f6;
+
+  --border: #e6dfd4;
+  --input: #e6dfd4;
+  --ring: #c8a24a;
+
+  --radius: 0.75rem;
+
+  /* --- توکن‌های معنایی مخصوص دامنه --- */
+  --gold: #c8a24a;
+  --gold-soft: #f0e3c6;
+  --gold-deep: #9a7a2e;
+  --treasure: #16233f;
+  --treasure-soft: #e7eaf1;
+}
+
+.dark {
+  --background: #14120f;
+  --foreground: #f5f1ea;
+
+  --card: #1c1917;
+  --card-foreground: #f5f1ea;
+
+  --popover: #1c1917;
+  --popover-foreground: #f5f1ea;
+
+  --primary: #e7eaf1;
+  --primary-foreground: #16233f;
+
+  --secondary: #2a2621;
+  --secondary-foreground: #f5f1ea;
+
+  --muted: #262220;
+  --muted-foreground: #a8a096;
+
+  --accent: #d4b263;
+  --accent-foreground: #14120f;
+
+  --destructive: #e5534b;
+  --destructive-foreground: #14120f;
+
+  --success: #4caf85;
+  --success-foreground: #14120f;
+
+  --warning: #d9a520;
+  --warning-foreground: #14120f;
+
+  --info: #6ba3d6;
+  --info-foreground: #14120f;
+
+  --border: #332e29;
+  --input: #332e29;
+  --ring: #d4b263;
+
+  --gold: #d4b263;
+  --gold-soft: #3a3122;
+  --gold-deep: #e5c885;
+  --treasure: #e7eaf1;
+  --treasure-soft: #23272f;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-gold: var(--gold);
+  --color-gold-soft: var(--gold-soft);
+  --color-gold-deep: var(--gold-deep);
+  --color-treasure: var(--treasure);
+  --color-treasure-soft: var(--treasure-soft);
+
+  --font-sans: var(--font-vazirmatn), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 12px);
+
+  --animate-accordion-down: accordion-down 0.22s ease-out;
+  --animate-accordion-up: accordion-up 0.22s ease-out;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    /* در فارسی فاصله سطرها باید بازتر از پیش‌فرض لاتین باشد */
+    line-height: 1.85;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+
+  /* اعداد و شناسه‌های لاتین داخل متن فارسی همیشه LTR رندر شوند */
+  .ltr-nums {
+    direction: ltr;
+    unicode-bidi: isolate;
+    display: inline-block;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--gold-soft);
+    color: var(--foreground);
+  }
+
+  /* حذف فلش‌های input عددی؛ ورودی‌های مالی ما همه text هستند */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+}
+
+@layer utilities {
+  /* لهجه طلایی برای عناوین کلیدی برند */
+  .text-gold-gradient {
+    background-image: linear-gradient(
+      90deg,
+      var(--gold-deep),
+      var(--gold),
+      var(--gold-deep)
+    );
+    background-clip: text;
+    color: transparent;
+  }
+
+  .surface-warm {
+    background-image: radial-gradient(
+      120% 120% at 50% 0%,
+      var(--gold-soft) 0%,
+      var(--background) 55%
+    );
+  }
+}

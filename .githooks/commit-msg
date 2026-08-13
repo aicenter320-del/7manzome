@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# بررسی قالب پیام کامیت.
+# قالب: <نوع>(<حوزه>): <توضیح فارسی>
+# مثال: feat(treasury): افزودن محاسبه پیشرفت گنجینه
+
+message_file="$1"
+first_line=$(head -n 1 "$message_file")
+
+# کامیت‌های merge و revert از بررسی مستثنا هستند.
+case "$first_line" in
+  "Merge "*|"Revert "*) exit 0 ;;
+esac
+
+if ! echo "$first_line" | grep -Eq '^(feat|fix|refactor|docs|test|chore|perf|style)(\([a-z0-9-]+\))?: .+'; then
+  echo "پیام کامیت با قالب پروژه نمی‌خواند."
+  echo ""
+  echo "قالب صحیح:  <نوع>(<حوزه>): <توضیح کوتاه فارسی>"
+  echo "انواع مجاز: feat, fix, refactor, docs, test, chore, perf, style"
+  echo ""
+  echo "مثال:  feat(treasury): افزودن محاسبه پیشرفت گنجینه"
+  echo ""
+  echo "پیام فعلی: $first_line"
+  exit 1
+fi

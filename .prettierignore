@@ -1,0 +1,13 @@
+node_modules
+.next
+out
+build
+coverage
+data
+storage
+backups
+drizzle/meta
+package-lock.json
+*.woff2
+playwright-report
+test-results

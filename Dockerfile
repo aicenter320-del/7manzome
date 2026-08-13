@@ -1,0 +1,39 @@
+FROM node:20-bookworm-slim AS deps
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev=false
+
+FROM node:20-bookworm-slim AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+ENV NEXT_TELEMETRY_DISABLED=1
+# بیلد Next در NODE_ENV=production به SESSION_SECRET نیاز دارد؛ مقدار واقعی در runtime می‌آید.
+ENV SESSION_SECRET=docker-build-placeholder-session-secret-32ch
+RUN npm run build
+
+FROM node:20-bookworm-slim AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+ENV NEXT_TELEMETRY_DISABLED=1
+
+RUN groupadd --system haft && useradd --system --gid haft --create-home haft
+
+COPY --from=builder /app/package.json /app/package-lock.json ./
+COPY --from=builder /app/node_modules ./node_modules
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
+COPY --from=builder /app/drizzle ./drizzle
+COPY --from=builder /app/scripts ./scripts
+COPY --from=builder /app/src ./src
+COPY --from=builder /app/tsconfig.json ./tsconfig.json
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+COPY --from=builder /app/next.config.ts ./next.config.ts
+
+RUN mkdir -p data storage backups && chown -R haft:haft /app
+
+USER haft
+EXPOSE 3000
+
+# مایگریشن قبل از سرو؛ seed را دستی اجرا کنید تا داده production بازنویسی نشود.
+CMD ["sh", "-c", "npm run db:migrate && npm run start"]
