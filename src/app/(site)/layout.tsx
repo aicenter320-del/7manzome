@@ -14,8 +14,8 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
     <div className="flex min-h-dvh flex-col">
       <SiteHeader />
       <div className="flex-1">{children}</div>
-      <footer className="border-t border-border bg-card">
-        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 sm:grid-cols-3 sm:px-6">
+      <footer className="mt-8 px-3 pb-8 sm:px-6">
+        <div className="glass mx-auto grid w-full max-w-6xl gap-8 rounded-3xl px-6 py-10 sm:grid-cols-3">
           <div className="grid gap-2">
             <p className="font-semibold text-treasure">{site.name}</p>
             <p className="text-sm text-muted-foreground">{site.tagline}</p>
@@ -27,7 +27,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
               <Link
                 key={item.href}
                 href={item.href}
-                className="text-muted-foreground hover:text-foreground"
+                className="text-muted-foreground hover:text-gold-deep"
               >
                 {item.title}
               </Link>

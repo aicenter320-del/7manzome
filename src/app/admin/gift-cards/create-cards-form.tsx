@@ -20,7 +20,7 @@ export function CreateGiftCardsForm() {
 
   return (
     <form
-      className="grid gap-4 rounded-xl border border-border bg-card p-5"
+      className="glass grid gap-4 rounded-3xl p-5"
       onSubmit={(event) => {
         event.preventDefault();
         setError(null);

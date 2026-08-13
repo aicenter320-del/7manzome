@@ -36,7 +36,7 @@ export function PaymentReviewForm({ paymentId }: { paymentId: string }) {
   };
 
   return (
-    <div className="grid gap-4 rounded-xl border border-border bg-card p-5">
+    <div className="glass grid gap-4 rounded-3xl p-5">
       {error ? (
         <Alert variant="destructive">
           <AlertDescription>{error}</AlertDescription>

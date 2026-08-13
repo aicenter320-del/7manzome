@@ -38,7 +38,7 @@ export default async function CartPage() {
             ))}
           </div>
 
-          <div className="grid gap-2 rounded-xl border border-border bg-card p-5">
+          <div className="glass grid gap-2 rounded-3xl p-5">
             <p className="text-sm text-muted-foreground">
               جمع طلا: <GoldWeight mg={cart.goldTotalMg} size="sm" />
             </p>

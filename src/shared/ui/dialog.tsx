@@ -43,7 +43,7 @@ export function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed start-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl border border-border bg-card p-6 shadow-lg",
+          "fixed start-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg translate-x-1/2 -translate-y-1/2 gap-4 rounded-3xl p-6 glass-strong",
           "rtl:translate-x-1/2 ltr:-translate-x-1/2",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
@@ -54,7 +54,7 @@ export function DialogContent({
         {children}
         {showCloseButton ? (
           <DialogPrimitive.Close
-            className="absolute end-4 top-4 rounded-md p-1 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+            className="absolute end-4 top-4 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-gold-soft/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
             aria-label="بستن"
           >
             <XIcon className="size-4" />

@@ -27,7 +27,7 @@ export function ProductCard({
         : `${formatMg(product.minWeightMg, { withUnit: false })} تا ${formatMg(product.maxWeightMg ?? product.minWeightMg)}`;
 
   return (
-    <Card className={cn("group overflow-hidden transition-shadow hover:shadow-md", className)}>
+    <Card className={cn("group overflow-hidden transition-transform hover:-translate-y-0.5", className)}>
       <Link href={`/products/${product.slug}`} className="block focus-visible:outline-none">
         <div className="relative aspect-square overflow-hidden bg-muted">
           {product.heroFileId ? (

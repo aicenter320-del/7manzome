@@ -49,7 +49,7 @@ export default async function GiftLinkPage({
       />
 
       {view.message ? (
-        <section className="rounded-xl border border-border bg-card p-5">
+        <section className="glass rounded-3xl p-5">
           <p className="text-xs text-muted-foreground">پیام خانواده</p>
           <p className="mt-2 whitespace-pre-wrap leading-relaxed">{view.message}</p>
         </section>
@@ -65,7 +65,7 @@ export default async function GiftLinkPage({
           />
         </section>
       ) : (
-        <p className="rounded-xl border border-border bg-muted/40 p-5 text-sm text-muted-foreground">
+        <p className="glass rounded-3xl p-5 text-sm text-muted-foreground">
           این لینک هدیه در حال حاضر مشارکت نمی‌پذیرد. اگر کارت هدیه دارید، از صفحه هدیه سایت استفاده
           کنید یا با خانواده کودک هماهنگ شوید.
         </p>

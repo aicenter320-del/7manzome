@@ -45,7 +45,7 @@ export default async function TreasureDetailPage({
         description={`${summary.child.displayName} — ${summary.child.ageLabel}`}
       />
 
-      <section className="grid gap-3 rounded-xl border border-border bg-card p-6">
+      <section className="glass grid gap-3 rounded-3xl p-6">
         <p className="text-xs text-muted-foreground">طلای ذخیره‌شده</p>
         <GoldWeight mg={summary.balance.balanceMg} size="hero" className="text-treasure" />
         {summary.currentValueRial !== null ? (
@@ -65,7 +65,7 @@ export default async function TreasureDetailPage({
         {giftLinks.length > 0 ? (
           <div className="grid gap-3">
             {giftLinks.map((link) => (
-              <div key={link.id} className="grid gap-2 rounded-xl border border-border bg-card p-4">
+              <div key={link.id} className="glass grid gap-2 rounded-3xl p-4">
                 <p className="font-medium">{link.title}</p>
                 <GiftShareBar url={link.url} />
               </div>

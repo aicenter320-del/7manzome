@@ -39,7 +39,7 @@ export default async function CheckoutPage() {
         description="پس از ثبت، قیمت برای شما قفل می‌شود و به صفحه پرداخت می‌روید."
       />
 
-      <div className="rounded-xl border border-border bg-card p-5 text-sm">
+      <div className="glass rounded-3xl p-5 text-sm">
         <p>
           {cart.itemCount} قلم — <GoldWeight mg={cart.goldTotalMg} size="sm" />
         </p>

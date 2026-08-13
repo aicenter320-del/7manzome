@@ -73,7 +73,7 @@ export function AddToCartPanel({
       {selected?.price ? <PriceBreakdownTable breakdown={selected.price} /> : null}
 
       {isPersonalizable ? (
-        <div className="grid gap-4 rounded-xl border border-border bg-card p-4">
+        <div className="glass grid gap-4 rounded-3xl p-4">
           <p className="text-sm font-medium">شخصی‌سازی حکاکی</p>
           <p className="text-xs text-muted-foreground">
             پیش‌نمایش را ببینید. جزئیات نهایی هنگام آماده‌سازی سفارش با شما هماهنگ می‌شود.

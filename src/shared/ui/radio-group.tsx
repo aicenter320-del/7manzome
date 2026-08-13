@@ -26,7 +26,7 @@ export function RadioGroupItem({
     <RadioGroupPrimitive.Item
       data-slot="radio-group-item"
       className={cn(
-        "aspect-square size-5 shrink-0 rounded-full border border-input bg-card shadow-xs transition-colors",
+        "aspect-square size-5 shrink-0 rounded-full border border-gold/40 bg-glass shadow-glow backdrop-blur-sm transition-colors",
         "focus-visible:ring-2 focus-visible:ring-ring/30 focus-visible:outline-none",
         "disabled:cursor-not-allowed disabled:opacity-50",
         "data-[state=checked]:border-gold-deep",

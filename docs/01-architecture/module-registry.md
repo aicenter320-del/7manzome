@@ -77,7 +77,7 @@ flowchart TD
 | بررسی نقش و مجوز | `server/auth/rbac.ts` |
 | ذخیره و خواندن فایل آپلودی | `server/storage/file-storage.ts` |
 | لاگ ساخت‌یافته | `server/logger.ts` |
-| کامپوننت‌های پایه UI | `shared/ui/` |
+| کامپوننت‌های پایه UI | `shared/ui/` شامل موتور Liquid Glass |
 
 ## چک‌لیست افزودن ماژول جدید
 

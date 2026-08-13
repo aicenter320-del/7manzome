@@ -26,7 +26,7 @@ export default async function NotificationsPage() {
           {items.map((item) => (
             <li
               key={item.id}
-              className="flex flex-wrap items-start justify-between gap-3 rounded-xl border border-border bg-card p-4"
+              className="glass flex flex-wrap items-start justify-between gap-3 rounded-3xl p-4"
             >
               <div className="min-w-0">
                 <p className={item.readAt ? "font-medium" : "font-semibold"}>{item.title}</p>

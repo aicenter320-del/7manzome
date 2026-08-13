@@ -85,8 +85,8 @@ function FilterChip({
       className={cn(
         "rounded-full border px-3 py-1.5 text-sm transition-colors",
         active
-          ? "border-gold bg-gold-soft text-gold-deep"
-          : "border-border bg-card text-muted-foreground hover:border-gold/50",
+          ? "border-gold bg-gold-soft text-gold-deep shadow-glow"
+          : "glass text-muted-foreground hover:text-gold-deep",
       )}
     >
       {children}

@@ -24,7 +24,7 @@ export function GiftProgress({
   className?: string;
 }) {
   return (
-    <section className={cn("grid gap-4 rounded-xl border border-border bg-card p-6", className)}>
+    <section className={cn("glass grid gap-4 rounded-3xl p-6", className)}>
       <header className="grid gap-1">
         <h1 className="text-xl font-semibold text-foreground">گنجینه {childFirstName}</h1>
         <p className="text-sm text-muted-foreground">{childAgeLabel}</p>

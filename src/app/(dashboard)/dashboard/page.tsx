@@ -49,7 +49,7 @@ export default async function DashboardHomePage() {
               <Link
                 key={child.id}
                 href={`/dashboard/children/${child.id}`}
-                className="flex items-center gap-3 rounded-xl border border-border bg-card p-3"
+                className="glass flex items-center gap-3 rounded-3xl p-3"
               >
                 <ChildAvatar
                   displayName={child.displayName}

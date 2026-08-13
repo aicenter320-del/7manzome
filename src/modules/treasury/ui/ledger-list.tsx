@@ -36,7 +36,7 @@ export function LedgerList({
       {entries.map((entry) => (
         <li
           key={entry.id}
-          className="flex items-start gap-3 rounded-lg border border-border bg-card p-3.5"
+          className="glass flex items-start gap-3 rounded-2xl p-3.5"
         >
           <span
             className={cn(

@@ -27,7 +27,7 @@ export default async function AdminPaymentDetailPage({
           <h2 className="text-lg font-semibold">رسیدها</h2>
           <ul className="grid gap-3">
             {payment.receipts.map((receipt) => (
-              <li key={receipt.id} className="rounded-xl border border-border bg-card p-4 text-sm">
+              <li key={receipt.id} className="glass rounded-3xl p-4 text-sm">
                 <p>پیگیری: <span className="ltr-nums">{receipt.referenceNumber}</span></p>
                 <p>
                   مبلغ اعلامی: <Money rial={receipt.paidAmountRial} />

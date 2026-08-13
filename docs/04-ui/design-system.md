@@ -10,20 +10,25 @@
 
 بله:
 
-- فضای سفید زیاد
+- فضای سفید زیاد و پس‌زمینهٔ روشن گرم
+- شیشهٔ مات با بردر گرادیانی طلایی و سایهٔ رنگی نرم
 - تایپوگرافی قدرتمند و سلسله‌مراتب واضح
 - تصاویر واقعی کودک
-- جزئیات ظریف
-- طلایی **فقط به‌عنوان لهجه**
-- حرکت (motion) ملایم و کم
+- طلایی **به‌عنوان لهجه** (بردر، درخشش هیرو، دیسک آیکون)
+- حرکت ملایم (فشردن ژله‌ای آیکون)
 
 نه:
 
-- طلایی زیاد و گرادیان طلایی همه‌جا
-- تاج و الماس و درخشش
+- تم تیره / دارک‌مود
+- پر کردن سطح با طلا یا گرادیان طلایی به‌جای محتوا
+- تاج و الماس و تصویرسازی کارتونی
 - صورتی نوزادی
-- تصویرسازی کارتونی زیاد
 - رابطی که شبیه پنل بانک باشد
+- لنز شکست‌نور روی هر ردیف جدول
+
+## تم
+
+سایت **فقط روشن** است. روی `<html>` کلاس `light` قفل می‌شود. سوئیچ تم ساخته نمی‌شود.
 
 ## توکن‌های رنگ
 
@@ -43,8 +48,11 @@
 | `--success` `--warning` `--destructive` `--info` | `bg-success` ... | وضعیت‌ها |
 | `--border` | `border-border` | خط جداکننده |
 | `--ring` | `ring-ring` | حلقه فوکوس |
+| `--glass` | `bg-glass` / کلاس `.glass` | سطح شیشه‌ای روشن |
+| `--shadow-glow-gold` | `.shadow-glow` | سایهٔ پهن طلایی |
 
 قانون: **هیچ رنگ hard-coded.** نه `#fff`، نه `text-gray-500`، نه `bg-yellow-400`.
+سطح شیشه‌ای با کلاس `.glass` یا `.glass-strong`؛ دیسک آیکون با `GlassIconButton`.
 
 ```tsx
 // ❌
@@ -64,9 +72,17 @@
 
 ## شعاع و سایه
 
-- شعاع پایه: `0.75rem` (توکن `--radius`)
-- سایه‌ها ملایم: `shadow-xs` برای کارت، `shadow-md` برای منو، `shadow-lg` برای دیالوگ.
-  سایه سنگین با حس پریمیوم نمی‌خواند.
+- شعاع پایه: `1.25rem` (توکن `--radius`)؛ پنل‌های شاخص `rounded-3xl` یا کپسول.
+- سایهٔ کارت و شیشه: `.shadow-glow` (طلایی نرم)، نه `shadow-xs` تخت.
+- درخشش هیرو: کامپوننت `GoldGlow` و کلاس `.gold-glow`.
+
+## شیشه
+
+موتور از [website-glass](https://websiteglass.com/) در `src/shared/ui/glass.tsx` است
+(ADR-0011). `GlassSurface` و `GlassButton` برای هدر، شیت موبایل و دیسک آیکون؛
+کارت‌ها و فرم‌ها با کلاس CSS `.glass` تا جدول ادمین سنگین نشود.
+
+آیکون عملیاتی (سبد، منو، بستن) باید `GlassIconButton` باشد؛ آیکون تزئینی داخل متن نه.
 
 ## کامپوننت‌های پایه
 
@@ -74,7 +90,9 @@
 
 `button`، `input`، `textarea`، `label`، `card`، `badge`، `separator`، `skeleton`،
 `dialog`، `dropdown-menu`، `select`، `tabs`، `progress`، `avatar`، `checkbox`،
-`switch`، `radio-group`، `table`، `alert`، `accordion`، `form-field`، `page-header`، `empty-state`
+`switch`، `radio-group`، `table`، `alert`، `accordion`، `form-field`، `page-header`،
+`empty-state`، `glass`، `glass-button`، `glass-icon-button`، `glass-sheet`،
+`gold-glow`، `app-nav-shell`
 
 **قانون مهم:** کامپوننت‌های `shared/ui/` هیچ دانشی از دامنه ندارند. کامپوننتی که بداند
 «گنجینه» چیست، باید در `modules/<x>/ui/` باشد.

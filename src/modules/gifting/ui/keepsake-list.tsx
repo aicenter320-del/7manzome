@@ -21,7 +21,7 @@ export function KeepsakeList({ keepsakes }: { keepsakes: PublicKeepsake[] }) {
       {keepsakes.map((item, index) => (
         <li
           key={`${item.contributorDisplayName}-${index}`}
-          className="rounded-xl border border-border bg-card p-4"
+          className="glass rounded-3xl p-4"
         >
           <p className="text-sm font-medium text-foreground">{item.contributorDisplayName}</p>
           <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{item.message}</p>

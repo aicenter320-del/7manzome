@@ -38,7 +38,7 @@ export default async function ChildrenListPage() {
             <li key={child.id}>
               <Link
                 href={`/dashboard/children/${child.id}`}
-                className="flex items-center gap-3 rounded-xl border border-border bg-card p-4 hover:shadow-md"
+                className="glass flex items-center gap-3 rounded-3xl p-4"
               >
                 <ChildAvatar
                   displayName={child.displayName}

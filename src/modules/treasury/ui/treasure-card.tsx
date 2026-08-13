@@ -33,7 +33,7 @@ export function TreasureCard({
   const target = href ?? `/dashboard/treasures/${treasure.id}`;
 
   return (
-    <Card className={cn("overflow-hidden transition-shadow hover:shadow-md", className)}>
+    <Card className={cn("overflow-hidden transition-transform hover:-translate-y-0.5", className)}>
       <Link href={target} className="block p-5 focus-visible:outline-none">
         <div className="flex items-start gap-3">
           <ChildAvatar

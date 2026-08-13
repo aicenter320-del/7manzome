@@ -21,7 +21,7 @@ export function PriceBreakdownTable({
   const rows = toBreakdownRows(breakdown);
 
   return (
-    <div className={cn("rounded-xl border border-border bg-card p-4", className)}>
+    <div className={cn("glass rounded-3xl p-4", className)}>
       <p className="mb-3 text-sm font-medium">جزئیات کامل قیمت</p>
 
       <dl className="grid gap-2.5 text-sm">

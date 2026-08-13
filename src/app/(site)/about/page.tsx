@@ -30,7 +30,7 @@ export default async function AboutPage() {
       {faqs.length > 0 ? (
         <section className="grid gap-4">
           <h2 className="text-lg font-semibold">پرسش‌های متداول</h2>
-          <Accordion type="single" collapsible className="rounded-xl border border-border bg-card px-4">
+          <Accordion type="single" collapsible className="glass rounded-3xl px-4">
             {faqs.map((faq) => (
               <AccordionItem key={faq.id} value={faq.id}>
                 <AccordionTrigger>{faq.question}</AccordionTrigger>
