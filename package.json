@@ -9,17 +9,14 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-
     "db:generate": "drizzle-kit generate",
     "db:migrate": "tsx scripts/db-migrate.ts",
     "db:push": "drizzle-kit push",
@@ -27,10 +24,8 @@
     "db:seed": "tsx scripts/db-seed.ts",
     "db:reset": "tsx scripts/db-reset.ts",
     "db:backup": "tsx scripts/db-backup.ts",
-
     "check:arch": "tsx scripts/check-architecture.ts",
     "verify": "npm run typecheck && npm run lint && npm run check:arch && npm run test",
-
     "prepare": "node scripts/setup-git-hooks.mjs"
   },
   "dependencies": {
