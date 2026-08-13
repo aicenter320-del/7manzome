@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
-import { getOccasionBySlug, listProducts, ProductGrid } from "@/modules/catalog";
+import { getOccasionBySlug, listProducts, OccasionLabel, ProductGrid } from "@/modules/catalog";
 import { PageHeader } from "@/shared/ui/page-header";
 
 export async function generateMetadata({
@@ -29,7 +29,14 @@ export default async function OccasionDetailPage({
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
       <PageHeader
-        title={`${occasion.emoji ? `${occasion.emoji} ` : ""}${occasion.title}`}
+        title={
+          <OccasionLabel
+            slug={occasion.slug}
+            title={occasion.title}
+            emoji={occasion.emoji}
+            size="md"
+          />
+        }
         description={
           occasion.description ?? "برای این مناسبت، هدیه‌ای ماندگار از طلا انتخاب کنید."
         }

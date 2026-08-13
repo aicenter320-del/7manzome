@@ -58,3 +58,6 @@ export {
 export { ProductCard } from "./ui/product-card";
 export { ProductGrid } from "./ui/product-grid";
 export { VariantSelector } from "./ui/variant-selector";
+export { OccasionIcon, OccasionLabel } from "./ui/occasion-icon";
+export { OccasionCard } from "./ui/occasion-card";
+export { occasionIconKey } from "./domain/occasion-icon";

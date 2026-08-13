@@ -1,7 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-import { listCategories, listOccasions, listProducts, ProductGrid } from "@/modules/catalog";
+import {
+  listCategories,
+  listOccasions,
+  listProducts,
+  OccasionLabel,
+  ProductGrid,
+} from "@/modules/catalog";
 import { cn } from "@/shared/lib/cn";
 import { PageHeader } from "@/shared/ui/page-header";
 
@@ -58,8 +64,12 @@ export default async function ProductsPage({
               href={`/products?occasion=${occasion.slug}`}
               active={occasionSlug === occasion.slug}
             >
-              {occasion.emoji ? `${occasion.emoji} ` : ""}
-              {occasion.title}
+              <OccasionLabel
+                slug={occasion.slug}
+                title={occasion.title}
+                emoji={occasion.emoji}
+                variant="plain"
+              />
             </FilterChip>
           ))}
         </div>
@@ -83,7 +93,7 @@ function FilterChip({
     <Link
       href={href}
       className={cn(
-        "rounded-full border px-3 py-1.5 text-sm transition-colors",
+        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-sm transition-colors",
         active
           ? "border-gold bg-gold-soft text-gold-deep shadow-glow"
           : "glass text-muted-foreground hover:text-gold-deep",

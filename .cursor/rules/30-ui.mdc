@@ -24,6 +24,7 @@ globs: src/app/**,src/shared/ui/**,src/modules/**/ui/**,*.css
 تم **فقط روشن** است. کلاس `light` روی `html` بماند؛ سوئیچ دارک‌مود نساز.
 
 سطح شیشه‌ای: کلاس `.glass` یا `.glass-strong`. دیسک آیکون عملیاتی: `GlassIconButton`.
+در متن و عنوان رابط کاربری ایموجی نگذار؛ مناسبت‌ها با `OccasionIcon` نمایش داده می‌شوند.
 
 ## RTL
 

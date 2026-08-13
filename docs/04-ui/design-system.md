@@ -97,6 +97,7 @@
 کارت‌ها و فرم‌ها با کلاس CSS `.glass` تا جدول ادمین سنگین نشود.
 
 آیکون عملیاتی (سبد، منو، بستن) باید `GlassIconButton` باشد؛ آیکون تزئینی داخل متن نه.
+در رابط کاربری از ایموجی استفاده نمی‌شود؛ مناسبت‌ها با `OccasionIcon` (Lucide) نمایش داده می‌شوند.
 
 ## کامپوننت‌های پایه
 
@@ -120,6 +121,7 @@
 | `JalaliDate` | `shared/ui/jalali-date.tsx` | نمایش epoch به‌صورت تاریخ شمسی |
 | `PriceBreakdownTable` | `modules/pricing/ui/` | جدول شفاف اجزای قیمت |
 | `TreasureProgress` | `modules/treasury/ui/` | نوار پیشرفت گنجینه |
+| `OccasionIcon` / `OccasionLabel` / `OccasionCard` | `modules/catalog/ui/` | آیکون مناسبت؛ در کارت‌ها به‌صورت واترمارک بزرگ و کم‌رنگ در انتهای پس‌زمینه |
 
 ## اصل مهم رابط کاربری
 

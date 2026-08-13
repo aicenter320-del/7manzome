@@ -14,6 +14,8 @@
 export { listProducts, getProductBySlug, listCategories, listOccasions } from "./service/catalog.service";
 export { upsertProduct, upsertVariant, setProductStatus } from "./actions/...";
 export { filterVariantsForAge, buildProductFilters } from "./domain/product-filter";
+export { OccasionIcon, OccasionLabel } from "./ui/occasion-icon";
+export { OccasionCard } from "./ui/occasion-card";
 export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from "./domain/types";
 ```
 
@@ -35,6 +37,9 @@ export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from ".
 - هر محصول باید حداقل یک تصویر داشته باشد تا وضعیتش `active` شود.
 - محصول `archived` هرگز حذف نمی‌شود چون به سفارش‌های قدیمی وصل است.
 - بخش «چرا این محصول؟» بخشی از داده محصول است، نه متن ثابت قالب.
+- مناسبت در رابط کاربری با آیکون Lucide (`OccasionIcon`) نشان داده می‌شود، نه ایموجی.
+  روی کارت‌ها (`OccasionCard`) آیکون واترمارک بزرگ و کم‌رنگ در انتهای پس‌زمینه است.
+  ستون `emoji` فقط برای نگاشت سازگار با دادهٔ قدیمی می‌ماند.
 
 ## مسیرها
 

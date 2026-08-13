@@ -1,10 +1,9 @@
 import Link from "next/link";
 
-import { listOccasions, listProducts, ProductGrid } from "@/modules/catalog";
+import { listOccasions, listProducts, OccasionCard, ProductGrid } from "@/modules/catalog";
 import { GoldPriceBadge, tryGetCurrentGoldPrice } from "@/modules/pricing";
 import { site } from "@/shared/config/site";
 import { Button } from "@/shared/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 import { GoldGlow } from "@/shared/ui/gold-glow";
 
 export default async function HomePage() {
@@ -43,23 +42,7 @@ export default async function HomePage() {
           <h2 className="mb-6 text-xl font-semibold">مناسبت‌های زندگی او</h2>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
             {occasions.map((occasion) => (
-              <Link key={occasion.id} href={`/occasions/${occasion.slug}`}>
-                <Card className="h-full transition-transform hover:-translate-y-0.5">
-                  <CardHeader>
-                    <CardTitle className="text-base">
-                      {occasion.emoji ? `${occasion.emoji} ` : ""}
-                      {occasion.title}
-                    </CardTitle>
-                  </CardHeader>
-                  {occasion.description ? (
-                    <CardContent>
-                      <p className="line-clamp-3 text-sm text-muted-foreground">
-                        {occasion.description}
-                      </p>
-                    </CardContent>
-                  ) : null}
-                </Card>
-              </Link>
+              <OccasionCard key={occasion.id} occasion={occasion} />
             ))}
           </div>
 
