@@ -1,8 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { MenuIcon, ShoppingBagIcon, XIcon } from "lucide-react";
-import { useState } from "react";
+import {
+  CalendarHeartIcon,
+  GemIcon,
+  GiftIcon,
+  HomeIcon,
+  InfoIcon,
+  LandmarkIcon,
+  LogInIcon,
+  MenuIcon,
+  ShieldIcon,
+  ShoppingBagIcon,
+  UserIcon,
+  XIcon,
+} from "lucide-react";
+import { type ReactNode, useState } from "react";
 
 import { mainNav, site } from "@/shared/config/site";
 import { toPersianDigits } from "@/shared/lib/persian";
@@ -17,6 +30,40 @@ import {
 } from "@/shared/ui/glass-sheet";
 
 import { LogoutButton } from "./logout-button";
+
+const NAV_ICONS: Record<string, ReactNode> = {
+  "/": <HomeIcon />,
+  "/products": <GemIcon />,
+  "/occasions": <CalendarHeartIcon />,
+  "/gift": <GiftIcon />,
+  "/treasures": <LandmarkIcon />,
+  "/about": <InfoIcon />,
+};
+
+function MenuRow({
+  href,
+  children,
+  icon,
+  onNavigate,
+}: {
+  href: string;
+  children: ReactNode;
+  icon: ReactNode;
+  onNavigate: () => void;
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex items-center justify-between gap-3 rounded-2xl px-3 py-3 text-start text-base hover:bg-gold-soft/40"
+      onClick={onNavigate}
+    >
+      <span>{children}</span>
+      <span className="text-gold-deep [&_svg]:size-4" aria-hidden>
+        {icon}
+      </span>
+    </Link>
+  );
+}
 
 export function SiteHeaderBar({
   signedIn,
@@ -94,7 +141,7 @@ export function SiteHeaderBar({
             >
               <MenuIcon />
             </GlassIconButton>
-            <GlassSheetContent side="bottom">
+            <GlassSheetContent side="end">
               <div className="flex items-start justify-between gap-3">
                 <GlassSheetTitle>منو</GlassSheetTitle>
                 <GlassSheetClose aria-label="بستن" className="rounded-full p-2 hover:bg-gold-soft/50">
@@ -103,39 +150,45 @@ export function SiteHeaderBar({
               </div>
               <nav className="mt-6 grid gap-1">
                 {mainNav.map((item) => (
-                  <Link
+                  <MenuRow
                     key={item.href}
                     href={item.href}
-                    className="rounded-2xl px-3 py-3 text-start text-base hover:bg-gold-soft/40"
-                    onClick={() => setMenuOpen(false)}
+                    icon={NAV_ICONS[item.href]}
+                    onNavigate={() => setMenuOpen(false)}
                   >
                     {item.title}
-                  </Link>
+                  </MenuRow>
                 ))}
               </nav>
-              <div className="mt-6 grid gap-2 sm:hidden">
+              <div className="mt-6 grid gap-1 sm:hidden">
                 {signedIn ? (
                   <>
-                    <Button asChild variant="outline">
-                      <Link href="/dashboard" onClick={() => setMenuOpen(false)}>
-                        حساب من
-                      </Link>
-                    </Button>
+                    <MenuRow
+                      href="/dashboard"
+                      icon={<UserIcon />}
+                      onNavigate={() => setMenuOpen(false)}
+                    >
+                      حساب من
+                    </MenuRow>
                     {isStaffUser ? (
-                      <Button asChild variant="outline">
-                        <Link href="/admin" onClick={() => setMenuOpen(false)}>
-                          مدیریت
-                        </Link>
-                      </Button>
+                      <MenuRow
+                        href="/admin"
+                        icon={<ShieldIcon />}
+                        onNavigate={() => setMenuOpen(false)}
+                      >
+                        مدیریت
+                      </MenuRow>
                     ) : null}
                     <LogoutButton />
                   </>
                 ) : (
-                  <Button asChild variant="gold">
-                    <Link href="/login" onClick={() => setMenuOpen(false)}>
-                      ورود
-                    </Link>
-                  </Button>
+                  <MenuRow
+                    href="/login"
+                    icon={<LogInIcon />}
+                    onNavigate={() => setMenuOpen(false)}
+                  >
+                    ورود
+                  </MenuRow>
                 )}
               </div>
             </GlassSheetContent>

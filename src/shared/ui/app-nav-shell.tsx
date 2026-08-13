@@ -66,7 +66,7 @@ export function AppNavShell({
               <GlassIconButton aria-label="منو" onClick={() => setOpen(true)}>
                 <MenuIcon />
               </GlassIconButton>
-              <GlassSheetContent side="bottom">
+              <GlassSheetContent side="end">
                 <div className="flex items-start justify-between gap-3">
                   <GlassSheetTitle>{brandLabel}</GlassSheetTitle>
                   <GlassSheetClose aria-label="بستن" className="rounded-full p-2 hover:bg-gold-soft/50">

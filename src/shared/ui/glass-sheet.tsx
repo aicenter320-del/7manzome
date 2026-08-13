@@ -85,7 +85,7 @@ interface SheetContentProps extends ComponentProps<"div"> {
 }
 
 export function GlassSheetContent({
-  side = "bottom",
+  side = "end",
   tint = 0.55,
   className,
   children,
