@@ -64,7 +64,21 @@
 
 ## تایپوگرافی
 
-فونت: **وزیرمتن** به‌صورت variable و لوکال (`src/assets/fonts/`).
+فونت: **ایران‌سنس‌ایکس** به‌صورت لوکال در `src/assets/fonts/iransansx/` (خانوادهٔ ایستا، نه variable).
+
+| وزن Tailwind | فایل |
+| --- | --- |
+| `font-thin` (100) | Thin |
+| `font-extralight` (200) | UltraLight |
+| `font-light` (300) | Light |
+| `font-normal` (400) | Regular |
+| `font-medium` (500) | Medium |
+| `font-semibold` (600) | DemiBold |
+| `font-bold` (700) | Bold |
+| `font-extrabold` (800) | ExtraBold |
+| ۸۵۰ | Heavy |
+| `font-black` (900) | Black |
+| ۹۵۰ | ExtraBlack |
 
 - ارتفاع سطر بدنه `1.85` است، بازتر از پیش‌فرض لاتین، چون فارسی به فضای عمودی بیشتری نیاز دارد.
 - عناوین `line-height: 1.5` و `text-wrap: balance`.

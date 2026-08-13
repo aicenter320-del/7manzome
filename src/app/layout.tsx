@@ -3,7 +3,7 @@ import { Toaster } from "sonner";
 
 import { site } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
-import { vazirmatn } from "@/shared/ui/fonts";
+import { iranSansX } from "@/shared/ui/fonts";
 import { AppProviders } from "@/shared/ui/providers";
 
 import "./globals.css";
@@ -43,14 +43,14 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fa" dir="rtl" className="light" suppressHydrationWarning>
-      <body className={cn(vazirmatn.variable, "min-h-dvh antialiased")}>
+      <body className={cn(iranSansX.variable, iranSansX.className, "min-h-dvh antialiased")}>
         <AppProviders>{children}</AppProviders>
         <Toaster
           position="top-center"
           dir="rtl"
           richColors
           closeButton
-          toastOptions={{ className: vazirmatn.className }}
+          toastOptions={{ className: iranSansX.className }}
         />
       </body>
     </html>

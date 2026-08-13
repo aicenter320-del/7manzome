@@ -163,7 +163,7 @@
   --color-glass: var(--glass);
   --color-glass-strong: var(--glass-strong);
 
-  --font-sans: var(--font-vazirmatn), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-iran-sans-x), Tahoma, ui-sans-serif, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
