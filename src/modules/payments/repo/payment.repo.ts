@@ -254,6 +254,62 @@ export async function sumConfirmedAmount(fromAt: number): Promise<number> {
   return Number(rows[0]?.value ?? 0);
 }
 
+export async function sumConfirmedAmountBetween(fromAt: number, toAt: number): Promise<number> {
+  const rows = await db
+    .select({ value: sum(payments.amountRial) })
+    .from(payments)
+    .where(
+      and(
+        eq(payments.status, "confirmed"),
+        gte(payments.confirmedAt, fromAt),
+        lt(payments.confirmedAt, toAt),
+      ),
+    );
+
+  return Number(rows[0]?.value ?? 0);
+}
+
+export interface ConfirmedSaleSlice {
+  confirmedAt: number;
+  amountRial: number;
+}
+
+export async function findConfirmedSalesBetween(
+  fromAt: number,
+  toAt: number,
+): Promise<ConfirmedSaleSlice[]> {
+  const rows = await db
+    .select({
+      confirmedAt: payments.confirmedAt,
+      amountRial: payments.amountRial,
+    })
+    .from(payments)
+    .where(
+      and(
+        eq(payments.status, "confirmed"),
+        gte(payments.confirmedAt, fromAt),
+        lt(payments.confirmedAt, toAt),
+      ),
+    );
+
+  return rows.filter((row): row is ConfirmedSaleSlice => row.confirmedAt !== null);
+}
+
+export async function countRejectedPaymentsBetween(fromAt: number, toAt: number): Promise<number> {
+  const rows = await db
+    .select({ value: count() })
+    .from(payments)
+    .where(
+      and(
+        eq(payments.status, "rejected"),
+        gte(payments.rejectedAt, fromAt),
+        lt(payments.rejectedAt, toAt),
+      ),
+    );
+
+  return rows[0]?.value ?? 0;
+}
+
 export async function countPaymentsByStatus(status: PaymentStatus): Promise<number> {
   const rows = await db
     .select({ value: count() })

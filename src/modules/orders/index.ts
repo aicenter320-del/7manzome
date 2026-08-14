@@ -58,6 +58,11 @@ export {
   countOrders,
   countOrdersByStatus,
   countOrdersSince,
+  countReturnedShipments,
+  countStuckOrders,
+  findBuyerStats,
+  findCountedOrdersBetween,
+  findOrderItemMarginsBetween,
   sumGoldTotalMgSince,
 } from "./service/order.service";
 

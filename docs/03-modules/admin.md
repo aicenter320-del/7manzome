@@ -14,10 +14,10 @@
 ## API عمومی
 
 ```ts
-export type { DashboardStats, SalesReport, SalesReportRow, TreasuryReport } from "./domain/types";
+export type { DashboardStats, OwnerDashboard, SalesReport, SalesReportRow, TreasuryReport } from "./domain/types";
 export type { MediaFolder } from "./domain/media-access";
 export { foldersForRoles, canDeleteMediaFolder } from "./domain/media-access";
-export { getDashboardStats, getSalesReport, getTreasuryReport } from "./service/report.service";
+export { getDashboardStats, getOwnerDashboard, getSalesReport, getTreasuryReport } from "./service/...";
 export {
   reviewAndSettlePayment,
   expireStalePaymentsAction,
@@ -26,6 +26,7 @@ export {
 export { StatCard } from "./ui/stat-card";
 export { DataTable } from "./ui/data-table";
 export { adminNav, type AdminNavItem } from "./ui/admin-nav";
+export { OwnerDashboardView, OpsDashboard } from "./ui/owner-dashboard";
 ```
 
 ## جدول‌های دیتابیس
@@ -45,11 +46,21 @@ export { adminNav, type AdminNavItem } from "./ui/admin-nav";
 - گزارش‌ها روی epoch محاسبه می‌شوند و مرز روز بر اساس منطقه زمانی تهران تعیین می‌گردد.
 - `reviewAndSettlePayment` پس از `applyReviewDecision` تسویه را صدا می‌زند. تسویه باید idempotent باشد تا اگر پرداخت تایید شد و تسویه شکست خورد، تکرار اکشن فقط تسویه را دوباره اجرا کند.
 
-## داشبورد
+## داشبورد مالک
 
-فروش امروز، طلای فروخته‌شده (گرم)، تعداد سفارش‌ها، گنجینه‌های فعال، هدیه‌های امروز،
-و صف تایید پرداخت. هر کارت به صفحهٔ مرتبط می‌رود: پرداخت‌ها، گزارش‌ها، سفارش‌ها،
-گنجینه‌ها یا کاربران.
+صفحهٔ `/admin` برای نقش‌های دارای `report:read` (مالک، مالی، مدیر سفارش) داشبورد تصمیم‌محور است:
+چهار شاخص فروش امروز، فروش ماه، سود ماه و ارزش موجودی انبار فروشگاه؛ روند بازه‌ای؛ فهرست
+«نیازمند توجه»؛ وضعیت طلای فروشگاه؛ محصولات برتر؛ مشتریان؛ خلاصه سفارش؛ و نوار سلامت.
+
+فروش از پرداخت‌های `confirmed` است. سود ماه از `profitRial` زیور و `premiumRial` سکه/شمش
+روی اقلام سفارش‌های با وضعیت طلاشمار (`paid` تا `delivered`) جمع می‌شود. ارزش موجودی
+از موجودی گونه × قیمت زنده موتور قیمت است، نه از گنجینهٔ کودک.
+
+کانال فروش چندفروشگاهی و قیف بازدید/سبد ردیابی نمی‌شوند؛ همان بخش‌ها با متن صادقانه
+خالی می‌مانند و عدد جعلی نشان داده نمی‌شود.
+
+کارکنان بدون `report:read` (مثل آماده‌سازی) همان کارت‌های عملیاتی کوتاه را می‌بینند:
+فروش امروز، طلا، سفارش، گنجینه، هدیه، صف تایید و کاربران — بدون سود و ارزش موجودی.
 
 ## بخش‌های پنل
 

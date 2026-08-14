@@ -34,12 +34,15 @@ import {
   findPaymentsForOrder,
   findReceiptsForPayment,
   findStalePayments,
+  countRejectedPaymentsBetween,
+  findConfirmedSalesBetween,
   insertBankAccount,
   insertReceipt,
   listPayments as listPaymentRows,
   referenceNumberExists,
   setBankAccountActive,
   sumConfirmedAmount,
+  sumConfirmedAmountBetween,
   updatePaymentStatus,
 } from "../repo/payment.repo";
 import { defaultProvider, getPaymentProvider } from "./provider-registry";
@@ -442,6 +445,18 @@ export async function expireStalePayments(): Promise<number> {
 
 export async function getConfirmedAmountSince(fromAt: number): Promise<number> {
   return sumConfirmedAmount(fromAt);
+}
+
+export async function getConfirmedAmountBetween(fromAt: number, toAt: number): Promise<number> {
+  return sumConfirmedAmountBetween(fromAt, toAt);
+}
+
+export async function listConfirmedSalesBetween(fromAt: number, toAt: number) {
+  return findConfirmedSalesBetween(fromAt, toAt);
+}
+
+export async function countRejectedSince(fromAt: number, toAt: number): Promise<number> {
+  return countRejectedPaymentsBetween(fromAt, toAt);
 }
 
 export async function countInReviewQueue(): Promise<number> {

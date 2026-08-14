@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, count, desc, eq, like, or } from "drizzle-orm";
+import { and, count, desc, eq, gte, isNull, like, lt, or } from "drizzle-orm";
 
 import { db } from "@/server/db";
 import { userRoles, users } from "@/server/db/schema";
@@ -140,5 +140,21 @@ export async function findUsers(filters: UserListFilters = {}): Promise<UserRow[
 
 export async function countUsers(): Promise<number> {
   const rows = await db.select({ value: count() }).from(users);
+  return rows[0]?.value ?? 0;
+}
+
+/** مشتریان: کاربر بدون نقش کارمندی که در بازه ثبت‌نام کرده. */
+export async function countCustomersCreatedBetween(
+  fromAt: number,
+  toAt: number,
+): Promise<number> {
+  const rows = await db
+    .select({ value: count() })
+    .from(users)
+    .leftJoin(userRoles, eq(userRoles.userId, users.id))
+    .where(
+      and(gte(users.createdAt, fromAt), lt(users.createdAt, toAt), isNull(userRoles.id)),
+    );
+
   return rows[0]?.value ?? 0;
 }

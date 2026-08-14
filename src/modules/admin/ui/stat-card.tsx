@@ -13,7 +13,7 @@ export function StatCard({
 }: {
   label: string;
   value: ReactNode;
-  hint?: string;
+  hint?: ReactNode;
   /** اگر باشد، کل کارت به این مسیر می‌رود. */
   href?: string;
   className?: string;
@@ -28,7 +28,7 @@ export function StatCard({
       <CardContent className="flex flex-col items-center p-5 text-center">
         <p className="text-xs text-muted-foreground">{label}</p>
         <div className="mt-2 text-2xl font-semibold tracking-tight">{value}</div>
-        {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
+        {hint ? <div className="mt-1 text-xs text-muted-foreground">{hint}</div> : null}
       </CardContent>
     </Card>
   );

@@ -36,18 +36,21 @@ export {
   createPaymentWith,
   DuplicateReferenceError,
   expireStalePayments,
+  getConfirmedAmountBetween,
   getConfirmedAmountSince,
   getPaymentById,
   getPaymentForContribution,
   getPaymentsForOrder,
   listAllBankAccounts,
   listBankAccounts,
+  listConfirmedSalesBetween,
   listPayments,
   listPendingReviews,
   markUnderReview,
   PaymentError,
   submitCardReceipt,
   toggleBankAccount,
+  countRejectedSince,
 } from "./service/payment.service";
 
 export { getPaymentProvider, enabledProviders } from "./service/provider-registry";

@@ -26,6 +26,8 @@ import {
   findVariantById,
   findVariantsForProduct,
   findVariantsForProducts,
+  findActiveInventoryVariants,
+  type InventoryVariantRow,
 } from "../repo/catalog.repo";
 
 function toVariant(row: ProductVariantRow): ProductVariant {
@@ -278,4 +280,10 @@ export async function suggestProducts(input: {
     ...(input.ageMonths !== undefined ? { ageMonths: input.ageMonths } : {}),
     limit: input.limit ?? 8,
   });
+}
+
+export type { InventoryVariantRow };
+
+export async function listActiveInventoryVariants(): Promise<InventoryVariantRow[]> {
+  return findActiveInventoryVariants();
 }

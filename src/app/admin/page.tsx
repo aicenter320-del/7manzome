@@ -1,58 +1,27 @@
-import { getDashboardStats, StatCard } from "@/modules/admin";
+import {
+  getDashboardStats,
+  getOwnerDashboard,
+  OpsDashboard,
+  OwnerDashboardView,
+  parseDashboardRange,
+} from "@/modules/admin";
 import { requireStaff } from "@/server/auth/guards";
-import { toPersianDigits } from "@/shared/lib/persian";
-import { GoldWeight } from "@/shared/ui/gold-weight";
-import { Money } from "@/shared/ui/money";
-import { PageHeader } from "@/shared/ui/page-header";
+import { hasPermission } from "@/server/auth/rbac";
 
-export default async function AdminHomePage() {
-  await requireStaff();
-  const stats = await getDashboardStats();
+export default async function AdminHomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ range?: string | string[] }>;
+}) {
+  const user = await requireStaff();
+  const rawRange = (await searchParams).range;
+  const rangeValue = Array.isArray(rawRange) ? rawRange[0] : rawRange;
 
-  return (
-    <div className="grid gap-8">
-      <PageHeader
-        title="داشبورد مدیریت"
-        description={stats.shopOpen ? "فروشگاه باز است." : "فروشگاه در حال حاضر بسته است."}
-      />
+  if (!hasPermission(user.roles, "report:read")) {
+    const stats = await getDashboardStats();
+    return <OpsDashboard stats={stats} />;
+  }
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard
-          label="فروش امروز"
-          value={<Money rial={stats.todaySalesRial} short />}
-          href="/admin/payments"
-        />
-        <StatCard
-          label="طلای امروز"
-          value={<GoldWeight mg={stats.todayGoldMg} />}
-          href="/admin/reports"
-        />
-        <StatCard
-          label="سفارش امروز"
-          value={toPersianDigits(stats.todayOrderCount)}
-          href="/admin/orders"
-        />
-        <StatCard
-          label="گنجینه‌های فعال"
-          value={toPersianDigits(stats.activeTreasureCount)}
-          href="/admin/treasures"
-        />
-        <StatCard
-          label="هدیه امروز"
-          value={toPersianDigits(stats.todayGiftCount)}
-          href="/admin/reports"
-        />
-        <StatCard
-          label="صف تایید پرداخت"
-          value={toPersianDigits(stats.pendingReviewCount)}
-          href="/admin/payments"
-        />
-        <StatCard
-          label="کاربران"
-          value={toPersianDigits(stats.totalUsers)}
-          href="/admin/users"
-        />
-      </div>
-    </div>
-  );
+  const dashboard = await getOwnerDashboard(parseDashboardRange(rangeValue));
+  return <OwnerDashboardView dashboard={dashboard} />;
 }

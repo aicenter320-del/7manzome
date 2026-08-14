@@ -7,6 +7,7 @@ import type { KycStatus, UserRole, UserStatus } from "@/shared/types/enums";
 
 import type { PublicUser } from "../domain/types";
 import {
+  countCustomersCreatedBetween,
   countUsers,
   findRolesForUser,
   findUserById,
@@ -80,6 +81,10 @@ export async function listUsers(filters: UserListFilters = {}): Promise<PublicUs
 
 export async function getUserCount(): Promise<number> {
   return countUsers();
+}
+
+export async function getCustomerSignupCount(fromAt: number, toAt: number): Promise<number> {
+  return countCustomersCreatedBetween(fromAt, toAt);
 }
 
 export async function saveProfile(

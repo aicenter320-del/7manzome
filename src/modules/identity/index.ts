@@ -24,6 +24,7 @@ export {
   getUserDetailForAdmin,
   getRolesForUser,
   getUserCount,
+  getCustomerSignupCount,
   listUsers,
   saveProfile,
   submitKycRequest,

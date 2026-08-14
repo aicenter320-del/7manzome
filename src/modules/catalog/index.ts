@@ -38,6 +38,7 @@ export {
   getCategoryBySlug,
   getOccasionBySlug,
   getVariantWithProduct,
+  listActiveInventoryVariants,
   suggestProducts,
 } from "./service/catalog.service";
 

@@ -561,6 +561,22 @@ export async function listOrdersForAdmin(filters: {
   };
 }
 
-export { countOrders, countOrdersByStatus, countOrdersSince, sumGoldTotalMgSince } from "../repo/order.repo";
+export {
+  countOrders,
+  countOrdersByStatus,
+  countOrdersSince,
+  countReturnedShipments,
+  countStuckOrders,
+  findBuyerStats,
+  findCountedOrdersBetween,
+  findOrderItemMarginsBetween,
+  sumGoldTotalMgSince,
+} from "../repo/order.repo";
+
+export type {
+  BuyerStatRow,
+  CountedOrderSlice,
+  OrderItemMarginRow,
+} from "../repo/order.repo";
 
 export { CartError, getCart };

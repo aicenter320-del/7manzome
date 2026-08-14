@@ -7,8 +7,11 @@ import {
   eq,
   gte,
   inArray,
+  isNotNull,
   isNull,
   like,
+  lt,
+  max,
   or,
   sum,
   type SQL,
@@ -508,4 +511,137 @@ export async function findShipmentByOrderId(orderId: string): Promise<ShipmentRo
     .limit(1);
 
   return rows[0] ?? null;
+}
+
+export interface CountedOrderSlice {
+  id: string;
+  userId: string;
+  paidAt: number;
+  goldTotalMg: number;
+  totalRial: number;
+  status: OrderStatus;
+}
+
+export async function findCountedOrdersBetween(
+  fromAt: number,
+  toAt: number,
+): Promise<CountedOrderSlice[]> {
+  const rows = await db
+    .select({
+      id: orders.id,
+      userId: orders.userId,
+      paidAt: orders.paidAt,
+      goldTotalMg: orders.goldTotalMg,
+      totalRial: orders.totalRial,
+      status: orders.status,
+    })
+    .from(orders)
+    .where(
+      and(
+        inArray(orders.status, [...COUNTED_GOLD_STATUSES]),
+        isNotNull(orders.paidAt),
+        gte(orders.paidAt, fromAt),
+        lt(orders.paidAt, toAt),
+      ),
+    );
+
+  return rows.filter((row): row is CountedOrderSlice => row.paidAt !== null);
+}
+
+export interface OrderItemMarginRow {
+  orderId: string;
+  paidAt: number;
+  productTitle: string;
+  quantity: number;
+  profitRial: number;
+  premiumRial: number;
+  lineTotalRial: number;
+  weightMg: number;
+}
+
+export async function findOrderItemMarginsBetween(
+  fromAt: number,
+  toAt: number,
+): Promise<OrderItemMarginRow[]> {
+  const rows = await db
+    .select({
+      orderId: orderItems.orderId,
+      paidAt: orders.paidAt,
+      productTitle: orderItems.productTitle,
+      quantity: orderItems.quantity,
+      profitRial: orderItems.profitRial,
+      premiumRial: orderItems.premiumRial,
+      lineTotalRial: orderItems.lineTotalRial,
+      weightMg: orderItems.weightMg,
+    })
+    .from(orderItems)
+    .innerJoin(orders, eq(orders.id, orderItems.orderId))
+    .where(
+      and(
+        inArray(orders.status, [...COUNTED_GOLD_STATUSES]),
+        isNotNull(orders.paidAt),
+        gte(orders.paidAt, fromAt),
+        lt(orders.paidAt, toAt),
+      ),
+    );
+
+  return rows.filter((row): row is OrderItemMarginRow => row.paidAt !== null);
+}
+
+const STUCK_STATUSES: OrderStatus[] = ["paid", "processing", "packed"];
+
+export async function countStuckOrders(updatedBeforeAt: number): Promise<number> {
+  const rows = await db
+    .select({ value: count() })
+    .from(orders)
+    .where(
+      and(
+        inArray(orders.status, STUCK_STATUSES),
+        isNotNull(orders.paidAt),
+        lt(orders.paidAt, updatedBeforeAt),
+      ),
+    );
+
+  return rows[0]?.value ?? 0;
+}
+
+export async function countReturnedShipments(): Promise<number> {
+  const rows = await db
+    .select({ value: count() })
+    .from(shipments)
+    .where(eq(shipments.status, "returned"));
+
+  return rows[0]?.value ?? 0;
+}
+
+export interface BuyerStatRow {
+  userId: string;
+  orderCount: number;
+  lastPaidAt: number;
+  spentRial: number;
+}
+
+export async function findBuyerStats(): Promise<BuyerStatRow[]> {
+  const rows = await db
+    .select({
+      userId: orders.userId,
+      orderCount: count(),
+      lastPaidAt: max(orders.paidAt),
+      spentRial: sum(orders.totalRial),
+    })
+    .from(orders)
+    .where(and(inArray(orders.status, [...COUNTED_GOLD_STATUSES]), isNotNull(orders.paidAt)))
+    .groupBy(orders.userId);
+
+  return rows.flatMap((row) => {
+    if (row.lastPaidAt === null) return [];
+    return [
+      {
+        userId: row.userId,
+        orderCount: row.orderCount,
+        lastPaidAt: row.lastPaidAt,
+        spentRial: Number(row.spentRial ?? 0),
+      },
+    ];
+  });
 }

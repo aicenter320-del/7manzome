@@ -17,7 +17,7 @@ import type {
   ProductRow,
   ProductVariantRow,
 } from "@/server/db/types";
-import type { BrandLine, ProductKind, ProductStatus } from "@/shared/types/enums";
+import type { BrandLine, GoldKarat, ProductKind, ProductStatus } from "@/shared/types/enums";
 
 // ------------------------------------------------------------------
 // دسته‌بندی و مناسبت
@@ -407,4 +407,40 @@ export async function insertProductMedia(input: {
     alt: input.alt ?? null,
     sortOrder: input.sortOrder ?? 0,
   });
+}
+
+export interface InventoryVariantRow {
+  productId: string;
+  productTitle: string;
+  kind: ProductKind;
+  sku: string;
+  stockQty: number;
+  weightMg: number;
+  karat: GoldKarat;
+  makingFeeBp: number;
+  profitBp: number;
+  premiumRial: number;
+  packagingRial: number;
+  personalizationRial: number;
+}
+
+export async function findActiveInventoryVariants(): Promise<InventoryVariantRow[]> {
+  return db
+    .select({
+      productId: products.id,
+      productTitle: products.title,
+      kind: products.kind,
+      sku: productVariants.sku,
+      stockQty: productVariants.stockQty,
+      weightMg: productVariants.weightMg,
+      karat: productVariants.karat,
+      makingFeeBp: productVariants.makingFeeBp,
+      profitBp: productVariants.profitBp,
+      premiumRial: productVariants.premiumRial,
+      packagingRial: productVariants.packagingRial,
+      personalizationRial: productVariants.personalizationRial,
+    })
+    .from(productVariants)
+    .innerJoin(products, eq(products.id, productVariants.productId))
+    .where(and(eq(products.status, "active"), eq(productVariants.isActive, true)));
 }
