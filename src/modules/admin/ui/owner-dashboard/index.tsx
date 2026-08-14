@@ -24,8 +24,16 @@ import { TrendChart } from "./trend-chart";
 
 function healthBadge(level: HealthLevel) {
   const variant =
-    level === "critical" ? "destructive" : level === "attention" ? "warning" : "gold";
+    level === "critical" ? "destructive" : level === "attention" ? "warning" : "success";
   return <Badge variant={variant}>{HEALTH_LABELS[level]}</Badge>;
+}
+
+function healthDot(level: HealthLevel) {
+  return level === "critical"
+    ? "bg-destructive"
+    : level === "attention"
+      ? "bg-warning"
+      : "bg-success";
 }
 
 function Section({
@@ -54,10 +62,13 @@ function percentLabel(bp: number | null, empty = "—"): string {
 }
 
 export function OwnerDashboardView({ dashboard }: { dashboard: OwnerDashboard }) {
-  const { kpis, gold, customers } = dashboard;
+  const { kpis, gold, customers, trend } = dashboard;
+  const salesSpark = trend.map((point) => point.salesRial);
+  const profitSpark = trend.map((point) => point.profitRial);
+  const goldSpark = trend.map((point) => point.goldMg);
 
   return (
-    <div className="grid gap-8">
+    <div className="grid gap-6">
       <PageHeader
         title={dashboard.shopName}
         description={formatJalaliDateWithWeekday(dashboard.generatedAt)}
@@ -71,17 +82,19 @@ export function OwnerDashboardView({ dashboard }: { dashboard: OwnerDashboard })
         }
       />
 
-      <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1 text-sm">
-        <span className="text-muted-foreground">قیمت گرم ۱۸ عیار</span>
+      <p className="text-sm text-muted-foreground">
+        قیمت گرم ۱۸ عیار{" "}
         {dashboard.goldPricePerGramRial !== null ? (
           <>
             <Money rial={dashboard.goldPricePerGramRial} />
-            <ChangeBadge bp={dashboard.goldPriceChangeBp} emptyLabel="رکورد قبلی نیست" />
+            <span className="ms-2">
+              <ChangeBadge bp={dashboard.goldPriceChangeBp} emptyLabel="رکورد قبلی نیست" />
+            </span>
           </>
         ) : (
-          <span className="text-destructive">قیمت طلا ثبت نشده است</span>
+          <span className="text-destructive">ثبت نشده است</span>
         )}
-      </div>
+      </p>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
@@ -89,33 +102,37 @@ export function OwnerDashboardView({ dashboard }: { dashboard: OwnerDashboard })
           value={<Money rial={kpis.todaySalesRial} short />}
           hint={<ChangeBadge bp={kpis.todaySalesChangeBp} />}
           href="/admin/payments"
+          sparkline={salesSpark}
         />
         <StatCard
           label="فروش این ماه"
           value={<Money rial={kpis.monthSalesRial} short />}
           hint={<ChangeBadge bp={kpis.monthSalesChangeBp} />}
           href="/admin/reports"
+          sparkline={salesSpark}
         />
         <StatCard
           label="سود این ماه"
           value={<Money rial={kpis.monthProfitRial} short />}
           hint={<ChangeBadge bp={kpis.monthProfitChangeBp} />}
           href="/admin/reports"
+          sparkline={profitSpark}
         />
         <StatCard
           label="ارزش موجودی فروشگاه"
           value={<Money rial={kpis.inventoryValueRial} short />}
           hint={
-            <span className="text-xs text-muted-foreground">
+            <span>
               وزن انبار <GoldWeight mg={kpis.inventoryWeightMg} size="sm" />
             </span>
           }
           href="/admin/products"
+          sparkline={goldSpark}
         />
       </div>
 
       <Section
-        title="روند"
+        title="روند فروش"
         action={
           <div className="flex flex-wrap gap-1">
             {DASHBOARD_RANGES.map((range) => (
@@ -125,7 +142,7 @@ export function OwnerDashboardView({ dashboard }: { dashboard: OwnerDashboard })
                 className={cn(
                   "rounded-full px-3 py-1 text-xs",
                   dashboard.range === range
-                    ? "bg-gold-soft text-gold-deep"
+                    ? "bg-primary text-primary-foreground"
                     : "text-muted-foreground hover:bg-muted",
                 )}
               >
@@ -135,86 +152,96 @@ export function OwnerDashboardView({ dashboard }: { dashboard: OwnerDashboard })
           </div>
         }
       >
-        {dashboard.trend.length === 0 ? (
+        {trend.length === 0 ? (
           <p className="text-sm text-muted-foreground">در این بازه داده‌ای نیست.</p>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-2">
-            <TrendChart points={dashboard.trend} field="salesRial" label="فروش" />
-            <TrendChart points={dashboard.trend} field="profitRial" label="سود" />
-            <TrendChart points={dashboard.trend} field="orderCount" label="تعداد سفارش" />
-            <TrendChart points={dashboard.trend} field="goldMg" label="وزن طلا" />
-          </div>
+          <TrendChart points={trend} field="salesRial" label="فروش" />
         )}
       </Section>
 
-      <Section title="نیازمند توجه">
-        {dashboard.attention.length === 0 ? (
-          <p className="text-sm text-muted-foreground">
-            در حال حاضر مورد مهمی برای توجه وجود ندارد.
-          </p>
-        ) : (
-          <ul className="grid gap-2">
-            {dashboard.attention.map((item) => (
-              <li key={item.id}>
-                <Link
-                  href={item.href}
-                  className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 hover:bg-muted"
-                >
-                  <span className="text-sm">
-                    {item.title}
-                    {item.count !== undefined ? (
-                      <span className="ms-2 text-muted-foreground">
-                        {toPersianDigits(item.count)}
-                      </span>
-                    ) : null}
-                  </span>
-                  <Badge variant={item.severity === "critical" ? "destructive" : "warning"}>
-                    {item.severity === "critical" ? "بحرانی" : "هشدار"}
-                  </Badge>
-                </Link>
-              </li>
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Section title="نیازمند توجه">
+          {dashboard.attention.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              در حال حاضر مورد مهمی برای توجه وجود ندارد.
+            </p>
+          ) : (
+            <ul className="grid gap-1">
+              {dashboard.attention.map((item) => (
+                <li key={item.id}>
+                  <Link
+                    href={item.href}
+                    className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 hover:bg-muted"
+                  >
+                    <span className="text-sm">
+                      {item.title}
+                      {item.count !== undefined ? (
+                        <span className="ms-2 text-muted-foreground">
+                          {toPersianDigits(item.count)}
+                        </span>
+                      ) : null}
+                    </span>
+                    <Badge variant={item.severity === "critical" ? "destructive" : "warning"}>
+                      {item.severity === "critical" ? "بحرانی" : "هشدار"}
+                    </Badge>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </Section>
+
+        <Section title="سفارش‌ها">
+          <div className="grid grid-cols-2 gap-4">
+            {dashboard.orders.map((row) => (
+              <Metric key={row.key} label={row.label} value={toPersianDigits(row.count)} />
             ))}
-          </ul>
-        )}
-      </Section>
+          </div>
+        </Section>
+      </div>
 
-      <Section title="وضعیت طلای فروشگاه">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          <div>
-            <p className="text-xs text-muted-foreground">وزن انبار</p>
-            <GoldWeight mg={gold.stockWeightMg} />
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Section title="وضعیت طلای فروشگاه">
+          <div className="grid grid-cols-2 gap-4">
+            <Metric label="وزن انبار" value={<GoldWeight mg={gold.stockWeightMg} />} />
+            <Metric label="ارزش انبار" value={<Money rial={gold.stockValueRial} short />} />
+            <Metric label="طلای فروخته ۳۰ روز" value={<GoldWeight mg={gold.sold30dMg} />} />
+            <Metric label="گردش موجودی" value={percentLabel(gold.turnoverBp)} />
           </div>
-          <div>
-            <p className="text-xs text-muted-foreground">ارزش انبار</p>
-            <Money rial={gold.stockValueRial} short />
+          <p className="mt-4 text-xs text-muted-foreground">
+            ورود انبار ثبت نمی‌شود؛ تغییر تقریبی برابر فروش ۳۰ روز است. گنجینهٔ کودک اینجا نیست.
+          </p>
+        </Section>
+
+        <Section title="مشتریان">
+          <div className="grid grid-cols-2 gap-4">
+            <Metric label="جدید در ۳۰ روز" value={toPersianDigits(customers.newCount)} />
+            <Metric label="تکراری" value={toPersianDigits(customers.repeatCount)} />
+            <Metric label="نرخ تکرار" value={percentLabel(customers.repeatRateBp)} />
+            <Metric
+              label="میانگین سفارش"
+              value={<Money rial={customers.averageOrderRial} short />}
+            />
+            <Metric
+              label="ارزش طول عمر"
+              value={<Money rial={customers.lifetimeValueRial} short />}
+            />
+            <Metric label="غیرفعال بیش از ۹۰ روز" value={toPersianDigits(customers.inactiveCount)} />
           </div>
-          <div>
-            <p className="text-xs text-muted-foreground">طلای فروخته ۳۰ روز</p>
-            <GoldWeight mg={gold.sold30dMg} />
-          </div>
-          <div>
-            <p className="text-xs text-muted-foreground">گردش موجودی</p>
-            <p className="font-medium">{percentLabel(gold.turnoverBp)}</p>
-          </div>
-        </div>
-        <p className="mt-4 text-xs text-muted-foreground">
-          ورود انبار در سیستم ثبت نمی‌شود؛ تغییر تقریبی موجودی برابر کاهش فروش ۳۰ روز (
-          <GoldWeight mg={gold.sold30dMg} size="sm" />) است. گنجینهٔ کودکان موجودی کسب‌وکار نیست
-          و اینجا نشان داده نمی‌شود.
-        </p>
-      </Section>
+        </Section>
+      </div>
 
       <Section
-        title="محصولات"
+        title="محصولات ۳۰ روز"
         action={
-          <Link href="/admin/products" className="text-xs text-gold-deep">
+          <Link href="/admin/products" className="text-xs text-primary">
             مشاهده فهرست
           </Link>
         }
       >
         <div className="grid gap-6 lg:grid-cols-2">
           <ProductList
-            title="پرفروش ۳۰ روز"
+            title="پرفروش"
             empty="فروشی در این بازه نیست."
             items={dashboard.topByQty.map((row) => ({
               title: row.title,
@@ -222,70 +249,28 @@ export function OwnerDashboardView({ dashboard }: { dashboard: OwnerDashboard })
             }))}
           />
           <ProductList
-            title="سودآور ۳۰ روز"
+            title="سودآور"
             empty="سودی در این بازه نیست."
             items={dashboard.topByMargin.map((row) => ({
               title: row.title,
               detail: <Money rial={row.marginRial} short />,
             }))}
           />
-          <ProductList
-            title="کم‌گردش"
-            empty="محصول راکدی نیست."
-            items={dashboard.stagnantTitles.map((title) => ({ title, detail: "بدون فروش" }))}
-          />
-          <ProductList
-            title="رشد سریع"
-            empty="برای مقایسه دو بازه داده کافی نیست."
-            items={dashboard.growing.map((row) => ({
-              title: row.title,
-              detail: percentLabel(row.changeBp),
-            }))}
-          />
         </div>
       </Section>
 
-      <Section title="مشتریان">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <Metric label="جدید در ۳۰ روز" value={toPersianDigits(customers.newCount)} />
-          <Metric label="تکراری" value={toPersianDigits(customers.repeatCount)} />
-          <Metric label="نرخ تکرار" value={percentLabel(customers.repeatRateBp)} />
-          <Metric label="میانگین ارزش سفارش" value={<Money rial={customers.averageOrderRial} short />} />
-          <Metric
-            label="ارزش طول عمر ساده"
-            value={<Money rial={customers.lifetimeValueRial} short />}
-          />
-          <Metric label="غیرفعال بیش از ۹۰ روز" value={toPersianDigits(customers.inactiveCount)} />
-        </div>
-      </Section>
+      <p className="text-xs text-muted-foreground">
+        {dashboard.channelMessage} {dashboard.funnelMessage}
+      </p>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Section title="کانال‌ها">
-          <p className="text-sm text-muted-foreground">{dashboard.channelMessage}</p>
-        </Section>
-        <Section title="قیف فروش">
-          <p className="text-sm text-muted-foreground">{dashboard.funnelMessage}</p>
-        </Section>
-      </div>
-
-      <Section title="سفارش‌ها">
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {dashboard.orders.map((row) => (
-            <Metric key={row.key} label={row.label} value={toPersianDigits(row.count)} />
-          ))}
-        </div>
-      </Section>
-
-      <Section title="سلامت کسب‌وکار">
-        <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {dashboard.areas.map((area) => (
-            <li key={area.key} className="flex items-center justify-between gap-3">
-              <span className="text-sm">{area.label}</span>
-              {healthBadge(area.level)}
-            </li>
-          ))}
-        </ul>
-      </Section>
+      <ul className="flex flex-wrap gap-x-5 gap-y-2">
+        {dashboard.areas.map((area) => (
+          <li key={area.key} className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className={cn("size-2 rounded-full", healthDot(area.level))} />
+            {area.label}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

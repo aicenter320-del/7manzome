@@ -2,7 +2,7 @@ import { toPersianDigits } from "@/shared/lib/persian";
 
 import type { OwnerTrendPoint } from "../../domain/types";
 
-function sparkPath(values: number[]): string {
+function sparkPath(values: readonly number[]): string {
   if (values.length === 0) return "";
 
   const peak = Math.max(...values, 1);
@@ -17,6 +17,36 @@ function sparkPath(values: number[]): string {
     .join(" ");
 }
 
+export function Sparkline({
+  values,
+  label,
+  className,
+}: {
+  values: readonly number[];
+  label: string;
+  className?: string;
+}) {
+  const path = sparkPath(values);
+
+  return (
+    <svg
+      viewBox="0 0 100 40"
+      className={className ?? "h-10 w-full text-primary"}
+      role="img"
+      aria-label={label}
+      preserveAspectRatio="none"
+    >
+      <path
+        d={path}
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        vectorEffect="non-scaling-stroke"
+      />
+    </svg>
+  );
+}
+
 export function TrendChart({
   points,
   field,
@@ -27,22 +57,13 @@ export function TrendChart({
   label: string;
 }) {
   const values = points.map((point) => point[field]);
-  const path = sparkPath(values);
   const first = points[0]?.label;
   const last = points[points.length - 1]?.label;
 
   return (
     <div className="grid gap-2">
       <p className="text-xs text-muted-foreground">{label}</p>
-      <svg
-        viewBox="0 0 100 40"
-        className="h-16 w-full text-gold-deep"
-        role="img"
-        aria-label={label}
-        preserveAspectRatio="none"
-      >
-        <path d={path} fill="none" stroke="currentColor" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
-      </svg>
+      <Sparkline values={values} label={label} className="h-32 w-full text-foreground" />
       {first && last ? (
         <div className="flex justify-between text-[0.65rem] text-muted-foreground">
           <span>{toPersianDigits(first)}</span>

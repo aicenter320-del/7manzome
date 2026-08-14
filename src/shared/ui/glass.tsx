@@ -344,16 +344,11 @@ export function Glass({
 // ── shared chrome ──────────────────────────────────────────────────────────
 
 function rimShadow(): string {
-  return [
-    "inset 0 1px 1px rgba(255,255,255,0.95)",
-    "inset 0 0 0 1px rgba(200,162,74,0.38)",
-    "0 18px 44px -16px rgba(200,162,74,0.28)",
-    "0 8px 24px -12px rgba(22,35,63,0.10)",
-  ].join(", ");
+  return "var(--glass-rim), var(--shadow-glow-gold)";
 }
 
 function sheen(): string {
-  return "linear-gradient(135deg, rgba(255,255,255,0.55) 0%, transparent 38%, transparent 62%, rgba(200,162,74,0.14) 100%)";
+  return "var(--glass-sheen)";
 }
 
 // ── GlassLens ─────────────────────────────────────────────────────────────────

@@ -335,6 +335,41 @@
   }
 }
 
+/* پوسته پنل مدیریت: شیشه خنثی، بدون لبه و درخشش طلایی ویترین. */
+.admin-shell {
+  --glass: rgb(255 255 255 / 0.28);
+  --glass-strong: rgb(255 255 255 / 0.42);
+  --glass-tint: 255, 255, 255;
+  --glass-border-from: rgb(255 255 255 / 0.92);
+  --glass-border-to: rgb(22 35 63 / 0.12);
+  --glass-sheen: linear-gradient(
+    135deg,
+    rgb(255 255 255 / 0.55) 0%,
+    transparent 38%,
+    transparent 62%,
+    rgb(22 35 63 / 0.06) 100%
+  );
+  --glass-rim:
+    inset 0 1px 1px rgb(255 255 255 / 0.95), inset 0 0 0 1px rgb(22 35 63 / 0.1);
+  --shadow-glow-gold:
+    0 18px 50px -18px rgb(22 35 63 / 0.14), 0 8px 24px -12px rgb(22 35 63 / 0.08);
+  --ring: var(--info);
+  min-height: 100dvh;
+  background-color: var(--background);
+  background-image:
+    radial-gradient(70% 50% at 8% -5%, rgb(42 93 143 / 0.16), transparent 55%),
+    radial-gradient(55% 40% at 100% 5%, rgb(46 125 91 / 0.1), transparent 50%),
+    radial-gradient(50% 35% at 50% 100%, rgb(22 35 63 / 0.07), transparent 55%);
+  background-attachment: fixed;
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .admin-shell .glass,
+  .admin-shell .glass-strong {
+    border-color: color-mix(in srgb, var(--primary) 12%, var(--border));
+  }
+}
+
 @media (prefers-reduced-transparency: reduce) {
   .glass,
   .glass-strong {

@@ -42,6 +42,7 @@ export {
 export { StatCard } from "./ui/stat-card";
 export { DataTable, TableCell, TableRow } from "./ui/data-table";
 export { adminNav, type AdminNavItem } from "./ui/admin-nav";
+export { AdminNavLink } from "./ui/admin-nav-link";
 export { DeleteMediaFileButton } from "./ui/delete-media-file-button";
 export { FolderFilterLinks, MediaFileCard, mediaFolderLabel } from "./ui/media-file-card";
 export { OwnerDashboardView, OpsDashboard } from "./ui/owner-dashboard";

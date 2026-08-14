@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { adminNav } from "@/modules/admin";
+import { AdminNavLink, adminNav } from "@/modules/admin";
 import { requireStaff } from "@/server/auth/guards";
 import { hasPermission, type Permission } from "@/server/auth/rbac";
 import { AppNavLink, AppNavShell } from "@/shared/ui/app-nav-shell";
@@ -16,25 +16,30 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   });
 
   return (
-    <AppNavShell
-      brandHref="/admin"
-      brandLabel="مدیریت"
-      actions={<LogoutButton />}
-      nav={
-        <>
-          {items.map((item) => (
-            <AppNavLink
-              key={item.href}
-              href={`/admin${item.href === "/" ? "" : item.href}`}
-            >
-              {item.label}
+    <div className="admin-shell">
+      <AppNavShell
+        tone="tool"
+        brandHref="/admin"
+        brandLabel="مدیریت"
+        actions={<LogoutButton />}
+        nav={
+          <>
+            {items.map((item) => (
+              <AdminNavLink
+                key={item.href}
+                href={`/admin${item.href === "/" ? "" : item.href}`}
+              >
+                {item.label}
+              </AdminNavLink>
+            ))}
+            <AppNavLink href="/" tone="tool">
+              سایت
             </AppNavLink>
-          ))}
-          <AppNavLink href="/">سایت</AppNavLink>
-        </>
-      }
-    >
-      {children}
-    </AppNavShell>
+          </>
+        }
+      >
+        {children}
+      </AppNavShell>
+    </div>
   );
 }

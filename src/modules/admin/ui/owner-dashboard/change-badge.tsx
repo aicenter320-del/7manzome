@@ -16,7 +16,7 @@ export function ChangeBadge({
   const percent = mulDiv(bp, 1, 100);
   const sign = percent > 0 ? "+" : "";
   const tone =
-    percent > 0 ? "text-gold-deep" : percent < 0 ? "text-destructive" : "text-muted-foreground";
+    percent > 0 ? "text-success" : percent < 0 ? "text-destructive" : "text-muted-foreground";
 
   return (
     <span className={cn("text-xs tabular-nums", tone)}>
