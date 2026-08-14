@@ -1,9 +1,9 @@
 import "server-only";
 
-import { count, eq } from "drizzle-orm";
+import { count, eq, inArray } from "drizzle-orm";
 
 import { db } from "@/server/db";
-import { staffRoleGrants, staffRoles, userRoles } from "@/server/db/schema";
+import { staffRoleGrants, staffRoles, userRoles, users } from "@/server/db/schema";
 import type { StaffRoleGrantRow, StaffRoleRow } from "@/server/db/types";
 import type { AccessSection, PanelAccessLevel } from "@/shared/types/enums";
 
@@ -83,4 +83,31 @@ export async function countUsersWithRoleSlug(slug: string): Promise<number> {
     .from(userRoles)
     .where(eq(userRoles.role, slug));
   return rows[0]?.value ?? 0;
+}
+
+export interface RoleMemberRow {
+  roleSlug: string;
+  userId: string;
+  firstName: string | null;
+  lastName: string | null;
+  phone: string;
+}
+
+/** کاربران هر نقش؛ برای فهرست پنل. */
+export async function findMembersByRoleSlugs(
+  slugs: readonly string[],
+): Promise<RoleMemberRow[]> {
+  if (slugs.length === 0) return [];
+
+  return db
+    .select({
+      roleSlug: userRoles.role,
+      userId: users.id,
+      firstName: users.firstName,
+      lastName: users.lastName,
+      phone: users.phone,
+    })
+    .from(userRoles)
+    .innerJoin(users, eq(users.id, userRoles.userId))
+    .where(inArray(userRoles.role, [...slugs]));
 }

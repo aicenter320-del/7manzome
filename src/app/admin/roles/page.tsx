@@ -3,7 +3,6 @@ import Link from "next/link";
 import { DataTable, TableCell, TableRow } from "@/modules/admin";
 import { listStaffRoles } from "@/modules/identity";
 import { requirePermission } from "@/server/auth/guards";
-import { toPersianDigits } from "@/shared/lib/persian";
 import { Button } from "@/shared/ui/button";
 import { PageHeader } from "@/shared/ui/page-header";
 
@@ -24,20 +23,35 @@ export default async function AdminRolesPage() {
       />
 
       <DataTable
-        columns={["عنوان", "شناسه", "نوع", "کاربران"]}
+        columns={["نقش", "نوع", "کاربران"]}
         isEmpty={roles.length === 0}
         emptyTitle="نقشی نیست"
+        align="center"
       >
         {roles.map((role) => (
           <TableRow key={role.id}>
-            <TableCell>
+            <TableCell className="text-center">
               <Link href={`/admin/roles/${role.id}`} className="font-medium hover:underline">
                 {role.title}
               </Link>
             </TableCell>
-            <TableCell className="ltr-nums">{role.slug}</TableCell>
-            <TableCell>{role.isSystem ? "سیستمی" : "سفارشی"}</TableCell>
-            <TableCell>{toPersianDigits(role.userCount)}</TableCell>
+            <TableCell className="text-center">{role.isSystem ? "سیستمی" : "سفارشی"}</TableCell>
+            <TableCell className="text-center">
+              {role.members.length === 0 ? (
+                <span className="text-muted-foreground">بدون کاربر</span>
+              ) : (
+                <span className="inline-flex flex-wrap justify-center gap-x-1 gap-y-1">
+                  {role.members.map((member, index) => (
+                    <span key={member.id}>
+                      <Link href={`/admin/users/${member.id}`} className="hover:underline">
+                        {member.displayName}
+                      </Link>
+                      {index < role.members.length - 1 ? "،" : null}
+                    </span>
+                  ))}
+                </span>
+              )}
+            </TableCell>
           </TableRow>
         ))}
       </DataTable>

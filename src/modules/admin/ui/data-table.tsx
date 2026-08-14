@@ -18,12 +18,14 @@ export function DataTable({
   isEmpty,
   emptyTitle = "موردی برای نمایش نیست.",
   emptyDescription,
+  align = "start",
 }: {
   columns: readonly string[];
   children: ReactNode;
   isEmpty?: boolean;
   emptyTitle?: string;
   emptyDescription?: string;
+  align?: "start" | "center";
 }) {
   if (isEmpty) {
     return <EmptyState title={emptyTitle} description={emptyDescription} />;
@@ -31,14 +33,16 @@ export function DataTable({
 
   return (
     <Table>
-      <TableHeader>
+      <TableHeader className={align === "center" ? "text-center" : undefined}>
         <TableRow>
           {columns.map((column) => (
-            <TableHead key={column}>{column}</TableHead>
+            <TableHead key={column} className={align === "center" ? "text-center" : undefined}>
+              {column}
+            </TableHead>
           ))}
         </TableRow>
       </TableHeader>
-      <TableBody>{children}</TableBody>
+      <TableBody className={align === "center" ? "text-center" : undefined}>{children}</TableBody>
     </Table>
   );
 }

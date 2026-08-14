@@ -11,12 +11,14 @@ import {
   isSystemRoleSlug,
   type SectionGrant,
 } from "@/shared/lib/access-matrix";
+import { formatPhoneFa } from "@/shared/lib/persian";
 import type { AccessSection, PanelAccessLevel } from "@/shared/types/enums";
 
 import {
   countUsersWithRoleSlug,
   deleteStaffRole,
   findGrantsForRole,
+  findMembersByRoleSlugs,
   findStaffRoleById,
   findStaffRoleBySlug,
   findStaffRoles,
@@ -32,6 +34,11 @@ export class StaffRoleError extends Error {
   }
 }
 
+export interface StaffRoleMember {
+  id: string;
+  displayName: string;
+}
+
 export interface StaffRoleView {
   id: string;
   slug: string;
@@ -40,10 +47,23 @@ export interface StaffRoleView {
   isSystem: boolean;
   isLocked: boolean;
   userCount: number;
+  members: StaffRoleMember[];
   grants: Record<AccessSection, PanelAccessLevel>;
 }
 
-async function toView(row: StaffRoleRow): Promise<StaffRoleView> {
+function displayNameFor(
+  firstName: string | null,
+  lastName: string | null,
+  phone: string,
+): string {
+  const full = [firstName, lastName].filter(Boolean).join(" ").trim();
+  return full || formatPhoneFa(phone);
+}
+
+async function toView(
+  row: StaffRoleRow,
+  members: StaffRoleMember[] = [],
+): Promise<StaffRoleView> {
   const grantRows = await findGrantsForRole(row.id);
   return {
     id: row.id,
@@ -52,7 +72,8 @@ async function toView(row: StaffRoleRow): Promise<StaffRoleView> {
     description: row.description,
     isSystem: row.isSystem,
     isLocked: isLockedRoleSlug(row.slug),
-    userCount: await countUsersWithRoleSlug(row.slug),
+    userCount: members.length,
+    members,
     grants: completeGrants(
       grantRows.map((grant) => ({ section: grant.section, level: grant.level })),
     ),
@@ -61,13 +82,32 @@ async function toView(row: StaffRoleRow): Promise<StaffRoleView> {
 
 export async function listStaffRoles(): Promise<StaffRoleView[]> {
   const rows = await findStaffRoles();
-  return Promise.all(rows.map((row) => toView(row)));
+  const memberRows = await findMembersByRoleSlugs(rows.map((row) => row.slug));
+  const membersBySlug = new Map<string, StaffRoleMember[]>();
+
+  for (const member of memberRows) {
+    const list = membersBySlug.get(member.roleSlug) ?? [];
+    list.push({
+      id: member.userId,
+      displayName: displayNameFor(member.firstName, member.lastName, member.phone),
+    });
+    membersBySlug.set(member.roleSlug, list);
+  }
+
+  return Promise.all(rows.map((row) => toView(row, membersBySlug.get(row.slug) ?? [])));
 }
 
 export async function getStaffRole(roleId: string): Promise<StaffRoleView | null> {
   const row = await findStaffRoleById(roleId);
   if (!row) return null;
-  return toView(row);
+  const memberRows = await findMembersByRoleSlugs([row.slug]);
+  return toView(
+    row,
+    memberRows.map((member) => ({
+      id: member.userId,
+      displayName: displayNameFor(member.firstName, member.lastName, member.phone),
+    })),
+  );
 }
 
 export async function listAssignableStaffRoles(): Promise<{ slug: string; title: string }[]> {

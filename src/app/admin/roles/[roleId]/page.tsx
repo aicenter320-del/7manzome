@@ -24,7 +24,11 @@ export default async function AdminEditRolePage({
     <div className="grid gap-6">
       <PageHeader
         title={role.title}
-        description={role.isLocked ? "این نقش همیشه همه دسترسی‌ها را دارد و ویرایش نمی‌شود." : role.slug}
+        description={
+          role.isLocked
+            ? "این نقش همیشه همه دسترسی‌ها را دارد و ویرایش نمی‌شود."
+            : role.description
+        }
       />
 
       {role.isLocked ? (
