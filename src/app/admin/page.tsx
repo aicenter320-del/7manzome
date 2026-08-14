@@ -17,13 +17,41 @@ export default async function AdminHomePage() {
       />
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <StatCard label="فروش امروز" value={<Money rial={stats.todaySalesRial} short />} />
-        <StatCard label="طلای امروز" value={<GoldWeight mg={stats.todayGoldMg} />} />
-        <StatCard label="سفارش امروز" value={toPersianDigits(stats.todayOrderCount)} />
-        <StatCard label="گنجینه‌های فعال" value={toPersianDigits(stats.activeTreasureCount)} />
-        <StatCard label="هدیه امروز" value={toPersianDigits(stats.todayGiftCount)} />
-        <StatCard label="صف تایید پرداخت" value={toPersianDigits(stats.pendingReviewCount)} />
-        <StatCard label="کاربران" value={toPersianDigits(stats.totalUsers)} />
+        <StatCard
+          label="فروش امروز"
+          value={<Money rial={stats.todaySalesRial} short />}
+          href="/admin/payments"
+        />
+        <StatCard
+          label="طلای امروز"
+          value={<GoldWeight mg={stats.todayGoldMg} />}
+          href="/admin/reports"
+        />
+        <StatCard
+          label="سفارش امروز"
+          value={toPersianDigits(stats.todayOrderCount)}
+          href="/admin/orders"
+        />
+        <StatCard
+          label="گنجینه‌های فعال"
+          value={toPersianDigits(stats.activeTreasureCount)}
+          href="/admin/treasures"
+        />
+        <StatCard
+          label="هدیه امروز"
+          value={toPersianDigits(stats.todayGiftCount)}
+          href="/admin/reports"
+        />
+        <StatCard
+          label="صف تایید پرداخت"
+          value={toPersianDigits(stats.pendingReviewCount)}
+          href="/admin/payments"
+        />
+        <StatCard
+          label="کاربران"
+          value={toPersianDigits(stats.totalUsers)}
+          href="/admin/users"
+        />
       </div>
     </div>
   );

@@ -18,10 +18,12 @@ export default async function AdminReportsPage() {
         <StatCard
           label="طلای ذخیره‌شده در گنجینه‌ها"
           value={<GoldWeight mg={treasury.totalGoldSavedMg} />}
+          href="/admin/treasures"
         />
         <StatCard
           label="گنجینه‌های فعال"
           value={toPersianDigits(treasury.activeTreasureCount)}
+          href="/admin/treasures"
         />
       </div>
 
