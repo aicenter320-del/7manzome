@@ -68,6 +68,10 @@
     var(--treasure-soft) 100%
   );
 
+  /* طوسی گرم برای نوار محصولات؛ کنتراست با کاغذ کرم و شیشه طلایی */
+  --section-stone: #d4d1cb;
+  --section-stone-foreground: #1c1917;
+
   /* --- شیشه روشن طلایی --- */
   --glass: rgb(255 252 247 / 0.18);
   --glass-strong: rgb(255 252 247 / 0.34);
@@ -85,6 +89,8 @@
     inset 0 1px 1px rgb(255 255 255 / 0.95), inset 0 0 0 1px rgb(200 162 74 / 0.38);
   --shadow-glow-gold:
     0 18px 50px -18px rgb(200 162 74 / 0.32), 0 8px 24px -12px rgb(22 35 63 / 0.08);
+  --shadow-product:
+    0 8px 20px -8px rgb(200 162 74 / 0.22), 0 2px 6px rgb(200 162 74 / 0.1);
 }
 
 .dark {
@@ -136,6 +142,10 @@
     var(--card) 46%,
     var(--treasure-soft) 100%
   );
+  --section-stone: #3a3834;
+  --section-stone-foreground: #f5f1ea;
+  --shadow-product:
+    0 8px 20px -8px rgb(212 178 99 / 0.18), 0 2px 6px rgb(0 0 0 / 0.2);
 }
 
 @theme inline {
@@ -181,6 +191,8 @@
   --color-gold-deep: var(--gold-deep);
   --color-treasure: var(--treasure);
   --color-treasure-soft: var(--treasure-soft);
+  --color-section-stone: var(--section-stone);
+  --color-section-stone-foreground: var(--section-stone-foreground);
   --color-glass: var(--glass);
   --color-glass-strong: var(--glass-strong);
 
@@ -348,6 +360,16 @@
 
   .product-card-wash {
     background-image: var(--product-card-wash);
+    box-shadow: var(--shadow-product);
+  }
+
+  /* ویترین خانه: سفید با هالهٔ طلایی نرم */
+  .product-vitrine {
+    background-color: var(--card);
+    background-image:
+      radial-gradient(ellipse 60% 45% at 100% -5%, rgb(200 162 74 / 0.22), transparent 58%),
+      radial-gradient(ellipse 50% 40% at -8% 105%, rgb(22 35 63 / 0.06), transparent 52%),
+      radial-gradient(ellipse 55% 28% at 50% 0%, rgb(240 227 198 / 0.45), transparent 62%);
   }
 }
 

@@ -10,6 +10,9 @@ import type { FileVisibility } from "@/shared/types/enums";
 import type { SeedContext } from "./types";
 
 const HERO_PATH = join(process.cwd(), "src/assets/images/hero-gold-products.jpg");
+/** عکس واقعی هر محصول: `src/assets/images/products/<slug>.jpg` (Wikimedia / Unsplash / Pexels). */
+const PRODUCT_PHOTO_DIR = join(process.cwd(), "src/assets/images/products");
+const PRODUCT_CROP_POSITIONS = ["centre", "north", "east"] as const;
 
 const AVATAR_PALETTES: Array<[string, string]> = [
   ["#C9A227", "#8A6A12"],
@@ -98,14 +101,40 @@ async function goldFallback(size: number, hueShift: number): Promise<Buffer> {
     .toBuffer();
 }
 
-/** تصویر محصول از برش عکس هیرو، یا گرادیان طلایی اگر فایل موجود نباشد. */
+/** تصویر محصول از عکس واقعی همان slug؛ در نبود فایل، برش هیرو یا گرادیان. */
 export async function saveProductPhoto(
   ctx: SeedContext,
   slug: string,
   index: number,
 ): Promise<SavedSeedFile> {
   const size = 900;
-  let bytes: Buffer;
+  const bytes = await renderProductPhotoBytes(slug, index, size);
+
+  return saveJpeg(ctx, {
+    folder: "products",
+    bytes,
+    originalName: `${slug}-${index + 1}.jpg`,
+    visibility: "public",
+    width: size,
+    height: size,
+  });
+}
+
+export async function renderProductPhotoBytes(
+  slug: string,
+  index: number,
+  size = 900,
+): Promise<Buffer> {
+  const sourcePath = join(PRODUCT_PHOTO_DIR, `${slug}.jpg`);
+
+  if (existsSync(sourcePath)) {
+    const position = PRODUCT_CROP_POSITIONS[index % PRODUCT_CROP_POSITIONS.length] ?? "centre";
+    return sharp(sourcePath)
+      .rotate()
+      .resize(size, size, { fit: "cover", position })
+      .jpeg({ quality: 86 })
+      .toBuffer();
+  }
 
   if (existsSync(HERO_PATH)) {
     const meta = await sharp(HERO_PATH).metadata();
@@ -116,7 +145,7 @@ export async function saveProductPhoto(
     const left = maxLeft === 0 ? 0 : Math.round((index * 97) % maxLeft);
     const top = Math.max(0, Math.floor((height - crop) / 2));
 
-    bytes = await sharp(HERO_PATH)
+    return sharp(HERO_PATH)
       .extract({ left, top, width: crop, height: crop })
       .resize(size, size)
       .modulate({
@@ -125,18 +154,9 @@ export async function saveProductPhoto(
       })
       .jpeg({ quality: 84 })
       .toBuffer();
-  } else {
-    bytes = await goldFallback(size, index * 17);
   }
 
-  return saveJpeg(ctx, {
-    folder: "products",
-    bytes,
-    originalName: `${slug}-${index + 1}.jpg`,
-    visibility: "public",
-    width: size,
-    height: size,
-  });
+  return goldFallback(size, index * 17);
 }
 
 export async function saveChildAvatar(

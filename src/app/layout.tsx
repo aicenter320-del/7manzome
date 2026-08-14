@@ -43,7 +43,10 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fa" dir="rtl" className="light" suppressHydrationWarning>
-      <body className={cn(iranSansX.variable, iranSansX.className, "min-h-dvh antialiased")}>
+      <body
+        className={cn(iranSansX.variable, iranSansX.className, "min-h-dvh antialiased")}
+        suppressHydrationWarning
+      >
         <AppProviders>{children}</AppProviders>
         <Toaster
           position="top-center"

@@ -45,7 +45,9 @@
 | `--accent` / `--gold` | `bg-gold` | طلایی برند؛ فقط برای تاکید |
 | `--gold-soft` | `bg-gold-soft` | طلایی محو برای پس‌زمینه نشان‌ها |
 | `--treasure` / `--treasure-soft` | `text-treasure` / `bg-treasure-soft` | شب‌آبی منظومه و مکمل محو آن |
-| `--product-card-wash` | `.product-card-wash` | گرادیان طلایی‌محو به آبی‌محو روی کارت محصول |
+| `--product-card-wash` | `.product-card-wash` | گرادیان طلایی‌محو به آبی‌محو روی کارت محصول؛ سایهٔ طلایی ملایم |
+| `--section-stone` | `bg-section-stone` | طوسی گرم؛ برای نوار خنثی در صورت نیاز |
+| `.product-vitrine` | `.product-vitrine` | ویترین خانه: سفید با هالهٔ طلایی |
 | `--gold-deep` | `text-gold-deep` | طلایی تیره؛ برای متن روی زمینه روشن |
 | `--success` `--warning` `--destructive` `--info` | `bg-success` ... | وضعیت‌ها |
 | `--border` | `border-border` | خط جداکننده |

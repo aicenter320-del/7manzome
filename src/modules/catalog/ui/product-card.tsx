@@ -28,7 +28,7 @@ export function ProductCard({
   return (
     <div
       className={cn(
-        "product-card-wash group overflow-hidden rounded-2xl text-card-foreground transition-transform hover:-translate-y-0.5",
+        "product-card-wash group overflow-hidden rounded-lg border border-gold-deep/70 text-card-foreground transition-transform hover:-translate-y-0.5",
         className,
       )}
     >
@@ -61,25 +61,28 @@ export function ProductCard({
           </div>
         </div>
 
-        <div className="grid gap-1.5 p-4">
-          <p className="text-xs text-muted-foreground">{PRODUCT_KIND_LABELS[product.kind]}</p>
-          <h3 className="line-clamp-2 font-medium leading-snug">{product.title}</h3>
-
-          {weightLabel ? (
-            <p className="text-xs text-muted-foreground">وزن: {weightLabel}</p>
-          ) : null}
-
-          <div className="mt-1.5">
+        <div className="grid gap-2 p-4">
+          <div className="flex h-5 items-center justify-between gap-3">
+            <p className="text-xs leading-5 text-muted-foreground">
+              {PRODUCT_KIND_LABELS[product.kind]}
+            </p>
             {product.fromPriceRial === null ? (
-              <p className="text-sm text-muted-foreground">قیمت به‌زودی</p>
+              <p className="shrink-0 text-sm leading-5 text-muted-foreground">قیمت به‌زودی</p>
             ) : (
-              <p className="text-sm">
+              <p className="shrink-0 text-sm leading-5">
                 <span className="text-muted-foreground">از </span>
                 <span className="font-semibold text-gold-deep">
                   <Money rial={product.fromPriceRial} />
                 </span>
               </p>
             )}
+          </div>
+
+          <div className="flex h-5 items-center justify-between gap-3">
+            <h3 className="min-w-0 truncate text-sm font-medium leading-5">{product.title}</h3>
+            {weightLabel ? (
+              <p className="shrink-0 text-xs leading-5 text-muted-foreground">وزن: {weightLabel}</p>
+            ) : null}
           </div>
         </div>
       </Link>
