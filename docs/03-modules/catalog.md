@@ -16,6 +16,7 @@ export { upsertProduct, upsertVariant, setProductStatus } from "./actions/...";
 export { filterVariantsForAge, buildProductFilters } from "./domain/product-filter";
 export { OccasionIcon, OccasionLabel } from "./ui/occasion-icon";
 export { OccasionCard } from "./ui/occasion-card";
+export { OccasionSlider } from "./ui/occasion-slider";
 export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from "./domain/types";
 ```
 

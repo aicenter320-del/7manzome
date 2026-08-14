@@ -44,6 +44,8 @@
 | `--muted` | `bg-muted` | پس‌زمینه خنثی |
 | `--accent` / `--gold` | `bg-gold` | طلایی برند؛ فقط برای تاکید |
 | `--gold-soft` | `bg-gold-soft` | طلایی محو برای پس‌زمینه نشان‌ها |
+| `--treasure` / `--treasure-soft` | `text-treasure` / `bg-treasure-soft` | شب‌آبی منظومه و مکمل محو آن |
+| `--product-card-wash` | `.product-card-wash` | گرادیان طلایی‌محو به آبی‌محو روی کارت محصول |
 | `--gold-deep` | `text-gold-deep` | طلایی تیره؛ برای متن روی زمینه روشن |
 | `--success` `--warning` `--destructive` `--info` | `bg-success` ... | وضعیت‌ها |
 | `--border` | `border-border` | خط جداکننده |
@@ -135,7 +137,7 @@
 | `JalaliDate` | `shared/ui/jalali-date.tsx` | نمایش epoch به‌صورت تاریخ شمسی |
 | `PriceBreakdownTable` | `modules/pricing/ui/` | جدول شفاف اجزای قیمت |
 | `TreasureProgress` | `modules/treasury/ui/` | نوار پیشرفت گنجینه |
-| `OccasionIcon` / `OccasionLabel` / `OccasionCard` | `modules/catalog/ui/` | آیکون مناسبت؛ در کارت‌ها به‌صورت واترمارک بزرگ و کم‌رنگ در انتهای پس‌زمینه |
+| `OccasionIcon` / `OccasionLabel` / `OccasionCard` | `modules/catalog/ui/` | آیکون مناسبت؛ کارت سفید بدون شیشه؛ در خانه پنج مورد با نشانگر اسلاید |
 
 ## اصل مهم رابط کاربری
 

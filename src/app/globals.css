@@ -61,6 +61,12 @@
   --gold-deep: #9a7a2e;
   --treasure: #16233f;
   --treasure-soft: #e7eaf1;
+  --product-card-wash: linear-gradient(
+    158deg,
+    var(--gold-soft) 0%,
+    var(--card) 46%,
+    var(--treasure-soft) 100%
+  );
 
   /* --- شیشه روشن طلایی --- */
   --glass: rgb(255 252 247 / 0.18);
@@ -124,6 +130,12 @@
   --gold-deep: #e5c885;
   --treasure: #e7eaf1;
   --treasure-soft: #23272f;
+  --product-card-wash: linear-gradient(
+    158deg,
+    var(--gold-soft) 0%,
+    var(--card) 46%,
+    var(--treasure-soft) 100%
+  );
 }
 
 @theme inline {
@@ -332,6 +344,10 @@
 
   .hero-card-in {
     animation: var(--animate-hero-card-in);
+  }
+
+  .product-card-wash {
+    background-image: var(--product-card-wash);
   }
 }
 

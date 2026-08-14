@@ -6,7 +6,6 @@ import { cn } from "@/shared/lib/cn";
 import { formatMg } from "@/shared/lib/gold";
 import { PRODUCT_KIND_LABELS } from "@/shared/types/enums";
 import { Badge } from "@/shared/ui/badge";
-import { Card } from "@/shared/ui/card";
 import { Money } from "@/shared/ui/money";
 
 import type { ProductListItem } from "../domain/types";
@@ -27,7 +26,12 @@ export function ProductCard({
         : `${formatMg(product.minWeightMg, { withUnit: false })} تا ${formatMg(product.maxWeightMg ?? product.minWeightMg)}`;
 
   return (
-    <Card className={cn("group overflow-hidden transition-transform hover:-translate-y-0.5", className)}>
+    <div
+      className={cn(
+        "product-card-wash group overflow-hidden rounded-2xl text-card-foreground transition-transform hover:-translate-y-0.5",
+        className,
+      )}
+    >
       <Link href={`/products/${product.slug}`} className="block focus-visible:outline-none">
         <div className="relative aspect-square overflow-hidden bg-muted">
           {product.heroFileId ? (
@@ -79,6 +83,6 @@ export function ProductCard({
           </div>
         </div>
       </Link>
-    </Card>
+    </div>
   );
 }

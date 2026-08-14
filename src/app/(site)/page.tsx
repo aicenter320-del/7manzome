@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { listOccasions, listProducts, OccasionCard, ProductGrid } from "@/modules/catalog";
+import { listOccasions, listProducts, OccasionSlider, ProductGrid } from "@/modules/catalog";
 import { tryGetCurrentGoldPrice } from "@/modules/pricing";
 import { site } from "@/shared/config/site";
 import { Button } from "@/shared/ui/button";
@@ -20,12 +20,11 @@ export default async function HomePage() {
 
       <section className="px-4 sm:px-6">
         <div className="glass-strong mx-auto w-full max-w-6xl rounded-[2rem] p-5 sm:p-8">
-          <h2 className="mb-6 text-xl font-semibold">مناسبت‌های زندگی او</h2>
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {occasions.map((occasion) => (
-              <OccasionCard key={occasion.id} occasion={occasion} />
-            ))}
-          </div>
+          <OccasionSlider
+            occasions={occasions}
+            heading="مناسبت‌های زندگی او"
+            headingId="home-occasions-heading"
+          />
 
           <div className="mt-10 mb-6 flex items-end justify-between gap-3">
             <h2 className="text-xl font-semibold">طلا برای کودک</h2>
