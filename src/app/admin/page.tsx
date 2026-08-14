@@ -5,6 +5,7 @@ import {
   OwnerDashboardView,
   parseDashboardRange,
 } from "@/modules/admin";
+import { getSetting } from "@/modules/content";
 import { requireStaff } from "@/server/auth/guards";
 import { hasPermission } from "@/server/auth/rbac";
 
@@ -22,6 +23,16 @@ export default async function AdminHomePage({
     return <OpsDashboard stats={stats} />;
   }
 
-  const dashboard = await getOwnerDashboard(parseDashboardRange(rangeValue));
-  return <OwnerDashboardView dashboard={dashboard} />;
+  const [dashboard, liveMarkupBp] = await Promise.all([
+    getOwnerDashboard(parseDashboardRange(rangeValue)),
+    getSetting("pricing.live_markup_bp"),
+  ]);
+
+  return (
+    <OwnerDashboardView
+      dashboard={dashboard}
+      liveMarkupBp={liveMarkupBp}
+      canEditLiveMarkup={hasPermission(user.roles, "settings:write")}
+    />
+  );
 }

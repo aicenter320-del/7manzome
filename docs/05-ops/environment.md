@@ -18,9 +18,9 @@
 | `KAVENEGAR_API_KEY` | مشروط | — | اگر `SMS_PROVIDER=kavenegar` |
 | `KAVENEGAR_SENDER` | خیر | — | شماره فرستنده |
 | `KAVENEGAR_OTP_TEMPLATE` | خیر | — | نام الگوی تاییدشده |
-| `GOLD_PRICE_PROVIDER` | خیر | `manual` | `manual` یا `external` |
-| `GOLD_PRICE_API_URL` | مشروط | — | اگر `GOLD_PRICE_PROVIDER=external` |
-| `GOLD_PRICE_API_KEY` | خیر | — | کلید سرویس قیمت |
+| `GOLD_PRICE_PROVIDER` | خیر | `external` (در تست `manual`) | `external` واکشی طلا دات آی‌آر؛ `manual` فقط قیمت دستی |
+| `GOLD_PRICE_API_URL` | خیر | `https://www.tala.ir/ajax/price` | نشانی JSON قیمت زنده |
+| `GOLD_PRICE_API_KEY` | خیر | — | کلید اختیاری سرویس قیمت |
 | `ADMIN_BOOTSTRAP_PHONE` | خیر | `09120000000` | شماره اولین سوپرادمین در seed |
 | `DEV_EXPOSE_OTP` | خیر | `false` | نمایش کد یک‌بارمصرف در پاسخ؛ **هرگز در production** |
 

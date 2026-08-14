@@ -8,6 +8,9 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   test: {
+    env: {
+      GOLD_PRICE_PROVIDER: "manual",
+    },
     globals: true,
     environment: "node",
     include: ["src/**/*.test.{ts,tsx}"],

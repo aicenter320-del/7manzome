@@ -20,6 +20,7 @@ import {
 import type { OwnerDashboard } from "../../domain/types";
 import { StatCard } from "../stat-card";
 import { ChangeBadge } from "./change-badge";
+import { LiveMarkupForm } from "./live-markup-form";
 import { TrendChart } from "./trend-chart";
 
 function healthBadge(level: HealthLevel) {
@@ -61,7 +62,15 @@ function percentLabel(bp: number | null, empty = "—"): string {
   return `${toPersianDigits(mulDiv(bp, 1, 100))}٪`;
 }
 
-export function OwnerDashboardView({ dashboard }: { dashboard: OwnerDashboard }) {
+export function OwnerDashboardView({
+  dashboard,
+  liveMarkupBp,
+  canEditLiveMarkup,
+}: {
+  dashboard: OwnerDashboard;
+  liveMarkupBp: number;
+  canEditLiveMarkup: boolean;
+}) {
   const { kpis, gold, customers, trend } = dashboard;
   const salesSpark = trend.map((point) => point.salesRial);
   const profitSpark = trend.map((point) => point.profitRial);
@@ -82,19 +91,22 @@ export function OwnerDashboardView({ dashboard }: { dashboard: OwnerDashboard })
         }
       />
 
-      <p className="text-sm text-muted-foreground">
-        قیمت گرم ۱۸ عیار{" "}
-        {dashboard.goldPricePerGramRial !== null ? (
-          <>
-            <Money rial={dashboard.goldPricePerGramRial} />
-            <span className="ms-2">
-              <ChangeBadge bp={dashboard.goldPriceChangeBp} emptyLabel="رکورد قبلی نیست" />
-            </span>
-          </>
-        ) : (
-          <span className="text-destructive">ثبت نشده است</span>
-        )}
-      </p>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <p className="text-sm text-muted-foreground">
+          قیمت گرم ۱۸ عیار{" "}
+          {dashboard.goldPricePerGramRial !== null ? (
+            <>
+              <Money rial={dashboard.goldPricePerGramRial} />
+              <span className="ms-2">
+                <ChangeBadge bp={dashboard.goldPriceChangeBp} emptyLabel="رکورد قبلی نیست" />
+              </span>
+            </>
+          ) : (
+            <span className="text-destructive">ثبت نشده است</span>
+          )}
+        </p>
+        <LiveMarkupForm markupBp={liveMarkupBp} canEdit={canEditLiveMarkup} />
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard

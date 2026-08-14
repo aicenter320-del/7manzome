@@ -7,6 +7,11 @@ import { Loader2Icon } from "lucide-react";
 
 import { updateSetting } from "@/modules/content/actions/content.actions";
 import type { SettingKey, SettingValue } from "@/modules/content/domain/settings-keys";
+import {
+  liveMarkupBpToPercent,
+  liveMarkupPercentToBp,
+  MAX_LIVE_GOLD_MARKUP_PERCENT,
+} from "@/modules/pricing/domain/live-gold-quote";
 import { toEnglishDigits } from "@/shared/lib/persian";
 import { Button } from "@/shared/ui/button";
 import { FormField } from "@/shared/ui/form-field";
@@ -25,11 +30,13 @@ export function SettingsEditor({
     const initial: Record<string, string> = {};
     for (const item of items) {
       initial[item.key] =
-        typeof item.value === "string"
-          ? item.value
-          : Array.isArray(item.value) || typeof item.value === "object"
-            ? JSON.stringify(item.value)
-            : String(item.value);
+        item.key === "pricing.live_markup_bp" && typeof item.value === "number"
+          ? String(liveMarkupBpToPercent(item.value))
+          : typeof item.value === "string"
+            ? item.value
+            : Array.isArray(item.value) || typeof item.value === "object"
+              ? JSON.stringify(item.value)
+              : String(item.value);
     }
     return initial;
   });
@@ -101,6 +108,19 @@ export function SettingsEditor({
             onSubmit={(event) => {
               event.preventDefault();
               const raw = values[item.key] ?? "";
+              if (item.key === "pricing.live_markup_bp") {
+                const percent = Number(toEnglishDigits(raw));
+                if (
+                  !Number.isInteger(percent) ||
+                  percent < 0 ||
+                  percent > MAX_LIVE_GOLD_MARKUP_PERCENT
+                ) {
+                  toast.error("درصد باید عدد صحیح بین ۰ و ۲۰ باشد.");
+                  return;
+                }
+                save(item.key, liveMarkupPercentToBp(percent));
+                return;
+              }
               if (typeof current === "number") {
                 const parsed = Number(toEnglishDigits(raw));
                 if (!Number.isInteger(parsed)) {
@@ -121,7 +141,15 @@ export function SettingsEditor({
               save(item.key, raw);
             }}
           >
-            <FormField id={item.key} label={item.label} hint={item.key}>
+            <FormField
+              id={item.key}
+              label={item.label}
+              hint={
+                item.key === "pricing.live_markup_bp"
+                  ? "مثلاً ۱ در روز عادی و ۲ در تعطیل"
+                  : item.key
+              }
+            >
               <Input
                 id={item.key}
                 value={values[item.key] ?? ""}

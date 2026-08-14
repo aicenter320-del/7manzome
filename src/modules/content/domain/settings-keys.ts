@@ -18,6 +18,9 @@ export const settingsSchemas = {
   /** حداکثر عمر مجاز قیمت طلا به دقیقه؛ بیشتر از آن هشدار داده می‌شود. */
   "pricing.max_price_age_minutes": z.number().int().min(1).max(10_080),
 
+  /** حاشیه روی قیمت زنده طلا؛ صدم‌درصد. ۲٪ = ۲۰۰. سقف ۲۰٪. */
+  "pricing.live_markup_bp": z.number().int().min(0).max(2_000),
+
   /** مهلت پرداخت کارت‌به‌کارت به ساعت. */
   "payment.card_transfer_deadline_hours": z.number().int().min(1).max(720),
 
@@ -57,6 +60,7 @@ export const settingsDefaults: { [K in SettingKey]: SettingValue<K> } = {
   "pricing.vat_bp": 1_000,
   "pricing.default_profit_bp": 700,
   "pricing.max_price_age_minutes": 720,
+  "pricing.live_markup_bp": 200,
   "payment.card_transfer_deadline_hours": 72,
   "gifting.min_contribution_rial": 1_000_000,
   "gifting.suggested_amounts_rial": [5_000_000, 10_000_000, 20_000_000, 50_000_000],
@@ -73,6 +77,7 @@ export const settingsLabels: Record<SettingKey, string> = {
   "pricing.vat_bp": "نرخ مالیات بر ارزش افزوده (صدم درصد)",
   "pricing.default_profit_bp": "درصد پیش‌فرض سود (صدم درصد)",
   "pricing.max_price_age_minutes": "حداکثر عمر مجاز قیمت طلا (دقیقه)",
+  "pricing.live_markup_bp": "درصد افزوده روی قیمت زنده طلا",
   "payment.card_transfer_deadline_hours": "مهلت پرداخت کارت‌به‌کارت (ساعت)",
   "gifting.min_contribution_rial": "حداقل مبلغ مشارکت (ریال)",
   "gifting.suggested_amounts_rial": "مبالغ پیشنهادی صفحه هدیه (ریال)",

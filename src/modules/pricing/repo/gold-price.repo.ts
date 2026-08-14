@@ -1,18 +1,25 @@
 import "server-only";
 
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 import { db } from "@/server/db";
 import { goldPrices } from "@/server/db/schema";
 import type { GoldPriceRow } from "@/server/db/types";
 import type { GoldKarat, GoldPriceSource } from "@/shared/types/enums";
 
-/** آخرین قیمت ثبت‌شده برای یک عیار. جدول append-only است، پس آخرین ردیف = قیمت جاری. */
-export async function findLatestPrice(karat: GoldKarat): Promise<GoldPriceRow | null> {
+/** آخرین قیمت ثبت‌شده برای یک عیار؛ اختیاری فقط یک منبع (مثلاً دستی). */
+export async function findLatestPrice(
+  karat: GoldKarat,
+  source?: GoldPriceSource,
+): Promise<GoldPriceRow | null> {
   const rows = await db
     .select()
     .from(goldPrices)
-    .where(eq(goldPrices.karat, karat))
+    .where(
+      source
+        ? and(eq(goldPrices.karat, karat), eq(goldPrices.source, source))
+        : eq(goldPrices.karat, karat),
+    )
     .orderBy(desc(goldPrices.effectiveAt), desc(goldPrices.createdAt))
     .limit(1);
 

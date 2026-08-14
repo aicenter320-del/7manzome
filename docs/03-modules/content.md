@@ -34,6 +34,7 @@ export type { ContentPage, Faq } from "./domain/types";
 | `pricing.vat_bp` | نرخ مالیات بر ارزش افزوده (صدم درصد) |
 | `pricing.default_profit_bp` | درصد پیش‌فرض سود |
 | `pricing.max_price_age_minutes` | حداکثر عمر مجاز قیمت طلا |
+| `pricing.live_markup_bp` | درصد افزوده روی قیمت زنده طلا (در پنل به‌صورت درصد) |
 | `payment.card_transfer_deadline_hours` | مهلت پرداخت کارت‌به‌کارت |
 | `gifting.min_contribution_rial` | حداقل مبلغ مشارکت |
 | `gifting.suggested_amounts_rial` | مبالغ پیشنهادی پیش‌فرض |

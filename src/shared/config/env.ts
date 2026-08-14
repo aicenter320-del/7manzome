@@ -36,9 +36,11 @@ const envSchema = z.object({
   KAVENEGAR_SENDER: z.string().optional(),
   KAVENEGAR_OTP_TEMPLATE: z.string().optional(),
 
-  /** منبع قیمت طلا. manual یعنی قیمت را ادمین دستی وارد می‌کند. */
-  GOLD_PRICE_PROVIDER: z.enum(["manual", "external"]).default("manual"),
-  GOLD_PRICE_API_URL: z.string().url().optional(),
+  /** منبع قیمت طلا. external یعنی طلا دات آی‌آر؛ manual فقط قیمت دستی. */
+  GOLD_PRICE_PROVIDER: z
+    .enum(["manual", "external"])
+    .default(process.env.NODE_ENV === "test" ? "manual" : "external"),
+  GOLD_PRICE_API_URL: z.string().url().default("https://www.tala.ir/ajax/price"),
   GOLD_PRICE_API_KEY: z.string().optional(),
 
   /** شماره موبایل اولین سوپر‌ادمین که هنگام seed ساخته می‌شود. */
@@ -70,7 +72,8 @@ function loadEnv(): Env {
     KAVENEGAR_API_KEY: process.env.KAVENEGAR_API_KEY,
     KAVENEGAR_SENDER: process.env.KAVENEGAR_SENDER,
     KAVENEGAR_OTP_TEMPLATE: process.env.KAVENEGAR_OTP_TEMPLATE,
-    GOLD_PRICE_PROVIDER: process.env.GOLD_PRICE_PROVIDER,
+    GOLD_PRICE_PROVIDER:
+      process.env.NODE_ENV === "test" ? "manual" : process.env.GOLD_PRICE_PROVIDER,
     GOLD_PRICE_API_URL: process.env.GOLD_PRICE_API_URL,
     GOLD_PRICE_API_KEY: process.env.GOLD_PRICE_API_KEY,
     ADMIN_BOOTSTRAP_PHONE: process.env.ADMIN_BOOTSTRAP_PHONE,
@@ -86,10 +89,6 @@ function loadEnv(): Env {
 
   if (parsed.data.SMS_PROVIDER === "kavenegar" && !parsed.data.KAVENEGAR_API_KEY) {
     throw new Error("وقتی SMS_PROVIDER=kavenegar است، KAVENEGAR_API_KEY الزامی است.");
-  }
-
-  if (parsed.data.GOLD_PRICE_PROVIDER === "external" && !parsed.data.GOLD_PRICE_API_URL) {
-    throw new Error("وقتی GOLD_PRICE_PROVIDER=external است، GOLD_PRICE_API_URL الزامی است.");
   }
 
   return parsed.data;

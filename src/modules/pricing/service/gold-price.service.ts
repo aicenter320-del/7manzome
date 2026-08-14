@@ -5,10 +5,14 @@ import { logger } from "@/server/logger";
 import { DISPLAY_KARAT } from "@/shared/lib/gold";
 import { GOLD_KARATS, type GoldKarat } from "@/shared/types/enums";
 
+import { applyLiveMarkup } from "../domain/live-gold-quote";
 import { isPriceStale, priceAgeMinutes } from "../domain/pricing-engine";
 import type { GoldPrice, GoldPriceView } from "../domain/types";
 import { findLatestPrice, findPriceHistory, insertPrice } from "../repo/gold-price.repo";
-import { activeGoldPriceProvider } from "./providers/gold-price.provider";
+import {
+  activeGoldPriceProvider,
+  getCachedLiveQuotes,
+} from "./providers/gold-price.provider";
 
 /**
  * قیمت مرجع طلا.
@@ -32,8 +36,22 @@ export type { GoldPriceView };
 export async function getCurrentGoldPrice(
   karat: GoldKarat = DISPLAY_KARAT,
 ): Promise<GoldPriceView> {
-  const row = await findLatestPrice(karat);
+  const live = await getCachedLiveQuotes();
+  const liveRial = live?.quotes[karat];
+  if (live && liveRial !== undefined) {
+    const markupBp = await getSetting("pricing.live_markup_bp");
+    return {
+      karat,
+      pricePerGramRial: applyLiveMarkup(liveRial, markupBp),
+      source: "external",
+      sourceRef: live.sourceRef,
+      effectiveAt: live.fetchedAt,
+      ageMinutes: priceAgeMinutes(live.fetchedAt),
+      isStale: false,
+    };
+  }
 
+  const row = await findLatestPrice(karat, "manual");
   if (!row) throw new GoldPriceUnavailableError(karat);
 
   const maxAgeMinutes = await getSetting("pricing.max_price_age_minutes");
@@ -65,8 +83,12 @@ export async function getAllCurrentGoldPrices(): Promise<Record<string, number>>
   const snapshot: Record<string, number> = {};
 
   for (const karat of GOLD_KARATS) {
-    const row = await findLatestPrice(karat);
-    if (row) snapshot[String(karat)] = row.pricePerGramRial;
+    try {
+      const price = await getCurrentGoldPrice(karat);
+      snapshot[String(karat)] = price.pricePerGramRial;
+    } catch {
+      // عیار بدون قیمت در اسنپ‌شات نمی‌آید؛ قفل سفارش همان را می‌بیند.
+    }
   }
 
   return snapshot;
@@ -127,9 +149,12 @@ export async function refreshFromProvider(karat: GoldKarat): Promise<GoldPrice |
 
   if (!fetched) return null;
 
+  const markupBp = await getSetting("pricing.live_markup_bp");
+  const pricePerGramRial = applyLiveMarkup(fetched.pricePerGramRial, markupBp);
+
   const row = await insertPrice({
     karat: fetched.karat,
-    pricePerGramRial: fetched.pricePerGramRial,
+    pricePerGramRial,
     source: "external",
     sourceRef: fetched.sourceRef,
     effectiveAt: fetched.effectiveAt,
