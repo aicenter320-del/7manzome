@@ -25,7 +25,7 @@ export function StatCard({
         className,
       )}
     >
-      <CardContent className="p-5">
+      <CardContent className="flex flex-col items-center p-5 text-center">
         <p className="text-xs text-muted-foreground">{label}</p>
         <div className="mt-2 text-2xl font-semibold tracking-tight">{value}</div>
         {hint ? <p className="mt-1 text-xs text-muted-foreground">{hint}</p> : null}
