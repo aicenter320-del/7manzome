@@ -11,6 +11,8 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 # بیلد Next در NODE_ENV=production به SESSION_SECRET نیاز دارد؛ مقدار واقعی در runtime می‌آید.
 ENV SESSION_SECRET=docker-build-placeholder-session-secret-32ch
+# پوشه data در .dockerignore است؛ بدون آن libsql هنگام جمع‌آوری صفحات بیلد باز نمی‌شود (SQLITE_CANTOPEN).
+RUN mkdir -p data storage backups
 RUN npm run build
 
 FROM node:20-bookworm-slim AS runner
