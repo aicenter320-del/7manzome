@@ -2,7 +2,7 @@
  * داده اولیه محیط توسعه و اولین راه‌اندازی.
  *
  * این اسکریپت مستقل از Next است تا به `server-only` وابسته نشود.
- * اگر سوپرادمین از قبل وجود داشته باشد، از نو نمی‌نویسد.
+ * اگر جدولی users خالی نباشد، از نو نمی‌نویسد تا داده production بازنویسی نشود.
  *
  * اجرا: npm run db:seed
  */
@@ -12,7 +12,6 @@ import { dirname } from "node:path";
 
 import { createClient } from "@libsql/client";
 import { config as loadEnv } from "dotenv";
-import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/libsql";
 
 import { settingsDefaults, settingsLabels } from "../src/modules/content/domain/settings-keys";
@@ -40,14 +39,13 @@ async function main(): Promise<void> {
     ["PRAGMA journal_mode = WAL;", "PRAGMA foreign_keys = ON;"].join("\n"),
   );
 
-  const existingAdmin = await db
+  const existingUser = await db
     .select({ id: schema.users.id })
     .from(schema.users)
-    .where(eq(schema.users.phone, adminPhone))
     .limit(1);
 
-  if (existingAdmin[0]) {
-    console.log(`داده اولیه از قبل موجود است (ادمین ${adminPhone}). کاری انجام نشد.`);
+  if (existingUser[0]) {
+    console.log("Seed skipped: users table is not empty.");
     return;
   }
 

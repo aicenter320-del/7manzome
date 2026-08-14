@@ -33,7 +33,12 @@ export default async function HomePage() {
               <Link href="/products">همه محصولات</Link>
             </Button>
           </div>
-          <ProductGrid products={products} className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4" />
+          <ProductGrid
+            products={products}
+            className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+            emptyTitle="هنوز محصولی در فروشگاه نیست"
+            emptyDescription="پس از افزودن محصول از پنل مدیریت، اینجا نمایش داده می‌شود."
+          />
         </div>
       </section>
 

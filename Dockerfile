@@ -38,5 +38,5 @@ RUN mkdir -p data storage backups && chown -R haft:haft /app
 USER haft
 EXPOSE 3000
 
-# مایگریشن قبل از سرو؛ seed را دستی اجرا کنید تا داده production بازنویسی نشود.
-CMD ["sh", "-c", "npm run db:migrate && npm run start"]
+# مایگریشن و در صورت خالی بودن دیتابیس، seed بار اول؛ سپس سرو.
+CMD ["sh", "-c", "npm run db:migrate && npm run db:seed && npm run start"]
