@@ -467,6 +467,7 @@ export async function countInReviewQueue(): Promise<number> {
 export async function listPayments(input: {
   status?: PaymentStatus;
   purpose?: PaymentPurpose;
+  payerUserId?: string;
   limit: number;
   offset: number;
 }): Promise<Payment[]> {

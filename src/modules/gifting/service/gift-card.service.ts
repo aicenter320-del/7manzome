@@ -11,6 +11,7 @@ import {
   findGiftCardByCode,
   findGiftCardById,
   findGiftCards as findGiftCardRows,
+  findGiftCardsForUser as findGiftCardRowsForUser,
   findGiftLinksForTreasure,
   insertGiftCard,
   updateGiftCard,
@@ -206,4 +207,31 @@ export async function listGiftCards(options?: {
 }): Promise<GiftCard[]> {
   const rows = await findGiftCardRows(options);
   return rows.map(toGiftCard);
+}
+
+export async function listGiftCardsForUser(
+  userId: string,
+  treasureIds: readonly string[],
+): Promise<GiftCard[]> {
+  const rows = await findGiftCardRowsForUser(userId, treasureIds);
+  return rows.map(toGiftCard);
+}
+
+export async function voidGiftCard(giftCardId: string, actorUserId: string): Promise<void> {
+  const card = await findGiftCardById(giftCardId);
+  if (!card) throw new GiftCardError("کارت هدیه پیدا نشد.");
+
+  if (card.status === "void") {
+    throw new GiftCardError("این کارت از قبل باطل شده است.");
+  }
+
+  await updateGiftCard(card.id, { status: "void" });
+
+  await recordAudit({
+    actorUserId,
+    action: "gift_card.voided",
+    entityType: "gift_card",
+    entityId: card.id,
+    summary: "ابطال کارت هدیه",
+  });
 }

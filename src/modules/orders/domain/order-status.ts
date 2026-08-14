@@ -8,18 +8,22 @@ import { ORDER_STATUSES, type OrderStatus } from "@/shared/types/enums";
  *
  * `created → paid` برای تسویه پرداخت است؛ اگر تایید خیلی سریع برسد، از
  * `payment_pending` رد نمی‌شویم ولی پرش مستقیم از ثبت به پرداخت‌شده مجاز است.
+ *
+ * برگشت در مسیر آماده‌سازی تا پس از تحویل، برای اصلاح اشتباه کارمند است.
+ * از `cancelled` / `refunded` برگشت نیست. بازگشت به `payment_pending`
+ * هم نیست چون طلا وارد دفتر کل شده.
  */
 
 export const TRANSITIONS: Record<OrderStatus, readonly OrderStatus[]> = {
   created: ["payment_pending", "paid", "cancelled"],
   payment_pending: ["paid", "cancelled"],
   paid: ["processing", "refund_pending"],
-  processing: ["personalization", "quality_check", "refund_pending"],
-  personalization: ["quality_check"],
-  quality_check: ["packed", "processing"],
-  packed: ["shipped"],
-  shipped: ["delivered"],
-  delivered: [],
+  processing: ["personalization", "quality_check", "paid", "refund_pending"],
+  personalization: ["quality_check", "processing"],
+  quality_check: ["packed", "processing", "personalization"],
+  packed: ["shipped", "quality_check"],
+  shipped: ["delivered", "packed"],
+  delivered: ["shipped"],
   cancelled: [],
   refund_pending: ["refunded"],
   refunded: [],
@@ -56,6 +60,29 @@ export function isFinalStatus(status: OrderStatus): boolean {
 
 export function canCustomerCancel(status: OrderStatus): boolean {
   return CUSTOMER_CANCELLABLE_STATUSES.includes(status);
+}
+
+/** سفارش‌هایی که دیگر مسیر جاری مشتری نیستند. */
+const SETTLED_CUSTOMER_STATUSES: readonly OrderStatus[] = [
+  "delivered",
+  "cancelled",
+  "refunded",
+];
+
+/**
+ * وضعیت نمایشی مشتری: اگر سفارش جاری دارد همان است؛
+ * وگرنه آخرین سفارش ثبت‌شده.
+ */
+export function latestCustomerOrderStatus(
+  orders: readonly { status: OrderStatus; createdAt: number }[],
+): OrderStatus | null {
+  if (orders.length === 0) return null;
+
+  const newestFirst = [...orders].sort((left, right) => right.createdAt - left.createdAt);
+  const current = newestFirst.find(
+    (order) => !SETTLED_CUSTOMER_STATUSES.includes(order.status),
+  );
+  return current?.status ?? newestFirst[0]?.status ?? null;
 }
 
 /**

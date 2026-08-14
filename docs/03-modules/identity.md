@@ -12,9 +12,9 @@
 ## API عمومی
 
 ```ts
-export { requestOtp, verifyOtp, logout, updateProfile, submitKyc } from "./actions/...";
-export { getUserById, getUserByPhone } from "./service/user.service";
-export type { PublicUser, KycStatus } from "./domain/types";
+export { requestOtp, verifyOtp, logout, updateProfile, submitKyc, decideKyc, assignUserAccessAction } from "./actions/...";
+export { getUserById, getUserByPhone, assignUserAccess } from "./service/user.service";
+export type { PublicUser, AssignableRole } from "./domain/...";
 ```
 
 ## جدول‌های دیتابیس
@@ -33,11 +33,21 @@ export type { PublicUser, KycStatus } from "./domain/types";
 - ورود به حساب **نیازی به احراز هویت کامل ندارد**. این دو مفهوم جدا هستند.
 - شماره موبایل ایرانی: ۱۱ رقم با شروع `09`.
 - کد ملی با الگوریتم رقم کنترلی اعتبارسنجی می‌شود، نه فقط طول آن.
+- در فهرست کاربران نقش از میان مشتری و نقش‌های کارمندی انتخاب می‌شود.
+  مدیر ارشد نمی‌تواند نقش خودش را بردارد. تغییر نقش با پاپ‌آپ تایید انجام می‌شود.
+  ستون وضعیت، آخرین سفارش جاری مشتری است و دستی عوض نمی‌شود.
+- ادمین با مجوز `user:write` می‌تواند احراز هویت را دستی تایید کند، حتی اگر کاربر هنوز مدارک نفرستاده باشد.
+  رد کردن فقط از صف بررسی است و دلیل می‌خواهد.
+  از وضعیت تاییدشده می‌توان احراز هویت را با پاپ‌آپ به «انجام‌نشده» برگرداند؛ کد ملی پاک نمی‌شود.
+- ادمین می‌تواند حساب را مسدود کند؛ نشست‌ها باطل می‌شود و ورود ممکن نیست. نمی‌توان حساب خود را مسدود کرد.
+- حذف حساب فقط وقتی سفارش و گنجینه وجود ندارد. در غیر این صورت فقط مسدود مجاز است. خود ادمین حذف نمی‌شود.
 
 ## مسیرها
 
 - `app/(auth)/login` — ورود دو مرحله‌ای
 - `app/(dashboard)/dashboard/profile` — پروفایل و احراز هویت
+- `app/admin/users` — فهرست کاربران با نقش، تایید احراز هویت و مسدود کردن حساب؛ وضعیت سفارش از سفارش جاری خوانده می‌شود
+- `app/admin/users/[userId]` — جزئیات و ویرایش کاربر: پروفایل، احراز هویت، کودکان، گنجینه، هدیه، سفارش و پرداخت
 
 ## نقاط باز
 

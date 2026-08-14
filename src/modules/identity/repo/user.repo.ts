@@ -105,6 +105,24 @@ export async function revokeRole(userId: string, role: UserRole): Promise<void> 
     .where(and(eq(userRoles.userId, userId), eq(userRoles.role, role)));
 }
 
+export async function replaceRolesForUser(
+  userId: string,
+  roles: readonly UserRole[],
+  grantedByUserId: string,
+): Promise<void> {
+  await db.transaction(async (tx) => {
+    await tx.delete(userRoles).where(eq(userRoles.userId, userId));
+    if (roles.length === 0) return;
+    await tx.insert(userRoles).values(
+      roles.map((role) => ({
+        userId,
+        role,
+        grantedByUserId,
+      })),
+    );
+  });
+}
+
 export interface UserListFilters {
   search?: string;
   kycStatus?: KycStatus;
@@ -136,6 +154,10 @@ export async function findUsers(filters: UserListFilters = {}): Promise<UserRow[
     .orderBy(desc(users.createdAt))
     .limit(filters.limit ?? 50)
     .offset(filters.offset ?? 0);
+}
+
+export async function deleteUserById(userId: string): Promise<void> {
+  await db.delete(users).where(eq(users.id, userId));
 }
 
 export async function countUsers(): Promise<number> {

@@ -18,7 +18,7 @@ import { currentJalaliYear, fromJalali } from "@/shared/lib/jalali";
 import { sanitizeText } from "@/shared/lib/persian";
 import type { GoldKarat } from "@/shared/types/enums";
 
-import { buildOrderNumber } from "../domain/order-status";
+import { buildOrderNumber, latestCustomerOrderStatus } from "../domain/order-status";
 import type {
   Order,
   OrderItem,
@@ -36,6 +36,7 @@ import {
   findOrderItems,
   findOrdersForAdmin,
   findOrdersForUser,
+  findOrderStagesForUserIds,
   findShipmentByOrderId,
   findStatusHistory,
   insertOrder,
@@ -532,6 +533,27 @@ export async function getOrdersForUser(
     orders: rows.map((row) => toSummary(row, counts.get(row.id) ?? 0)),
     total,
   };
+}
+
+export async function getLatestOrderStatusByUserIds(
+  userIds: readonly string[],
+): Promise<Map<string, Order["status"]>> {
+  const rows = await findOrderStagesForUserIds(userIds);
+  const byUser = new Map<string, { status: Order["status"]; createdAt: number }[]>();
+
+  for (const row of rows) {
+    const list = byUser.get(row.userId) ?? [];
+    list.push({ status: row.status, createdAt: row.createdAt });
+    byUser.set(row.userId, list);
+  }
+
+  const result = new Map<string, Order["status"]>();
+  for (const [userId, userOrders] of byUser) {
+    const status = latestCustomerOrderStatus(userOrders);
+    if (status) result.set(userId, status);
+  }
+
+  return result;
 }
 
 export async function listOrdersForAdmin(filters: {

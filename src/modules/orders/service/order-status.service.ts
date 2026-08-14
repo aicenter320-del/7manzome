@@ -71,6 +71,7 @@ async function upsertShipmentForShip(input: {
     await updateShipment(existing.id, {
       status: "shipped",
       shippedAt: existing.shippedAt ?? now,
+      deliveredAt: null,
       ...(input.carrier !== undefined ? { carrier: input.carrier } : {}),
       ...(input.trackingCode !== undefined ? { trackingCode: input.trackingCode } : {}),
     });
@@ -126,6 +127,13 @@ export async function transitionOrder(input: {
     });
   }
 
+  if (row.status === "shipped" && input.to === "packed") {
+    const shipment = await findShipmentByOrderId(input.orderId);
+    if (shipment) {
+      await updateShipment(shipment.id, { status: "pending" });
+    }
+  }
+
   if (input.to === "delivered") {
     const shipment = await findShipmentByOrderId(input.orderId);
     if (shipment) {
@@ -150,7 +158,7 @@ export async function transitionOrder(input: {
     meta: { from: row.status, to: input.to },
   });
 
-  if (input.to === "shipped") {
+  if (input.to === "shipped" && row.status === "packed") {
     const trackingCode = input.trackingCode;
     await sendTemplatedSms(row.recipientPhone, "orderShipped", {
       orderNumber: row.orderNumber,

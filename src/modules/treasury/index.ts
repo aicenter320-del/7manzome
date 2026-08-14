@@ -45,9 +45,13 @@ export {
   setGoal,
   editTreasure,
   changeTreasureStatus,
+  editTreasureAsAdmin,
+  changeTreasureStatusAsAdmin,
+  deleteEmptyTreasureAsAdmin,
   getTotalGoldSavedMg,
   getActiveTreasureCount,
   TreasureAccessError,
+  TreasureNotEmptyError,
 } from "./service/treasure.service";
 
 export {
@@ -59,7 +63,7 @@ export {
   type CreditGoldResult,
 } from "./service/gold-ledger.service";
 
-export { createTreasureSchema, setGoalSchema } from "./schema/treasure.schema";
+export { createTreasureSchema, setGoalSchema, editTreasureSchema, changeTreasureStatusSchema } from "./schema/treasure.schema";
 
 export {
   createTreasureAction,

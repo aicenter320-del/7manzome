@@ -3,18 +3,26 @@ import "server-only";
 import { recordAudit } from "@/server/audit";
 import { revokeAllSessions } from "@/server/auth/session";
 import type { UserRow } from "@/server/db/types";
-import type { KycStatus, UserRole, UserStatus } from "@/shared/types/enums";
+import type { UserRole, UserStatus } from "@/shared/types/enums";
 
-import type { PublicUser } from "../domain/types";
+import { canAdminDecideKyc, type KycDecision } from "../domain/kyc-status";
+import type { AdminUserDetail, PublicUser } from "../domain/types";
+import {
+  ASSIGNABLE_ROLE_LABELS,
+  rolesForAssignedRole,
+  type AssignableRole,
+} from "../domain/user-access";
 import {
   countCustomersCreatedBetween,
   countUsers,
+  deleteUserById,
   findRolesForUser,
   findUserById,
   findUserByNationalId,
   findUserByPhone,
   findUsers,
   grantRole,
+  replaceRolesForUser,
   revokeRole,
   updateKyc,
   updateUserProfile,
@@ -58,7 +66,7 @@ export async function getUserByPhone(phone: string): Promise<PublicUser | null> 
 /** جزئیات کامل کاربر برای پنل ادمین، شامل کد ملی. */
 export async function getUserDetailForAdmin(
   userId: string,
-): Promise<(PublicUser & { nationalId: string | null; birthDateAt: number | null }) | null> {
+): Promise<AdminUserDetail | null> {
   const row = await findUserById(userId);
   if (!row) return null;
 
@@ -66,8 +74,11 @@ export async function getUserDetailForAdmin(
 
   return {
     ...toPublicUser(row, roles),
+    email: row.email,
     nationalId: row.nationalId,
     birthDateAt: row.birthDateAt,
+    kycVerifiedAt: row.kycVerifiedAt,
+    kycRejectionReason: row.kycRejectionReason,
   };
 }
 
@@ -102,6 +113,13 @@ export class KycConflictError extends Error {
   constructor() {
     super("این کد ملی قبلاً برای حساب دیگری ثبت شده است.");
     this.name = "KycConflictError";
+  }
+}
+
+export class InvalidKycDecisionError extends Error {
+  constructor() {
+    super("این تصمیم برای وضعیت فعلی احراز هویت مجاز نیست.");
+    this.name = "InvalidKycDecisionError";
   }
 }
 
@@ -150,25 +168,42 @@ export async function submitKycRequest(
 /** تایید یا رد احراز هویت توسط ادمین. */
 export async function reviewKyc(input: {
   userId: string;
-  decision: Extract<KycStatus, "verified" | "rejected">;
+  decision: KycDecision;
   reason?: string;
   actorUserId: string;
 }): Promise<void> {
+  const row = await findUserById(input.userId);
+  if (!row) {
+    throw new InvalidKycDecisionError();
+  }
+
+  if (!canAdminDecideKyc(row.kycStatus, input.decision)) {
+    throw new InvalidKycDecisionError();
+  }
+
+  const manual = input.decision === "verified" && row.kycStatus !== "pending";
+
   await updateKyc(input.userId, {
     kycStatus: input.decision,
     kycVerifiedAt: input.decision === "verified" ? Date.now() : null,
     kycRejectionReason: input.decision === "rejected" ? (input.reason ?? null) : null,
   });
 
+  const summary =
+    input.decision === "verified"
+      ? manual
+        ? "تایید دستی احراز هویت کاربر"
+        : "تایید احراز هویت کاربر"
+      : input.decision === "none"
+        ? "لغو احراز هویت کاربر"
+        : `رد احراز هویت کاربر: ${input.reason ?? "بدون توضیح"}`;
+
   await recordAudit({
     actorUserId: input.actorUserId,
-    action: `kyc.${input.decision}`,
+    action: input.decision === "none" ? "kyc.revoked" : `kyc.${input.decision}`,
     entityType: "user",
     entityId: input.userId,
-    summary:
-      input.decision === "verified"
-        ? "تایید احراز هویت کاربر"
-        : `رد احراز هویت کاربر: ${input.reason ?? "بدون توضیح"}`,
+    summary,
   });
 }
 
@@ -189,7 +224,7 @@ export async function setUserStatus(input: {
     action: `user.${input.status}`,
     entityType: "user",
     entityId: input.userId,
-    summary: input.status === "suspended" ? "تعلیق حساب کاربر" : "فعال‌سازی حساب کاربر",
+    summary: input.status === "suspended" ? "مسدود کردن حساب کاربر" : "فعال‌سازی حساب کاربر",
   });
 }
 
@@ -215,6 +250,50 @@ export async function setUserRole(input: {
   });
 }
 
+export async function assignUserAccess(input: {
+  userId: string;
+  role: AssignableRole;
+  actorUserId: string;
+}): Promise<void> {
+  const roles = rolesForAssignedRole(input.role);
+  await replaceRolesForUser(input.userId, roles, input.actorUserId);
+
+  await recordAudit({
+    actorUserId: input.actorUserId,
+    action: "role.assigned",
+    entityType: "user",
+    entityId: input.userId,
+    summary: `تعیین نقش ${ASSIGNABLE_ROLE_LABELS[input.role]}`,
+    meta: { role: input.role },
+  });
+}
+
 export async function getRolesForUser(userId: string): Promise<UserRole[]> {
   return findRolesForUser(userId);
+}
+
+export class UserDeleteError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "UserDeleteError";
+  }
+}
+
+/** حذف فیزیکی حساب؛ فقط وقتی ردپای مالی و گنجینه وجود ندارد. */
+export async function deleteUserAccount(userId: string, actorUserId: string): Promise<void> {
+  const row = await findUserById(userId);
+  if (!row) {
+    throw new UserDeleteError("کاربر پیدا نشد.");
+  }
+
+  await revokeAllSessions(userId);
+  await deleteUserById(userId);
+
+  await recordAudit({
+    actorUserId,
+    action: "user.deleted",
+    entityType: "user",
+    entityId: userId,
+    summary: "حذف حساب کاربر",
+  });
 }

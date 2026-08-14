@@ -15,6 +15,7 @@ import {
   findGiftLinkById,
   findGiftLinkByToken,
   findGiftLinksForTreasure as findGiftLinksForTreasureRows,
+  findGiftLinksForUser as findGiftLinksForUserRows,
   incrementGiftLinkViews,
   insertGiftLink,
   updateGiftLink,
@@ -151,6 +152,60 @@ export async function closeGiftLink(giftLinkId: string, userId: string): Promise
   }
 
   await updateGiftLink(row.id, { status: "closed" });
+}
+
+async function loadLinkById(giftLinkId: string): Promise<GiftLinkRow> {
+  const row = await findGiftLinkById(giftLinkId);
+  if (!row) throw new GiftLinkError();
+  return row;
+}
+
+export async function pauseGiftLinkAsAdmin(giftLinkId: string): Promise<void> {
+  const row = await loadLinkById(giftLinkId);
+
+  if (row.status !== "active") {
+    throw new GiftLinkError("فقط لینک فعال را می‌توان موقتاً متوقف کرد.");
+  }
+
+  await updateGiftLink(row.id, { status: "paused" });
+}
+
+export async function resumeGiftLinkAsAdmin(giftLinkId: string): Promise<void> {
+  const row = await loadLinkById(giftLinkId);
+
+  if (row.status !== "paused") {
+    throw new GiftLinkError("فقط لینک متوقف‌شده را می‌توان دوباره فعال کرد.");
+  }
+
+  const now = Date.now();
+  if (row.expiresAt !== null && row.expiresAt <= now) {
+    await updateGiftLink(row.id, { status: "expired" });
+    throw new GiftLinkInactiveError("مهلت این لینک گذشته است.");
+  }
+
+  await updateGiftLink(row.id, { status: "active" });
+}
+
+export async function closeGiftLinkAsAdmin(giftLinkId: string): Promise<void> {
+  const row = await loadLinkById(giftLinkId);
+
+  if (row.status === "closed") return;
+
+  if (row.status !== "active" && row.status !== "paused") {
+    throw new GiftLinkError("این لینک را نمی‌توان بست.");
+  }
+
+  await updateGiftLink(row.id, { status: "closed" });
+}
+
+export async function getGiftLinksForUser(
+  userId: string,
+): Promise<Array<GiftLink & { url: string }>> {
+  const rows = await findGiftLinksForUserRows(userId);
+  return rows.map((row) => {
+    const link = toGiftLink(row);
+    return { ...link, url: buildGiftUrl(env.APP_URL, link.token) };
+  });
 }
 
 /**

@@ -27,11 +27,14 @@ export {
   getTimeline,
   createChild,
   editChild,
+  editChildAsAdmin,
+  archive,
+  archiveAsAdmin,
   ChildAccessError,
   BirthDateError,
 } from "./service/child.service";
 
-export { createChildSchema, updateChildSchema } from "./schema/child.schema";
+export { createChildSchema, updateChildSchema, childIdSchema } from "./schema/child.schema";
 
 export {
   createChildProfile,

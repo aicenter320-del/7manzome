@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, count, desc, eq, gte, isNotNull, sql } from "drizzle-orm";
+import { and, count, desc, eq, gte, inArray, isNotNull, or, sql } from "drizzle-orm";
 
 import { db } from "@/server/db";
 import { contributions, giftCards, giftLinks, users } from "@/server/db/schema";
@@ -254,6 +254,22 @@ export async function findGiftCards(options?: {
   }
 
   return db.select().from(giftCards).orderBy(desc(giftCards.createdAt)).limit(limit);
+}
+
+export async function findGiftCardsForUser(
+  userId: string,
+  treasureIds: readonly string[],
+): Promise<GiftCardRow[]> {
+  const ownership = eq(giftCards.createdByUserId, userId);
+  const assigned =
+    treasureIds.length > 0 ? inArray(giftCards.treasureId, [...treasureIds]) : undefined;
+
+  return db
+    .select()
+    .from(giftCards)
+    .where(assigned ? or(ownership, assigned) : ownership)
+    .orderBy(desc(giftCards.createdAt))
+    .limit(200);
 }
 
 export async function updateGiftCard(

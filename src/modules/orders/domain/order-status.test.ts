@@ -6,6 +6,7 @@ import {
   canTransition,
   isFinalStatus,
   isStaffOnlyTransition,
+  latestCustomerOrderStatus,
   nextStatuses,
 } from "./order-status";
 
@@ -36,7 +37,7 @@ describe("canTransition", () => {
     expect(canTransition("packed", "delivered")).toBe(false);
   });
 
-  it("از وضعیت نهایی خارج نمی‌شود", () => {
+  it("از لغو و بازگشت وجه خارج نمی‌شود", () => {
     expect(canTransition("delivered", "processing")).toBe(false);
     expect(canTransition("cancelled", "payment_pending")).toBe(false);
     expect(canTransition("refunded", "paid")).toBe(false);
@@ -77,9 +78,25 @@ describe("اصلاح کیفیت", () => {
   });
 });
 
+describe("اصلاح اشتباه کارمند", () => {
+  it("در مسیر آماده‌سازی می‌توان یک مرحله برگشت", () => {
+    expect(canTransition("processing", "paid")).toBe(true);
+    expect(canTransition("personalization", "processing")).toBe(true);
+    expect(canTransition("quality_check", "personalization")).toBe(true);
+    expect(canTransition("packed", "quality_check")).toBe(true);
+    expect(canTransition("shipped", "packed")).toBe(true);
+    expect(canTransition("delivered", "shipped")).toBe(true);
+  });
+
+  it("پس از ورود طلا به وضعیت پرداخت‌نشده برنمی‌گردد", () => {
+    expect(canTransition("paid", "payment_pending")).toBe(false);
+    expect(canTransition("processing", "payment_pending")).toBe(false);
+  });
+});
+
 describe("isFinalStatus", () => {
-  it("تحویل، لغو و بازگشت وجه نهایی‌اند", () => {
-    expect(isFinalStatus("delivered")).toBe(true);
+  it("لغو و بازگشت وجه نهایی‌اند", () => {
+    expect(isFinalStatus("delivered")).toBe(false);
     expect(isFinalStatus("cancelled")).toBe(true);
     expect(isFinalStatus("refunded")).toBe(true);
   });
@@ -94,7 +111,7 @@ describe("isFinalStatus", () => {
 describe("nextStatuses", () => {
   it("گذارهای مجاز را برای ساخت دکمه‌های UI می‌دهد", () => {
     expect(nextStatuses("paid")).toEqual(["processing", "refund_pending"]);
-    expect(nextStatuses("delivered")).toEqual([]);
+    expect(nextStatuses("delivered")).toEqual(["shipped"]);
   });
 });
 
@@ -110,6 +127,40 @@ describe("isStaffOnlyTransition", () => {
 
   it("گذار نامعتبر کارمند‌محور هم نیست", () => {
     expect(isStaffOnlyTransition("created", "shipped")).toBe(false);
+  });
+});
+
+describe("latestCustomerOrderStatus", () => {
+  it("بدون سفارش تهی است", () => {
+    expect(latestCustomerOrderStatus([])).toBeNull();
+  });
+
+  it("سفارش جاری را بر سفارش تحویل‌شده ترجیح می‌دهد", () => {
+    expect(
+      latestCustomerOrderStatus([
+        { status: "delivered", createdAt: 200 },
+        { status: "shipped", createdAt: 100 },
+      ]),
+    ).toBe("shipped");
+  });
+
+  it("بین سفارش‌های جاری تازه‌ترین را می‌گیرد", () => {
+    expect(
+      latestCustomerOrderStatus([
+        { status: "processing", createdAt: 10 },
+        { status: "shipped", createdAt: 30 },
+        { status: "packed", createdAt: 20 },
+      ]),
+    ).toBe("shipped");
+  });
+
+  it("اگر فقط سفارش تمام‌شده باشد همان را نشان می‌دهد", () => {
+    expect(
+      latestCustomerOrderStatus([
+        { status: "cancelled", createdAt: 10 },
+        { status: "delivered", createdAt: 40 },
+      ]),
+    ).toBe("delivered");
   });
 });
 

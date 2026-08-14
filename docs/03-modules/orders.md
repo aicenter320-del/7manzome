@@ -12,7 +12,7 @@
 export { addToCartAction, updateCartItemAction, removeCartItemAction } from "./actions/cart.actions";
 export { placeOrderAction, cancelOrderAction, transitionOrderAction, updateShipmentAction } from "./actions/order.actions";
 export { getCart, addToCart, CartError } from "./service/cart.service";
-export { getOrderById, getOrdersForUser, listOrdersForAdmin, placeOrder } from "./service/order.service";
+export { getOrderById, getOrdersForUser, getLatestOrderStatusByUserIds, listOrdersForAdmin, placeOrder } from "./service/order.service";
 export { transitionOrder, settlePaidOrder, cancelOrder } from "./service/order-status.service";
 export { canTransition, nextStatuses, ORDER_STATUSES, buildOrderNumber } from "./domain/order-status";
 export type { Cart, Order, OrderItem, OrderStatus, Shipment } from "./domain/types";
@@ -38,6 +38,9 @@ export type { Cart, Order, OrderItem, OrderStatus, Shipment } from "./domain/typ
   اقلام با `price=null` و پرچم `priceAvailable=false` نشان داده می‌شوند و ثبت سفارش متوقف می‌شود.
 - ثبت سفارش، کسر موجودی و تبدیل سبد با هم انجام می‌شوند؛ اگر ثبت شکست بخورد موجودی برمی‌گردد.
 - تغییر وضعیت فقط از طریق `transitionOrder`؛ گذارهای نامعتبر خطا می‌دهند.
+- کارمند می‌تواند در مسیر آماده‌سازی تا پس از تحویل یک مرحله برگردد (اصلاح کلیک اشتباه).
+  بازگشت به انتظار پرداخت یا خروج از لغو/بازگشت‌وجه مجاز نیست. تغییر وضعیت در پنل با پاپ‌آپ تایید است.
+- فهرست کاربران وضعیت مشتری را از آخرین سفارش جاری می‌خواند؛ اگر سفارش جاری نباشد آخرین سفارش تمام‌شده نشان داده می‌شود.
 - هر تغییر وضعیت در `order_status_history` با عامل و زمان ثبت می‌شود.
 - `order_number` قابل‌نمایش با الگوی `HM-<سال شمسی>-<شماره ترتیبی>` ساخته می‌شود.
 - سبد مهمان با کوکی `anon_token` نگه داشته می‌شود و هنگام ورود به سبد کاربر ادغام می‌گردد.

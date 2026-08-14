@@ -54,6 +54,7 @@ export {
 } from "./actions/payment.actions";
 
 export { ReceiptForm } from "./ui/receipt-form";
+export { ReceiptFilePreview } from "./ui/receipt-file-preview";
 export { PaymentStatusCard } from "./ui/payment-status";
 export { BankAccountCard } from "./ui/bank-account-card";
 ```
@@ -104,7 +105,7 @@ interface PaymentProvider {
 
 - `app/(site)/checkout/payment/[paymentId]`
 - `app/(gift)/g/[token]/pay`
-- `app/admin/payments` — صف تایید
+- `app/admin/payments` — صف تایید؛ جزئیات پرداخت تصویر رسید ارسالی را نشان می‌دهد
 - `app/api/files/[...path]` — سرو کنترل‌شده تصویر رسید
 
 ## نقاط باز

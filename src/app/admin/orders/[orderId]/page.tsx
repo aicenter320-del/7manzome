@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 
 import { getOrderById, OrderStatusBadge } from "@/modules/orders";
 import { requirePermission } from "@/server/auth/guards";
+import { hasPermission } from "@/server/auth/rbac";
 import { formatJalaliDateTime } from "@/shared/lib/jalali";
 import { GoldWeight } from "@/shared/ui/gold-weight";
 import { Money } from "@/shared/ui/money";
@@ -15,10 +16,11 @@ export default async function AdminOrderDetailPage({
 }: {
   params: Promise<{ orderId: string }>;
 }) {
-  await requirePermission("order:read");
+  const user = await requirePermission("order:read");
   const { orderId } = await params;
   const order = await getOrderById(orderId);
   if (!order) notFound();
+  const canChangeStatus = hasPermission(user.roles, "order:transition");
 
   return (
     <div className="grid gap-8">
@@ -28,7 +30,9 @@ export default async function AdminOrderDetailPage({
         actions={<OrderStatusBadge status={order.status} />}
       />
 
-      <OrderTransitions orderId={order.id} status={order.status} />
+      {canChangeStatus ? (
+        <OrderTransitions orderId={order.id} status={order.status} />
+      ) : null}
 
       <div className="grid gap-1 text-sm text-muted-foreground">
         <p>

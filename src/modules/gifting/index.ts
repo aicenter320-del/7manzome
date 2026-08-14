@@ -39,8 +39,12 @@ export {
   pauseGiftLink,
   resumeGiftLink,
   closeGiftLink,
+  pauseGiftLinkAsAdmin,
+  resumeGiftLinkAsAdmin,
+  closeGiftLinkAsAdmin,
   getGiftLinkByToken,
   getGiftLinksForTreasure,
+  getGiftLinksForUser,
   GiftLinkError,
   GiftLinkInactiveError,
 } from "./service/gifting.service";
@@ -63,6 +67,8 @@ export {
   markPrinted,
   redeemGiftCard,
   listGiftCards,
+  listGiftCardsForUser,
+  voidGiftCard,
   GiftCardError,
 } from "./service/gift-card.service";
 
@@ -72,6 +78,7 @@ export {
   saveKeepsakeSchema,
   createGiftCardsSchema,
   redeemGiftCardSchema,
+  giftLinkIdSchema,
 } from "./schema/gifting.schema";
 
 export {

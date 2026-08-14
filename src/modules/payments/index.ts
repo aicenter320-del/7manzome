@@ -71,5 +71,6 @@ export {
 } from "./actions/payment.actions";
 
 export { ReceiptForm } from "./ui/receipt-form";
+export { ReceiptFilePreview } from "./ui/receipt-file-preview";
 export { PaymentStatusCard } from "./ui/payment-status";
 export { BankAccountCard } from "./ui/bank-account-card";

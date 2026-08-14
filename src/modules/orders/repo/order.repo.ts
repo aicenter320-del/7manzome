@@ -281,6 +281,21 @@ export async function findOrdersForUser(
     .offset(offset);
 }
 
+export async function findOrderStagesForUserIds(
+  userIds: readonly string[],
+): Promise<{ userId: string; status: OrderStatus; createdAt: number }[]> {
+  if (userIds.length === 0) return [];
+
+  return db
+    .select({
+      userId: orders.userId,
+      status: orders.status,
+      createdAt: orders.createdAt,
+    })
+    .from(orders)
+    .where(inArray(orders.userId, [...userIds]));
+}
+
 export async function findOrdersForAdmin(filters: {
   status?: OrderStatus;
   search?: string;

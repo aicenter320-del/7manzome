@@ -42,12 +42,14 @@ export type { TreasureSummary, LedgerEntry, GoldBalance } from "./domain/types";
 - `debitGold` باید قبل از ثبت، کفایت موجودی را بررسی کند؛ موجودی منفی ممنوع است.
 - درج قلم و به‌روزرسانی وضعیت مرتبط (مشارکت یا سفارش) در **یک تراکنش** انجام می‌شود.
 - گنجینه `archived` قلم جدید نمی‌پذیرد.
+- ادمین می‌تواند گنجینه را ببندد؛ حذف فیزیکی فقط وقتی دفتر کل و مشارکت خالی باشد.
 
 ## مسیرها
 
 - `app/(dashboard)/dashboard/treasures`
 - `app/(dashboard)/dashboard/treasures/[treasureId]`
 - `app/(site)/treasures` — نمای عمومی (فقط گنجینه‌های با `visibility = link`)
+- `app/admin/users/[userId]` — تب گنجینه‌های کاربر
 
 ## نقاط باز
 

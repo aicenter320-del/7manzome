@@ -37,6 +37,16 @@ export {
   expireStalePaymentsAction,
   reviewAndSettlePayment,
   softDeleteMediaFileAction,
+  deleteAdminUser,
+  adminUpdateChild,
+  adminArchiveChild,
+  adminUpdateTreasure,
+  adminChangeTreasureStatus,
+  adminDeleteEmptyTreasure,
+  adminPauseGiftLink,
+  adminResumeGiftLink,
+  adminCloseGiftLink,
+  adminVoidGiftCard,
 } from "./actions/admin.actions";
 
 export { StatCard } from "./ui/stat-card";
@@ -47,3 +57,4 @@ export { AdminNavLink } from "./ui/admin-nav-link";
 export { DeleteMediaFileButton } from "./ui/delete-media-file-button";
 export { FolderFilterLinks, MediaFileCard, mediaFolderLabel } from "./ui/media-file-card";
 export { OwnerDashboardView, OpsDashboard } from "./ui/owner-dashboard";
+export { UserDetailTabs } from "./ui/user-detail/user-detail-tabs";

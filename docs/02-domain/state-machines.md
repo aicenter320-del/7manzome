@@ -13,23 +13,32 @@ stateDiagram-v2
     payment_pending --> paid: تایید پرداخت
     payment_pending --> cancelled: انصراف یا انقضای مهلت
     paid --> processing: شروع آماده‌سازی
+    processing --> paid: اصلاح اشتباه
     processing --> personalization: اگر محصول شخصی‌سازی دارد
     processing --> quality_check: اگر شخصی‌سازی ندارد
+    personalization --> processing: اصلاح اشتباه
     personalization --> quality_check: پایان حکاکی
     quality_check --> packed: تایید کیفیت
     quality_check --> processing: نیاز به اصلاح
+    quality_check --> personalization: اصلاح حکاکی
     packed --> shipped: تحویل به پست
+    packed --> quality_check: اصلاح اشتباه
     shipped --> delivered: تحویل به مشتری
+    shipped --> packed: اصلاح اشتباه
+    delivered --> shipped: اصلاح اشتباه
     paid --> refund_pending: درخواست بازگشت وجه
     processing --> refund_pending: درخواست بازگشت وجه
     refund_pending --> refunded: تسویه
     cancelled --> [*]
-    delivered --> [*]
     refunded --> [*]
 ```
 
 گذارهای مجاز به‌صورت داده در `modules/orders/domain/order-status.ts` تعریف می‌شوند
 تا هم قابل تست باشند و هم در UI برای ساخت دکمه‌های مجاز استفاده شوند.
+
+کارمند می‌تواند در مسیر آماده‌سازی تا پس از تحویل یک مرحله برگردد تا کلیک اشتباه
+اصلاح شود. بازگشت به `payment_pending` مجاز نیست چون طلا وارد دفتر کل شده است.
+از `cancelled` و `refunded` خروجی نیست. تغییر وضعیت در پنل با پاپ‌آپ تایید انجام می‌شود.
 
 ## پرداخت کارت‌به‌کارت
 
@@ -102,10 +111,13 @@ stateDiagram-v2
 stateDiagram-v2
     [*] --> none: ثبت‌نام
     none --> pending: ارسال کد ملی و تاریخ تولد
+    none --> verified: تایید دستی ادمین
     pending --> verified: تایید
     pending --> rejected: عدم تطابق
     rejected --> pending: ارسال مجدد
-    verified --> [*]
+    rejected --> verified: تایید دستی ادمین
+    verified --> none: لغو دستی ادمین
 ```
 
 توجه: `none` مانع ورود یا خرید عادی نیست. فقط عملیات مالی خاص به `verified` نیاز دارند.
+ادمین می‌تواند از فهرست یا صفحه کاربر احراز هویت را دستی تایید کند (مراجعه حضوری)، درخواست در صف را تایید/رد کند، یا احراز هویت تاییدشده را با پاپ‌آپ به `none` برگرداند. کد ملی پاک نمی‌شود.

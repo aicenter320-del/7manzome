@@ -240,6 +240,19 @@ export async function countContributors(treasureId: string): Promise<number> {
   return rows[0]?.value ?? 0;
 }
 
+export async function countAllContributions(treasureId: string): Promise<number> {
+  const rows = await db
+    .select({ value: count() })
+    .from(contributions)
+    .where(eq(contributions.treasureId, treasureId));
+
+  return rows[0]?.value ?? 0;
+}
+
+export async function deleteTreasure(treasureId: string): Promise<void> {
+  await db.delete(treasures).where(eq(treasures.id, treasureId));
+}
+
 // ------------------------------------------------------------------
 // هدف و نقطه عطف
 // ------------------------------------------------------------------

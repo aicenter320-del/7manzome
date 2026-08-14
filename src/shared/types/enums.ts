@@ -35,6 +35,11 @@ export const USER_ROLE_LABELS: Record<UserRole, string> = {
 export const USER_STATUSES = ["active", "suspended"] as const;
 export type UserStatus = (typeof USER_STATUSES)[number];
 
+export const USER_STATUS_LABELS: Record<UserStatus, string> = {
+  active: "فعال",
+  suspended: "مسدود",
+};
+
 export const KYC_STATUSES = ["none", "pending", "verified", "rejected"] as const;
 export type KycStatus = (typeof KYC_STATUSES)[number];
 
@@ -170,6 +175,14 @@ export const GIFT_CARD_STATUSES = [
   "void",
 ] as const;
 export type GiftCardStatus = (typeof GIFT_CARD_STATUSES)[number];
+
+export const GIFT_CARD_STATUS_LABELS: Record<GiftCardStatus, string> = {
+  unassigned: "آزاد",
+  assigned: "منسوب",
+  printed: "چاپ‌شده",
+  redeemed: "مصرف‌شده",
+  void: "باطل",
+};
 
 // ------------------------------------------------------------------
 // کاتالوگ

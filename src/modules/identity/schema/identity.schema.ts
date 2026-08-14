@@ -10,6 +10,8 @@ import {
 } from "@/shared/lib/validators";
 import { USER_ROLES } from "@/shared/types/enums";
 
+import { ASSIGNABLE_ROLES } from "../domain/user-access";
+
 export const requestOtpSchema = z.object({
   phone: phoneSchema,
 });
@@ -41,13 +43,21 @@ export const submitKycSchema = z.object({
 export const reviewKycSchema = z
   .object({
     userId: idSchema,
-    decision: z.enum(["verified", "rejected"]),
+    decision: z.enum(["verified", "rejected", "none"]),
     reason: z.string().trim().max(300).optional(),
   })
   .refine((data) => data.decision !== "rejected" || Boolean(data.reason), {
     message: "برای رد احراز هویت، ذکر دلیل الزامی است",
     path: ["reason"],
   });
+
+export const updateAdminUserProfileSchema = updateProfileSchema.extend({
+  userId: idSchema,
+});
+
+export const deleteAdminUserSchema = z.object({
+  userId: idSchema,
+});
 
 export const setUserStatusSchema = z.object({
   userId: idSchema,
@@ -58,4 +68,9 @@ export const setRoleSchema = z.object({
   userId: idSchema,
   role: z.enum(USER_ROLES),
   grant: z.boolean(),
+});
+
+export const assignUserAccessSchema = z.object({
+  userId: idSchema,
+  role: z.enum(ASSIGNABLE_ROLES),
 });

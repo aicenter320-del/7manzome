@@ -52,6 +52,7 @@ export { ContributionForm, GiftProgress, KeepsakeList, GiftShareBar } from "./ui
 - مشارکت‌کننده ناشناس (`is_anonymous`) نامش به مهمان‌های دیگر نشان داده نمی‌شود
   اما برای دارنده حساب قابل مشاهده است.
 - `gold_mg` مشارکت فقط پس از تایید پرداخت پر می‌شود، با قیمت لحظه تایید.
+- ادمین می‌تواند لینک هدیه را متوقف، ازسرگیری یا ببندد و کارت را باطل (`void`) کند.
 
 ## مسیرها
 
@@ -59,6 +60,7 @@ export { ContributionForm, GiftProgress, KeepsakeList, GiftShareBar } from "./ui
 - `app/(gift)/g/[token]/pay` — ثبت رسید کارت‌به‌کارت
 - `app/(gift)/g/[token]/thanks` — تشکر و ثبت پیام یادگاری
 - `app/api/qr/[token]` — تولید تصویر QR برای کارت هدیه
+- `app/admin/users/[userId]` — تب لینک و کارت هدیه کاربر
 
 ## نقاط باز
 

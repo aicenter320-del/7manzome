@@ -22,6 +22,7 @@ export {
   reviewAndSettlePayment,
   expireStalePaymentsAction,
   softDeleteMediaFileAction,
+  deleteAdminUser,
 } from "./actions/admin.actions";
 export { StatCard } from "./ui/stat-card";
 export { DataTable } from "./ui/data-table";
@@ -73,6 +74,10 @@ export { OwnerDashboardView, OpsDashboard } from "./ui/owner-dashboard";
 کارت‌های هدیه، شخصی‌سازی‌ها، ارسال‌ها، پیامک‌ها، محتوا، گزارش‌ها، تنظیمات.
 
 صفحات `app/admin` روی همین API و ناوبری مجوز‌محور ساخته شده‌اند.
+جزئیات پرداخت تصویر رسید ارسالی کاربر را از `/api/files` نشان می‌دهد.
+فهرست کاربران نقش کارمندی را قابل انتخاب می‌کند، احراز هویت را دستی تایید یا لغو می‌کند، حساب را مسدود یا فعال می‌کند، و وضعیت سفارش را از آخرین سفارش جاری مشتری می‌خواند.
+صفحهٔ `/admin/users/[userId]` پروفایل، کودکان، گنجینه‌ها، لینک و کارت هدیه، و سفارش/پرداخت همان کاربر را در تب نشان می‌دهد.
+حذف حساب فقط بدون سفارش و گنجینه است؛ وگرنه فقط مسدود. کودک بایگانی می‌شود نه حذف. گنجینه با دفتر کل حذف نمی‌شود. سفارش و پرداخت فقط لینک دارند.
 
 ## کتابخانه فایل
 

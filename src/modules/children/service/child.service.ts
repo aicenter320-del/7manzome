@@ -80,8 +80,11 @@ export async function assertChildAccess(
   return level;
 }
 
-export async function getChildrenForUser(userId: string): Promise<ChildSummary[]> {
-  const rows = await findChildrenForUser(userId);
+export async function getChildrenForUser(
+  userId: string,
+  options?: { includeArchived?: boolean },
+): Promise<ChildSummary[]> {
+  const rows = await findChildrenForUser(userId, options);
   return rows.map(toSummary);
 }
 
@@ -186,6 +189,47 @@ export async function editChild(input: {
   });
 }
 
+/** ویرایش کودک توسط ادمین؛ بدون محدودیت سرپرستی. */
+export async function editChildAsAdmin(input: {
+  childId: string;
+  actorUserId: string;
+  firstName?: string;
+  lastName?: string | null;
+  nameEn?: string | null;
+  gender?: ChildGender;
+  birthDateAt?: number;
+  note?: string | null;
+}): Promise<void> {
+  const row = await findChildById(input.childId);
+  if (!row) throw new ChildAccessError();
+
+  if (input.birthDateAt !== undefined) {
+    const validation = validateBirthDate(input.birthDateAt);
+    if (!validation.ok) throw new BirthDateError(validation.message);
+  }
+
+  await updateChild(input.childId, {
+    ...(input.firstName !== undefined ? { firstName: sanitizeText(input.firstName, 50) } : {}),
+    ...(input.lastName !== undefined
+      ? { lastName: input.lastName ? sanitizeText(input.lastName, 50) : null }
+      : {}),
+    ...(input.nameEn !== undefined ? { nameEn: input.nameEn } : {}),
+    ...(input.gender !== undefined ? { gender: input.gender } : {}),
+    ...(input.birthDateAt !== undefined ? { birthDateAt: input.birthDateAt } : {}),
+    ...(input.note !== undefined
+      ? { note: input.note ? sanitizeText(input.note, 500) : null }
+      : {}),
+  });
+
+  await recordAudit({
+    actorUserId: input.actorUserId,
+    action: "child.updated",
+    entityType: "child",
+    entityId: input.childId,
+    summary: "ویرایش پروفایل کودک توسط ادمین",
+  });
+}
+
 export async function archive(childId: string, userId: string): Promise<void> {
   await assertChildAccess(childId, userId, "owner");
   await archiveChild(childId);
@@ -203,6 +247,22 @@ export async function archive(childId: string, userId: string): Promise<void> {
 export async function restore(childId: string, userId: string): Promise<void> {
   await assertChildAccess(childId, userId, "owner");
   await restoreChild(childId);
+}
+
+/** بایگانی کودک توسط ادمین؛ بدون محدودیت سرپرستی. */
+export async function archiveAsAdmin(childId: string, actorUserId: string): Promise<void> {
+  const row = await findChildById(childId);
+  if (!row) throw new ChildAccessError();
+
+  await archiveChild(childId);
+
+  await recordAudit({
+    actorUserId,
+    action: "child.archived",
+    entityType: "child",
+    entityId: childId,
+    summary: "بایگانی پروفایل کودک توسط ادمین",
+  });
 }
 
 export async function getGuardianships(

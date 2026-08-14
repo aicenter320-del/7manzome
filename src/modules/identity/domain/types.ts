@@ -13,6 +13,15 @@ export interface PublicUser {
   createdAt: number;
 }
 
+/** جزئیات کاربر برای پنل ادمین؛ شامل دادهٔ هویتی حساس. */
+export interface AdminUserDetail extends PublicUser {
+  email: string | null;
+  nationalId: string | null;
+  birthDateAt: number | null;
+  kycVerifiedAt: number | null;
+  kycRejectionReason: string | null;
+}
+
 /** نتیجه درخواست کد یک‌بارمصرف. */
 export interface OtpRequestResult {
   /** ثانیه باقی‌مانده تا امکان درخواست مجدد. */

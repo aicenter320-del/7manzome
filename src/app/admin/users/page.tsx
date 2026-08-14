@@ -1,15 +1,31 @@
+import Link from "next/link";
+
 import { DataTable, TableCell, TableRow } from "@/modules/admin";
-import { getUserCount, listUsers } from "@/modules/identity";
+import {
+  ASSIGNABLE_ROLE_LABELS,
+  AccountStatusBadge,
+  KycDecisionSelect,
+  KycStatusBadge,
+  UserAccountStatusSelect,
+  UserRoleSelect,
+  assignedRoleFromRoles,
+  getUserCount,
+  listUsers,
+} from "@/modules/identity";
+import { getLatestOrderStatusByUserIds, OrderStatusBadge } from "@/modules/orders";
 import { requirePermission } from "@/server/auth/guards";
+import { hasPermission } from "@/server/auth/rbac";
 import { formatJalaliDate } from "@/shared/lib/jalali";
 import { formatPhoneFa, toPersianDigits } from "@/shared/lib/persian";
-import { KYC_STATUS_LABELS, USER_ROLE_LABELS } from "@/shared/types/enums";
-import { Badge } from "@/shared/ui/badge";
+import { Button } from "@/shared/ui/button";
 import { PageHeader } from "@/shared/ui/page-header";
 
 export default async function AdminUsersPage() {
-  await requirePermission("user:read");
+  const actor = await requirePermission("user:read");
+  const canAssign = hasPermission(actor.roles, "role:write");
+  const canReviewKyc = hasPermission(actor.roles, "user:write");
   const [users, count] = await Promise.all([listUsers({ limit: 50 }), getUserCount()]);
+  const orderStatusByUser = await getLatestOrderStatusByUserIds(users.map((user) => user.id));
 
   return (
     <div className="grid gap-6">
@@ -19,25 +35,66 @@ export default async function AdminUsersPage() {
       />
 
       <DataTable
-        columns={["نام", "موبایل", "احراز هویت", "نقش", "عضویت"]}
+        columns={["نام", "موبایل", "حساب", "احراز هویت", "نقش", "وضعیت", "عضویت", "ویرایش"]}
         isEmpty={users.length === 0}
         emptyTitle="کاربری پیدا نشد"
       >
-        {users.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell>{user.displayName}</TableCell>
-            <TableCell className="ltr-nums">{formatPhoneFa(user.phone)}</TableCell>
-            <TableCell>
-              <Badge variant="muted">{KYC_STATUS_LABELS[user.kycStatus]}</Badge>
-            </TableCell>
-            <TableCell>
-              {user.roles.length > 0
-                ? user.roles.map((role) => USER_ROLE_LABELS[role]).join("، ")
-                : "مشتری"}
-            </TableCell>
-            <TableCell>{formatJalaliDate(user.createdAt)}</TableCell>
-          </TableRow>
-        ))}
+        {users.map((user) => {
+          const role = assignedRoleFromRoles(user.roles);
+          const orderStatus = orderStatusByUser.get(user.id) ?? null;
+          return (
+            <TableRow key={user.id}>
+              <TableCell>
+                <Link
+                  href={`/admin/users/${user.id}`}
+                  className="font-medium text-foreground hover:underline"
+                >
+                  {user.displayName}
+                </Link>
+              </TableCell>
+              <TableCell className="ltr-nums">{formatPhoneFa(user.phone)}</TableCell>
+              <TableCell>
+                {canReviewKyc ? (
+                  <UserAccountStatusSelect
+                    userId={user.id}
+                    displayName={user.displayName}
+                    status={user.status}
+                    isSelf={user.id === actor.id}
+                  />
+                ) : (
+                  <AccountStatusBadge status={user.status} />
+                )}
+              </TableCell>
+              <TableCell>
+                {canReviewKyc ? (
+                  <KycDecisionSelect
+                    userId={user.id}
+                    displayName={user.displayName}
+                    status={user.kycStatus}
+                  />
+                ) : (
+                  <KycStatusBadge status={user.kycStatus} />
+                )}
+              </TableCell>
+              <TableCell>
+                {canAssign ? (
+                  <UserRoleSelect userId={user.id} roles={user.roles} />
+                ) : (
+                  ASSIGNABLE_ROLE_LABELS[role]
+                )}
+              </TableCell>
+              <TableCell>
+                {orderStatus ? <OrderStatusBadge status={orderStatus} /> : "—"}
+              </TableCell>
+              <TableCell>{formatJalaliDate(user.createdAt)}</TableCell>
+              <TableCell>
+                <Button asChild size="sm" variant="outline">
+                  <Link href={`/admin/users/${user.id}`}>ویرایش</Link>
+                </Button>
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </DataTable>
     </div>
   );

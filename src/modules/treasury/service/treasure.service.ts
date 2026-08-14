@@ -20,6 +20,7 @@ import type {
 } from "../domain/types";
 import {
   countActiveTreasures,
+  countAllContributions,
   countContributors,
   findActiveGoal,
   findChildBrief,
@@ -31,6 +32,7 @@ import {
   findTreasuresForUser,
   insertGoal,
   insertTreasure,
+  deleteTreasure,
   sumAllGoldSavedMg,
   sumPureMg,
   updateTreasure,
@@ -189,8 +191,14 @@ export async function getTreasureSummaryUnchecked(
   return row ? buildSummary(row) : null;
 }
 
-export async function getTreasuresForUser(userId: string): Promise<TreasureSummary[]> {
-  const rows = await findTreasuresForUser(userId, { statuses: ["active", "closed"] });
+export async function getTreasuresForUser(
+  userId: string,
+  options?: { includeArchived?: boolean },
+): Promise<TreasureSummary[]> {
+  const rows = await findTreasuresForUser(
+    userId,
+    options?.includeArchived ? undefined : { statuses: ["active", "closed"] },
+  );
 
   const summaries = await Promise.all(rows.map(buildSummary));
   return summaries.filter((item): item is TreasureSummary => item !== null);
@@ -342,6 +350,91 @@ export async function changeTreasureStatus(input: {
     entityType: "treasure",
     entityId: input.treasureId,
     summary: `تغییر وضعیت گنجینه به ${input.status}`,
+  });
+}
+
+/** ویرایش گنجینه توسط ادمین؛ بدون محدودیت مالک. */
+export async function editTreasureAsAdmin(input: {
+  treasureId: string;
+  actorUserId: string;
+  title?: string;
+  inviteMessage?: string | null;
+  visibility?: TreasureVisibility;
+}): Promise<void> {
+  const row = await findTreasureById(input.treasureId);
+  if (!row) throw new TreasureAccessError();
+
+  await updateTreasure(input.treasureId, {
+    ...(input.title !== undefined ? { title: sanitizeText(input.title, 120) } : {}),
+    ...(input.inviteMessage !== undefined
+      ? { inviteMessage: input.inviteMessage ? sanitizeText(input.inviteMessage, 500) : null }
+      : {}),
+    ...(input.visibility !== undefined ? { visibility: input.visibility } : {}),
+  });
+
+  await recordAudit({
+    actorUserId: input.actorUserId,
+    action: "treasure.updated",
+    entityType: "treasure",
+    entityId: input.treasureId,
+    summary: "ویرایش گنجینه توسط ادمین",
+  });
+}
+
+export async function changeTreasureStatusAsAdmin(input: {
+  treasureId: string;
+  actorUserId: string;
+  status: TreasureStatus;
+}): Promise<void> {
+  const row = await findTreasureById(input.treasureId);
+  if (!row) throw new TreasureAccessError();
+
+  await updateTreasure(input.treasureId, {
+    status: input.status,
+    closedAt: input.status === "closed" ? Date.now() : null,
+  });
+
+  await recordAudit({
+    actorUserId: input.actorUserId,
+    action: `treasure.${input.status}`,
+    entityType: "treasure",
+    entityId: input.treasureId,
+    summary: `تغییر وضعیت گنجینه به ${input.status} توسط ادمین`,
+  });
+}
+
+export class TreasureNotEmptyError extends Error {
+  constructor() {
+    super("این گنجینه دفتر کل یا مشارکت دارد و قابل حذف نیست.");
+    this.name = "TreasureNotEmptyError";
+  }
+}
+
+/** حذف گنجینه فقط وقتی دفتر کل و مشارکت خالی باشد. */
+export async function deleteEmptyTreasureAsAdmin(
+  treasureId: string,
+  actorUserId: string,
+): Promise<void> {
+  const row = await findTreasureById(treasureId);
+  if (!row) throw new TreasureAccessError();
+
+  const [entries, contributionCount] = await Promise.all([
+    findLedgerEntries(treasureId, { limit: 1 }),
+    countAllContributions(treasureId),
+  ]);
+
+  if (entries.length > 0 || contributionCount > 0) {
+    throw new TreasureNotEmptyError();
+  }
+
+  await deleteTreasure(treasureId);
+
+  await recordAudit({
+    actorUserId,
+    action: "treasure.deleted",
+    entityType: "treasure",
+    entityId: treasureId,
+    summary: "حذف گنجینه بدون دفتر کل",
   });
 }
 

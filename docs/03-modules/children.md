@@ -34,11 +34,13 @@ export type { Child, Guardianship, GuardianRelation, AccessLevel } from "./domai
   به «۳ سال و ۴ ماه» تبدیل می‌شود.
 - تصویر کودک داده حساس است؛ فایل آن `private` و از مسیر کنترل‌شده سرو می‌شود.
 - کودک هرگز فیزیکی حذف نمی‌شود؛ فقط `archived_at` پر می‌شود چون رکوردهای مالی به آن وصل‌اند.
+- ادمین از صفحهٔ کاربر می‌تواند پروفایل کودک را ویرایش یا بایگانی کند.
 
 ## مسیرها
 
 - `app/(dashboard)/dashboard/children`
 - `app/(dashboard)/dashboard/children/[childId]`
+- `app/admin/users/[userId]` — تب کودکان
 
 ## نقاط باز
 

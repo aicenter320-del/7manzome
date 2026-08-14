@@ -322,12 +322,14 @@ export async function countPaymentsByStatus(status: PaymentStatus): Promise<numb
 export async function listPayments(input: {
   status?: PaymentStatus;
   purpose?: PaymentPurpose;
+  payerUserId?: string;
   limit: number;
   offset: number;
 }): Promise<PaymentRow[]> {
   const conditions: SQL[] = [];
   if (input.status) conditions.push(eq(payments.status, input.status));
   if (input.purpose) conditions.push(eq(payments.purpose, input.purpose));
+  if (input.payerUserId) conditions.push(eq(payments.payerUserId, input.payerUserId));
 
   return db
     .select()
