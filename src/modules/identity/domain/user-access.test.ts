@@ -1,15 +1,23 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  ASSIGNABLE_ROLE_LABELS,
+  CUSTOMER_ROLE_SLUG,
+  SYSTEM_ASSIGNABLE_LABELS,
   assignedRoleFromRoles,
-  isAssignableRole,
+  isAssignableRoleValue,
+  labelForAssignedRole,
   rolesForAssignedRole,
 } from "./user-access";
 
+const sampleOptions = [
+  { slug: "super_admin", title: "مدیر ارشد" },
+  { slug: "content_manager", title: "مدیر محتوا" },
+  { slug: "c_custom1", title: "انبار" },
+];
+
 describe("assignedRoleFromRoles", () => {
   it("بدون نقش کارمندی مشتری است", () => {
-    expect(assignedRoleFromRoles([])).toBe("customer");
+    expect(assignedRoleFromRoles([])).toBe(CUSTOMER_ROLE_SLUG);
   });
 
   it("مدیر ارشد را ترجیح می‌دهد", () => {
@@ -19,8 +27,7 @@ describe("assignedRoleFromRoles", () => {
 
   it("نقش کارمندی را همان‌طور که هست نشان می‌دهد", () => {
     expect(assignedRoleFromRoles(["content_manager"])).toBe("content_manager");
-    expect(assignedRoleFromRoles(["customer_support"])).toBe("customer_support");
-    expect(assignedRoleFromRoles(["fulfillment"])).toBe("fulfillment");
+    expect(assignedRoleFromRoles(["c_custom1"])).toBe("c_custom1");
   });
 });
 
@@ -31,22 +38,25 @@ describe("rolesForAssignedRole", () => {
 
   it("نقش کارمندی را تک‌نقش می‌گذارد", () => {
     expect(rolesForAssignedRole("super_admin")).toEqual(["super_admin"]);
-    expect(rolesForAssignedRole("content_manager")).toEqual(["content_manager"]);
+    expect(rolesForAssignedRole("c_custom1")).toEqual(["c_custom1"]);
   });
 });
 
 describe("برچسب‌ها", () => {
-  it("نقش‌های نمایشی فارسی‌اند", () => {
-    expect(ASSIGNABLE_ROLE_LABELS.customer).toBe("مشتری");
-    expect(ASSIGNABLE_ROLE_LABELS.super_admin).toBe("مدیر ارشد");
-    expect(ASSIGNABLE_ROLE_LABELS.content_manager).toBe("مدیر محتوا");
-    expect(ASSIGNABLE_ROLE_LABELS.customer_support).toBe("پشتیبانی مشتریان");
-    expect(ASSIGNABLE_ROLE_LABELS.fulfillment).toBe("آماده‌سازی و ارسال");
+  it("نقش‌های سیستمی فارسی‌اند", () => {
+    expect(SYSTEM_ASSIGNABLE_LABELS.customer).toBe("مشتری");
+    expect(SYSTEM_ASSIGNABLE_LABELS.super_admin).toBe("مدیر ارشد");
+    expect(SYSTEM_ASSIGNABLE_LABELS.content_manager).toBe("مدیر محتوا");
   });
 
-  it("نقش قابل‌انتخاب را از رشته تشخیص می‌دهد", () => {
-    expect(isAssignableRole("customer")).toBe(true);
-    expect(isAssignableRole("content_manager")).toBe(true);
-    expect(isAssignableRole("manager")).toBe(false);
+  it("برچسب را از فهرست نقش‌ها می‌خواند", () => {
+    expect(labelForAssignedRole("c_custom1", sampleOptions)).toBe("انبار");
+    expect(labelForAssignedRole("customer", sampleOptions)).toBe("مشتری");
+  });
+
+  it("نقش قابل‌انتخاب را از فهرست تشخیص می‌دهد", () => {
+    expect(isAssignableRoleValue("customer", sampleOptions)).toBe(true);
+    expect(isAssignableRoleValue("c_custom1", sampleOptions)).toBe(true);
+    expect(isAssignableRoleValue("unknown", sampleOptions)).toBe(false);
   });
 });

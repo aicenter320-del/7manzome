@@ -13,13 +13,13 @@
 
 ```ts
 export { requestOtp, verifyOtp, logout, updateProfile, submitKyc, decideKyc, assignUserAccessAction } from "./actions/...";
-export { getUserById, getUserByPhone, assignUserAccess } from "./service/user.service";
-export type { PublicUser, AssignableRole } from "./domain/...";
+export { getUserById, getUserByPhone, assignUserAccess, listStaffRoles } from "./service/...";
+export type { PublicUser, StaffRoleOption } from "./domain/...";
 ```
 
 ## جدول‌های دیتابیس
 
-`users`، `user_roles`، `otp_codes`، `sessions`، `audit_logs`
+`users`، `user_roles`، `staff_roles`، `staff_role_grants`، `otp_codes`، `sessions`، `audit_logs`
 
 ## وابستگی‌ها
 
@@ -33,9 +33,13 @@ export type { PublicUser, AssignableRole } from "./domain/...";
 - ورود به حساب **نیازی به احراز هویت کامل ندارد**. این دو مفهوم جدا هستند.
 - شماره موبایل ایرانی: ۱۱ رقم با شروع `09`.
 - کد ملی با الگوریتم رقم کنترلی اعتبارسنجی می‌شود، نه فقط طول آن.
-- در فهرست کاربران نقش از میان مشتری و نقش‌های کارمندی انتخاب می‌شود.
-  مدیر ارشد نمی‌تواند نقش خودش را بردارد. تغییر نقش با پاپ‌آپ تایید انجام می‌شود.
+- در فهرست کاربران نقش از میان مشتری و نقش‌های کارمندی دیتابیس انتخاب می‌شود.
+  مدیر ارشد نمی‌تواند نقش خودش را بردارد. آخرین مدیر ارشد به نقش دیگر نمی‌رود.
+  تغییر نقش با پاپ‌آپ تایید انجام می‌شود.
   ستون وضعیت، آخرین سفارش جاری مشتری است و دستی عوض نمی‌شود.
+- نقش کارمندی در دیتابیس است. مدیر ارشد در `/admin/roles` نقش می‌سازد و برای هر بخش
+  سطح هیچ / خواندن / ویرایش / کامل می‌گذارد. نقش `super_admin` قفل است.
+  مجوز `role:write` از ماتریس نمی‌آید. نقش سیستمی حذف نمی‌شود.
 - ادمین با مجوز `user:write` می‌تواند احراز هویت را دستی تایید کند، حتی اگر کاربر هنوز مدارک نفرستاده باشد.
   رد کردن فقط از صف بررسی است و دلیل می‌خواهد.
   از وضعیت تاییدشده می‌توان احراز هویت را با پاپ‌آپ به «انجام‌نشده» برگرداند؛ کد ملی پاک نمی‌شود.
@@ -48,6 +52,7 @@ export type { PublicUser, AssignableRole } from "./domain/...";
 - `app/(dashboard)/dashboard/profile` — پروفایل و احراز هویت
 - `app/admin/users` — فهرست کاربران با نقش، تایید احراز هویت و مسدود کردن حساب؛ وضعیت سفارش از سفارش جاری خوانده می‌شود
 - `app/admin/users/[userId]` — جزئیات و ویرایش کاربر: پروفایل، احراز هویت، کودکان، گنجینه، هدیه، سفارش و پرداخت
+- `app/admin/roles` — ساخت و ویرایش نقش کارمندی؛ فقط مدیر ارشد
 
 ## نقاط باز
 

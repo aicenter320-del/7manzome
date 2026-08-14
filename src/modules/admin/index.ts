@@ -19,7 +19,7 @@ export {
   MEDIA_FOLDER_LABELS,
   MEDIA_FOLDERS,
   canDeleteMediaFolder,
-  foldersForRoles,
+  foldersForPermissions,
   isMediaFolder,
 } from "./domain/media-access";
 export {

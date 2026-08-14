@@ -3,15 +3,15 @@ import "server-only";
 import { recordAudit } from "@/server/audit";
 import { revokeAllSessions } from "@/server/auth/session";
 import type { UserRow } from "@/server/db/types";
-import type { UserRole, UserStatus } from "@/shared/types/enums";
+import type { UserStatus } from "@/shared/types/enums";
 
 import { canAdminDecideKyc, type KycDecision } from "../domain/kyc-status";
 import type { AdminUserDetail, PublicUser } from "../domain/types";
 import {
-  ASSIGNABLE_ROLE_LABELS,
+  labelForAssignedRole,
   rolesForAssignedRole,
-  type AssignableRole,
 } from "../domain/user-access";
+import { assertAssignableRoleSlug, countUsersWithRoleSlug, listAssignableStaffRoles } from "./staff-role.service";
 import {
   countCustomersCreatedBetween,
   countUsers,
@@ -30,7 +30,7 @@ import {
   type UserListFilters,
 } from "../repo/user.repo";
 
-function toPublicUser(row: UserRow, roles: UserRole[]): PublicUser {
+function toPublicUser(row: UserRow, roles: string[]): PublicUser {
   const displayName =
     [row.firstName, row.lastName].filter(Boolean).join(" ").trim() || row.phone;
 
@@ -228,15 +228,27 @@ export async function setUserStatus(input: {
   });
 }
 
+export class LastSuperAdminError extends Error {
+  constructor() {
+    super("آخرین مدیر ارشد را نمی‌توان به نقش دیگر برد.");
+    this.name = "LastSuperAdminError";
+  }
+}
+
 export async function setUserRole(input: {
   userId: string;
-  role: UserRole;
+  role: string;
   grant: boolean;
   actorUserId: string;
 }): Promise<void> {
   if (input.grant) {
+    await assertAssignableRoleSlug(input.role);
     await grantRole(input.userId, input.role, input.actorUserId);
   } else {
+    if (input.role === "super_admin") {
+      const count = await countUsersWithRoleSlug("super_admin");
+      if (count <= 1) throw new LastSuperAdminError();
+    }
     await revokeRole(input.userId, input.role);
   }
 
@@ -252,23 +264,33 @@ export async function setUserRole(input: {
 
 export async function assignUserAccess(input: {
   userId: string;
-  role: AssignableRole;
+  role: string;
   actorUserId: string;
 }): Promise<void> {
+  await assertAssignableRoleSlug(input.role);
+
+  const current = await findRolesForUser(input.userId);
+  if (current.includes("super_admin") && input.role !== "super_admin") {
+    const count = await countUsersWithRoleSlug("super_admin");
+    if (count <= 1) throw new LastSuperAdminError();
+  }
+
   const roles = rolesForAssignedRole(input.role);
   await replaceRolesForUser(input.userId, roles, input.actorUserId);
+
+  const staffRoles = await listAssignableStaffRoles();
 
   await recordAudit({
     actorUserId: input.actorUserId,
     action: "role.assigned",
     entityType: "user",
     entityId: input.userId,
-    summary: `تعیین نقش ${ASSIGNABLE_ROLE_LABELS[input.role]}`,
+    summary: `تعیین نقش ${labelForAssignedRole(input.role, staffRoles)}`,
     meta: { role: input.role },
   });
 }
 
-export async function getRolesForUser(userId: string): Promise<UserRole[]> {
+export async function getRolesForUser(userId: string): Promise<string[]> {
   return findRolesForUser(userId);
 }
 

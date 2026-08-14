@@ -2,7 +2,6 @@ import Link from "next/link";
 
 import { DataTable, TableCell, TableRow } from "@/modules/admin";
 import {
-  ASSIGNABLE_ROLE_LABELS,
   AccountStatusBadge,
   KycDecisionSelect,
   KycStatusBadge,
@@ -10,6 +9,8 @@ import {
   UserRoleSelect,
   assignedRoleFromRoles,
   getUserCount,
+  labelForAssignedRole,
+  listAssignableStaffRoles,
   listUsers,
 } from "@/modules/identity";
 import { getLatestOrderStatusByUserIds, OrderStatusBadge } from "@/modules/orders";
@@ -24,7 +25,11 @@ export default async function AdminUsersPage() {
   const actor = await requirePermission("user:read");
   const canAssign = hasPermission(actor.roles, "role:write");
   const canReviewKyc = hasPermission(actor.roles, "user:write");
-  const [users, count] = await Promise.all([listUsers({ limit: 50 }), getUserCount()]);
+  const [users, count, staffRoles] = await Promise.all([
+    listUsers({ limit: 50 }),
+    getUserCount(),
+    listAssignableStaffRoles(),
+  ]);
   const orderStatusByUser = await getLatestOrderStatusByUserIds(users.map((user) => user.id));
 
   return (
@@ -78,9 +83,9 @@ export default async function AdminUsersPage() {
               </TableCell>
               <TableCell>
                 {canAssign ? (
-                  <UserRoleSelect userId={user.id} roles={user.roles} />
+                  <UserRoleSelect userId={user.id} roles={user.roles} staffRoles={staffRoles} />
                 ) : (
-                  ASSIGNABLE_ROLE_LABELS[role]
+                  labelForAssignedRole(role, staffRoles)
                 )}
               </TableCell>
               <TableCell>

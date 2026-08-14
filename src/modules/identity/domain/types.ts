@@ -1,4 +1,4 @@
-import type { KycStatus, UserRole, UserStatus } from "@/shared/types/enums";
+import type { KycStatus, UserStatus } from "@/shared/types/enums";
 
 /** نمایه عمومی کاربر؛ هیچ داده حساسی ندارد. */
 export interface PublicUser {
@@ -9,7 +9,7 @@ export interface PublicUser {
   displayName: string;
   status: UserStatus;
   kycStatus: KycStatus;
-  roles: UserRole[];
+  roles: string[];
   createdAt: number;
 }
 

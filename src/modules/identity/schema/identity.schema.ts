@@ -8,9 +8,7 @@ import {
   persianNameSchema,
   phoneSchema,
 } from "@/shared/lib/validators";
-import { USER_ROLES } from "@/shared/types/enums";
-
-import { ASSIGNABLE_ROLES } from "../domain/user-access";
+import { ACCESS_SECTIONS, PANEL_ACCESS_LEVELS } from "@/shared/types/enums";
 
 export const requestOtpSchema = z.object({
   phone: phoneSchema,
@@ -64,13 +62,40 @@ export const setUserStatusSchema = z.object({
   status: z.enum(["active", "suspended"]),
 });
 
+export const roleSlugSchema = z
+  .string()
+  .min(1, "نقش را انتخاب کنید")
+  .max(64, "نقش نامعتبر است")
+  .regex(/^[a-z][a-zA-Z0-9_-]*$/, "نقش نامعتبر است");
+
 export const setRoleSchema = z.object({
   userId: idSchema,
-  role: z.enum(USER_ROLES),
+  role: roleSlugSchema,
   grant: z.boolean(),
 });
 
 export const assignUserAccessSchema = z.object({
   userId: idSchema,
-  role: z.enum(ASSIGNABLE_ROLES),
+  role: roleSlugSchema,
+});
+
+export const sectionGrantSchema = z.object({
+  section: z.enum(ACCESS_SECTIONS),
+  level: z.enum(PANEL_ACCESS_LEVELS),
+});
+
+export const staffRoleFieldsSchema = z.object({
+  title: persianNameSchema,
+  description: z.string().trim().max(300, "توضیح نمی‌تواند بیش از ۳۰۰ حرف باشد").optional(),
+  grants: z.array(sectionGrantSchema),
+});
+
+export const createStaffRoleSchema = staffRoleFieldsSchema;
+
+export const updateStaffRoleSchema = staffRoleFieldsSchema.extend({
+  roleId: idSchema,
+});
+
+export const deleteStaffRoleSchema = z.object({
+  roleId: idSchema,
 });

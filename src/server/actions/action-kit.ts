@@ -5,7 +5,6 @@ import { z } from "zod";
 import { getSessionUser, type SessionUser } from "../auth/session";
 import { hasPermission, hasRole, isStaff, type Permission } from "../auth/rbac";
 import { describeError, logger } from "../logger";
-import type { UserRole } from "@/shared/types/enums";
 
 /**
  * سازنده Server Action امن.
@@ -58,7 +57,7 @@ interface ActionDefinition<TSchema extends z.ZodType, TData, TAuth extends AuthR
   schema: TSchema;
   auth: TAuth;
   /** نقش‌های مجاز؛ خالی یعنی نقش خاصی لازم نیست. */
-  roles?: readonly UserRole[];
+  roles?: readonly string[];
   /** مجوزهای لازم؛ همه باید موجود باشند. */
   permissions?: readonly Permission[];
   handler: (context: HandlerContext<z.output<TSchema>, TAuth>) => Promise<TData>;

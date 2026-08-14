@@ -15,6 +15,7 @@ export const adminNav: readonly AdminNavItem[] = [
   { href: "/orders", label: "سفارش‌ها", requiredPermission: "order:read" },
   { href: "/payments", label: "پرداخت‌ها", requiredPermission: "payment:read" },
   { href: "/users", label: "کاربران", requiredPermission: "user:read" },
+  { href: "/roles", label: "نقش‌ها", requiredPermission: "role:write" },
   { href: "/children", label: "کودکان", requiredPermission: "child:read" },
   { href: "/treasures", label: "گنجینه‌ها", requiredPermission: "treasury:read" },
   { href: "/products", label: "محصولات", requiredPermission: "catalog:read" },

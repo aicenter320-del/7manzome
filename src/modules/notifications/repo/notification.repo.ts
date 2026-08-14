@@ -5,7 +5,7 @@ import { and, count, desc, eq, inArray, isNull } from "drizzle-orm";
 import { db } from "@/server/db";
 import { notifications, userRoles } from "@/server/db/schema";
 import type { NotificationRow } from "@/server/db/types";
-import type { NotificationKind, UserRole } from "@/shared/types/enums";
+import type { NotificationKind } from "@/shared/types/enums";
 
 export interface NewNotification {
   userId: string;
@@ -32,7 +32,7 @@ export async function insertNotifications(rows: readonly NewNotification[]): Pro
 }
 
 /** شناسه کاربران دارای یکی از نقش‌های داده‌شده؛ برای اعلان گروهی به تیم. */
-export async function findUserIdsByRoles(roles: readonly UserRole[]): Promise<string[]> {
+export async function findUserIdsByRoles(roles: readonly string[]): Promise<string[]> {
   if (roles.length === 0) return [];
 
   const rows = await db

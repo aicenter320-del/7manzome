@@ -51,6 +51,7 @@ import {
   ForbiddenError,
   NotFoundError,
 } from "@/server/actions/action-kit";
+import { permissionsForRoles } from "@/server/auth/rbac";
 import { describeError, logger } from "@/server/logger";
 import { getMediaFileRecord, softDeleteFile } from "@/server/storage/file-storage";
 import { idSchema } from "@/shared/lib/validators";
@@ -184,7 +185,10 @@ export const softDeleteMediaFileAction = createAction({
       throw new NotFoundError("فایل پیدا نشد.");
     }
 
-    if (!isMediaFolder(record.folder) || !canDeleteMediaFolder(user.roles, record.folder)) {
+    if (
+      !isMediaFolder(record.folder) ||
+      !canDeleteMediaFolder(permissionsForRoles(user.roles), record.folder)
+    ) {
       throw new ForbiddenError();
     }
 

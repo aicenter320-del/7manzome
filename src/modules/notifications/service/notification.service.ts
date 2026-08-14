@@ -1,7 +1,7 @@
 import "server-only";
 
 import type { NotificationRow } from "@/server/db/types";
-import type { NotificationKind, UserRole } from "@/shared/types/enums";
+import type { NotificationKind } from "@/shared/types/enums";
 
 import { NOTIFICATION_TITLES } from "../domain/templates";
 import {
@@ -39,7 +39,7 @@ export async function notify(input: {
  * برای مواردی مثل «رسید جدید در صف تایید» که باید به تیم مالی برسد.
  */
 export async function notifyRoles(input: {
-  roles: readonly UserRole[];
+  roles: readonly string[];
   kind: NotificationKind;
   body: string;
   title?: string;

@@ -32,6 +32,48 @@ export const USER_ROLE_LABELS: Record<UserRole, string> = {
   fulfillment: "آماده‌سازی و ارسال",
 };
 
+/** slug نقش کارمندی؛ سیستمی یا سفارشی. */
+export type RoleSlug = string;
+
+export const ACCESS_SECTIONS = [
+  "orders",
+  "payments",
+  "users",
+  "children",
+  "treasures",
+  "catalog",
+  "gold_price",
+  "content",
+  "settings",
+  "reports",
+  "sms",
+] as const;
+export type AccessSection = (typeof ACCESS_SECTIONS)[number];
+
+export const ACCESS_SECTION_LABELS: Record<AccessSection, string> = {
+  orders: "سفارش و ارسال",
+  payments: "پرداخت",
+  users: "کاربران",
+  children: "کودکان",
+  treasures: "گنجینه و کارت هدیه",
+  catalog: "محصولات",
+  gold_price: "قیمت طلا",
+  content: "محتوا",
+  settings: "تنظیمات",
+  reports: "گزارش‌ها",
+  sms: "پیامک و اعلان",
+};
+
+export const PANEL_ACCESS_LEVELS = ["none", "read", "write", "full"] as const;
+export type PanelAccessLevel = (typeof PANEL_ACCESS_LEVELS)[number];
+
+export const PANEL_ACCESS_LEVEL_LABELS: Record<PanelAccessLevel, string> = {
+  none: "عدم دسترسی",
+  read: "فقط خواندن",
+  write: "ویرایش",
+  full: "دسترسی کامل",
+};
+
 export const USER_STATUSES = ["active", "suspended"] as const;
 export type UserStatus = (typeof USER_STATUSES)[number];
 

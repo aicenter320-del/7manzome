@@ -4,12 +4,13 @@ import { cookies } from "next/headers";
 import { and, eq, gt, isNull, lt } from "drizzle-orm";
 
 import { env, isProduction } from "@/shared/config/env";
-import type { KycStatus, UserRole, UserStatus } from "@/shared/types/enums";
+import type { KycStatus, UserStatus } from "@/shared/types/enums";
 
 import { db } from "../db";
 import { sessions, userRoles, users } from "../db/schema";
 import { logger } from "../logger";
 import { generateToken, hashSecret } from "./crypto";
+import { ensureRolePermissionCache } from "./role-cache";
 
 /**
  * سشن کاربر.
@@ -32,7 +33,7 @@ export interface SessionUser {
   displayName: string;
   status: UserStatus;
   kycStatus: KycStatus;
-  roles: UserRole[];
+  roles: string[];
 }
 
 /** ساخت سشن جدید و نوشتن کوکی. */
@@ -109,6 +110,8 @@ export async function getSessionUser(): Promise<SessionUser | null> {
     .select({ role: userRoles.role })
     .from(userRoles)
     .where(eq(userRoles.userId, row.userId));
+
+  await ensureRolePermissionCache();
 
   return {
     id: row.userId,

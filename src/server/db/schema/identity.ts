@@ -1,8 +1,10 @@
 import { index, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 import type {
+  AccessSection,
   KycStatus,
   OtpPurpose,
+  PanelAccessLevel,
   UserRole,
   UserStatus,
 } from "@/shared/types/enums";
@@ -62,7 +64,7 @@ export const userRoles = sqliteTable(
     userId: idRef("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    role: text("role").$type<UserRole>().notNull(),
+    role: text("role").notNull(),
     grantedByUserId: idRef("granted_by_user_id").references(() => users.id, {
       onDelete: "set null",
     }),
@@ -145,6 +147,42 @@ export const auditLogs = sqliteTable(
     index("audit_logs_entity_idx").on(table.entityType, table.entityId),
     index("audit_logs_actor_idx").on(table.actorUserId),
     index("audit_logs_created_at_idx").on(table.createdAt),
+  ],
+);
+
+/**
+ * نقش کارمندی قابل‌ساخت. slug در `user_roles.role` ذخیره می‌شود.
+ * مدیر ارشد grant ندارد؛ همیشه همه مجوزها را می‌گیرد.
+ */
+export const staffRoles = sqliteTable(
+  "staff_roles",
+  {
+    id: primaryId(),
+    slug: text("slug").notNull(),
+    title: text("title").notNull(),
+    description: text("description"),
+    isSystem: boolean("is_system").notNull().default(false),
+    createdAt: createdAt(),
+    updatedAt: updatedAt(),
+  },
+  (table) => [uniqueIndex("staff_roles_slug_unique").on(table.slug)],
+);
+
+/** سطح دسترسی یک نقش روی یک بخش پنل. */
+export const staffRoleGrants = sqliteTable(
+  "staff_role_grants",
+  {
+    id: primaryId(),
+    roleId: idRef("role_id")
+      .notNull()
+      .references(() => staffRoles.id, { onDelete: "cascade" }),
+    section: text("section").$type<AccessSection>().notNull(),
+    level: text("level").$type<PanelAccessLevel>().notNull(),
+    createdAt: createdAt(),
+  },
+  (table) => [
+    uniqueIndex("staff_role_grants_role_section_unique").on(table.roleId, table.section),
+    index("staff_role_grants_role_idx").on(table.roleId),
   ],
 );
 

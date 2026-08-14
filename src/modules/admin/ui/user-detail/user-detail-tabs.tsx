@@ -6,8 +6,7 @@ import { KycDecisionSelect } from "@/modules/identity/ui/kyc-decision-select";
 import { KycStatusBadge } from "@/modules/identity/ui/kyc-status-badge";
 import { UserAccountStatusSelect } from "@/modules/identity/ui/user-account-status-select";
 import { UserRoleSelect } from "@/modules/identity/ui/user-access-selects";
-import { ASSIGNABLE_ROLE_LABELS } from "@/modules/identity/domain/user-access";
-import { assignedRoleFromRoles } from "@/modules/identity/domain/user-access";
+import { assignedRoleFromRoles, labelForAssignedRole, type StaffRoleOption } from "@/modules/identity/domain/user-access";
 import type { AdminUserDetail } from "@/modules/identity/domain/types";
 import type { ChildSummary } from "@/modules/children/domain/types";
 import { formatJalaliDate } from "@/shared/lib/jalali";
@@ -28,6 +27,7 @@ export function UserDetailTabs({
   canAssignRole,
   canDelete,
   user,
+  staffRoles,
   childProfiles,
   treasures,
   giftLinks,
@@ -40,6 +40,7 @@ export function UserDetailTabs({
   canAssignRole: boolean;
   canDelete: boolean;
   user: AdminUserDetail;
+  staffRoles: readonly StaffRoleOption[];
   childProfiles: ChildSummary[];
   treasures: AdminTreasureRow[];
   giftLinks: AdminGiftLinkRow[];
@@ -103,9 +104,9 @@ export function UserDetailTabs({
           <div className="grid gap-2">
             <p className="text-sm text-muted-foreground">نقش</p>
             {canAssignRole ? (
-              <UserRoleSelect userId={user.id} roles={user.roles} />
+              <UserRoleSelect userId={user.id} roles={user.roles} staffRoles={staffRoles} />
             ) : (
-              <p>{ASSIGNABLE_ROLE_LABELS[role]}</p>
+              <p>{labelForAssignedRole(role, staffRoles)}</p>
             )}
           </div>
         </div>

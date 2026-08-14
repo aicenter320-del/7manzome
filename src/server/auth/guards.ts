@@ -2,8 +2,6 @@ import "server-only";
 
 import { forbidden, redirect, unauthorized } from "next/navigation";
 
-import type { UserRole } from "@/shared/types/enums";
-
 import { hasPermission, hasRole, isStaff, type Permission } from "./rbac";
 import { getSessionUser, type SessionUser } from "./session";
 
@@ -49,7 +47,7 @@ export async function requireStaff(): Promise<SessionUser> {
 }
 
 /** یکی از نقش‌های مشخص لازم است. */
-export async function requireRole(allowed: readonly UserRole[]): Promise<SessionUser> {
+export async function requireRole(allowed: readonly string[]): Promise<SessionUser> {
   const user = await requireStaff();
 
   if (!hasRole(user.roles, allowed)) forbidden();

@@ -13,7 +13,6 @@ import { getSessionUser } from "@/server/auth/session";
 import { describeError, logger } from "@/server/logger";
 import { FileValidationError, saveUploadedFile } from "@/server/storage/file-storage";
 import { idSchema } from "@/shared/lib/validators";
-import type { UserRole } from "@/shared/types/enums";
 
 import {
   createBankAccountSchema,
@@ -45,7 +44,7 @@ function rethrowPaymentError(error: unknown): never {
   throw error;
 }
 
-function assertBankAccountPermission(roles: readonly UserRole[]): void {
+function assertBankAccountPermission(roles: readonly string[]): void {
   if (!hasPermission(roles, "settings:write") && !hasPermission(roles, "payment:review")) {
     throw new ForbiddenError();
   }

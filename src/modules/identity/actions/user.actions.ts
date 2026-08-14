@@ -16,6 +16,7 @@ import {
 import {
   KycConflictError,
   InvalidKycDecisionError,
+  LastSuperAdminError,
   reviewKyc,
   saveProfile,
   assignUserAccess,
@@ -23,6 +24,7 @@ import {
   setUserStatus,
   submitKycRequest,
 } from "../service/user.service";
+import { StaffRoleError } from "../service/staff-role.service";
 
 export const updateProfile = createAction({
   name: "identity.updateProfile",
@@ -118,12 +120,19 @@ export const changeUserRole = createAction({
       throw new ActionError("نمی‌توانید نقش مدیر ارشد خودتان را حذف کنید.");
     }
 
-    await setUserRole({
-      userId: input.userId,
-      role: input.role,
-      grant: input.grant,
-      actorUserId: user.id,
-    });
+    try {
+      await setUserRole({
+        userId: input.userId,
+        role: input.role,
+        grant: input.grant,
+        actorUserId: user.id,
+      });
+    } catch (error) {
+      if (error instanceof LastSuperAdminError || error instanceof StaffRoleError) {
+        throw new ActionError(error.message);
+      }
+      throw error;
+    }
 
     revalidatePath("/admin/users");
     revalidatePath(`/admin/users/${input.userId}`);
@@ -141,11 +150,18 @@ export const assignUserAccessAction = createAction({
       throw new ActionError("نمی‌توانید نقش مدیر ارشد خودتان را حذف کنید.");
     }
 
-    await assignUserAccess({
-      userId: input.userId,
-      role: input.role,
-      actorUserId: user.id,
-    });
+    try {
+      await assignUserAccess({
+        userId: input.userId,
+        role: input.role,
+        actorUserId: user.id,
+      });
+    } catch (error) {
+      if (error instanceof LastSuperAdminError || error instanceof StaffRoleError) {
+        throw new ActionError(error.message);
+      }
+      throw error;
+    }
 
     revalidatePath("/admin/users");
     revalidatePath(`/admin/users/${input.userId}`);

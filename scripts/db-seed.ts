@@ -22,6 +22,7 @@ import { seedCatalog } from "./seed/catalog";
 import { seedCommerce } from "./seed/commerce";
 import { seedContent } from "./seed/content";
 import { seedPeople } from "./seed/people";
+import { ensureStaffRoles } from "./seed/staff-roles";
 import { seedTreasury } from "./seed/treasury";
 import type { SeedContext } from "./seed/types";
 
@@ -53,6 +54,8 @@ async function main(): Promise<void> {
     ["PRAGMA journal_mode = WAL;", "PRAGMA foreign_keys = ON;"].join("\n"),
   );
 
+  await ensureStaffRoles(db);
+
   const existingUser = await db
     .select({ id: schema.users.id })
     .from(schema.users)
@@ -60,6 +63,7 @@ async function main(): Promise<void> {
 
   if (existingUser[0]) {
     console.log("Seed skipped: users table is not empty.");
+    console.log("نقش‌های سیستمی در صورت نبودن ساخته شدند.");
     console.log("برای ریختن دموی کامل روی محیط توسعه: npm run db:reset");
     return;
   }

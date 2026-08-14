@@ -7,11 +7,11 @@
 
 export type { PublicUser, AdminUserDetail, OtpRequestResult } from "./domain/types";
 export {
-  ASSIGNABLE_ROLE_LABELS,
-  ASSIGNABLE_ROLES,
+  CUSTOMER_ROLE_SLUG,
   assignedRoleFromRoles,
+  labelForAssignedRole,
 } from "./domain/user-access";
-export type { AssignableRole } from "./domain/user-access";
+export type { StaffRoleOption } from "./domain/user-access";
 export {
   KYC_DECISION_LABELS,
   nextKycDecisions,
@@ -48,7 +48,19 @@ export {
   InvalidKycDecisionError,
   deleteUserAccount,
   UserDeleteError,
+  LastSuperAdminError,
 } from "./service/user.service";
+
+export {
+  listStaffRoles,
+  getStaffRole,
+  listAssignableStaffRoles,
+  createStaffRole,
+  saveStaffRole,
+  removeStaffRole,
+  StaffRoleError,
+} from "./service/staff-role.service";
+export type { StaffRoleView } from "./service/staff-role.service";
 
 export {
   requestOtpSchema,
@@ -71,6 +83,12 @@ export {
   updateAdminUserProfile,
 } from "./actions/user.actions";
 
+export {
+  createStaffRoleAction,
+  updateStaffRoleAction,
+  deleteStaffRoleAction,
+} from "./actions/staff-role.actions";
+
 export { LoginForm } from "./ui/login-form";
 export { KycForm } from "./ui/kyc-form";
 export { KycStatusBadge } from "./ui/kyc-status-badge";
@@ -79,3 +97,5 @@ export { AccountStatusBadge, UserAccountStatusSelect } from "./ui/user-account-s
 export { ProfileForm } from "./ui/profile-form";
 export { AdminUserProfileForm } from "./ui/admin-user-profile-form";
 export { UserRoleSelect } from "./ui/user-access-selects";
+export { StaffRoleForm } from "./ui/staff-role-form";
+export { DeleteStaffRoleButton } from "./ui/delete-staff-role-button";

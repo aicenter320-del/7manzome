@@ -7,6 +7,8 @@
 ```mermaid
 erDiagram
     users ||--o{ user_roles : "دارد"
+    staff_roles ||--o{ staff_role_grants : "سطح بخش"
+    staff_roles ||--o{ user_roles : "slug"
     users ||--o{ sessions : "دارد"
     users ||--o{ children : "دارنده حساب"
     users ||--o{ guardianships : "سرپرست"

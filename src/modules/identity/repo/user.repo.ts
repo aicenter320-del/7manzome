@@ -5,7 +5,7 @@ import { and, count, desc, eq, gte, isNull, like, lt, or } from "drizzle-orm";
 import { db } from "@/server/db";
 import { userRoles, users } from "@/server/db/schema";
 import type { UserRow } from "@/server/db/types";
-import type { KycStatus, UserRole, UserStatus } from "@/shared/types/enums";
+import type { KycStatus, UserStatus } from "@/shared/types/enums";
 
 export async function findUserById(userId: string): Promise<UserRow | null> {
   const rows = await db.select().from(users).where(eq(users.id, userId)).limit(1);
@@ -79,7 +79,7 @@ export async function updateUserStatus(userId: string, status: UserStatus): Prom
   await db.update(users).set({ status }).where(eq(users.id, userId));
 }
 
-export async function findRolesForUser(userId: string): Promise<UserRole[]> {
+export async function findRolesForUser(userId: string): Promise<string[]> {
   const rows = await db
     .select({ role: userRoles.role })
     .from(userRoles)
@@ -90,7 +90,7 @@ export async function findRolesForUser(userId: string): Promise<UserRole[]> {
 
 export async function grantRole(
   userId: string,
-  role: UserRole,
+  role: string,
   grantedByUserId?: string,
 ): Promise<void> {
   await db
@@ -99,7 +99,7 @@ export async function grantRole(
     .onConflictDoNothing();
 }
 
-export async function revokeRole(userId: string, role: UserRole): Promise<void> {
+export async function revokeRole(userId: string, role: string): Promise<void> {
   await db
     .delete(userRoles)
     .where(and(eq(userRoles.userId, userId), eq(userRoles.role, role)));
@@ -107,7 +107,7 @@ export async function revokeRole(userId: string, role: UserRole): Promise<void> 
 
 export async function replaceRolesForUser(
   userId: string,
-  roles: readonly UserRole[],
+  roles: readonly string[],
   grantedByUserId: string,
 ): Promise<void> {
   await db.transaction(async (tx) => {

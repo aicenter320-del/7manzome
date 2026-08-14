@@ -141,7 +141,7 @@ export const createGiftCardsAction = createAction({
   name: "gifting.createGiftCards",
   schema: createGiftCardsSchema,
   auth: "required",
-  roles: ["super_admin", "order_manager"],
+  permissions: ["treasury:read"],
   handler: async ({ input, user }) => {
     try {
       const cards = await createGiftCards({

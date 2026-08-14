@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { UserDetailTabs } from "@/modules/admin";
 import { getChildrenForUser } from "@/modules/children";
 import { getGiftLinksForUser, listGiftCardsForUser } from "@/modules/gifting";
-import { getUserDetailForAdmin } from "@/modules/identity";
+import { getUserDetailForAdmin, listAssignableStaffRoles } from "@/modules/identity";
 import { getOrdersForUser } from "@/modules/orders";
 import { listPayments } from "@/modules/payments";
 import { getTreasuresForUser } from "@/modules/treasury";
@@ -25,12 +25,13 @@ export default async function AdminUserDetailPage({
   const canWrite = hasPermission(actor.roles, "user:write");
   const canAssignRole = hasPermission(actor.roles, "role:write");
 
-  const [children, treasures, giftLinks, ordersResult, payments] = await Promise.all([
+  const [children, treasures, giftLinks, ordersResult, payments, staffRoles] = await Promise.all([
     getChildrenForUser(user.id, { includeArchived: true }),
     getTreasuresForUser(user.id, { includeArchived: true }),
     getGiftLinksForUser(user.id),
     getOrdersForUser(user.id, { limit: 50 }),
     listPayments({ payerUserId: user.id, limit: 50, offset: 0 }),
+    listAssignableStaffRoles(),
   ]);
 
   const giftCards = await listGiftCardsForUser(
@@ -50,6 +51,7 @@ export default async function AdminUserDetailPage({
         canAssignRole={canAssignRole}
         canDelete={canDelete}
         user={user}
+        staffRoles={staffRoles}
         childProfiles={children}
         treasures={treasures.map((item) => ({
           id: item.treasure.id,

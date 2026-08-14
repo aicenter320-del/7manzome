@@ -1,6 +1,6 @@
 import {
   canDeleteMediaFolder,
-  foldersForRoles,
+  foldersForPermissions,
   isMediaFolder,
 } from "@/modules/admin/domain/media-access";
 import {
@@ -9,6 +9,7 @@ import {
   mediaFolderLabel,
 } from "@/modules/admin/ui/media-file-card";
 import { requireStaff } from "@/server/auth/guards";
+import { permissionsForRoles } from "@/server/auth/rbac";
 import { listMediaFiles } from "@/server/storage/file-storage";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -19,7 +20,8 @@ export default async function AdminFilesPage({
   searchParams: Promise<{ folder?: string | string[] }>;
 }) {
   const user = await requireStaff();
-  const allowed = foldersForRoles(user.roles);
+  const permissions = permissionsForRoles(user.roles);
+  const allowed = foldersForPermissions(permissions);
   const rawFolder = (await searchParams).folder;
   const requested = Array.isArray(rawFolder) ? rawFolder[0] : rawFolder;
   const activeFolder =
@@ -37,7 +39,7 @@ export default async function AdminFilesPage({
       {allowed.length === 0 ? (
         <EmptyState
           title="به کتابخانه فایل دسترسی ندارید"
-          description="برای دیدن فایل‌ها نقش مناسب لازم است."
+          description="برای دیدن فایل‌ها دسترسی مناسب لازم است."
         />
       ) : (
         <>
@@ -57,7 +59,7 @@ export default async function AdminFilesPage({
                   folderLabel={mediaFolderLabel(file.folder)}
                   canDelete={
                     isMediaFolder(file.folder) &&
-                    canDeleteMediaFolder(user.roles, file.folder)
+                    canDeleteMediaFolder(permissions, file.folder)
                   }
                 />
               ))}

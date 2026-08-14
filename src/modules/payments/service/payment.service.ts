@@ -2,6 +2,7 @@ import "server-only";
 
 import { notifyRoles } from "@/modules/notifications";
 import { recordAudit } from "@/server/audit";
+import { roleSlugsWithPermission } from "@/server/auth/rbac";
 import type {
   BankAccountRow,
   CardTransferReceiptRow,
@@ -361,7 +362,7 @@ export async function submitCardReceipt(
 
   // اطلاع به تیم مالی؛ شکست آن نباید ثبت رسید را برگرداند.
   await notifyRoles({
-    roles: ["finance", "super_admin"],
+    roles: await roleSlugsWithPermission("payment:review"),
     kind: "payment_review_needed",
     body: `رسید جدید برای پرداخت ${payment.paymentNumber} به مبلغ ${formatRial(payment.amountRial)} در صف تایید است.`,
     link: "/admin/payments",

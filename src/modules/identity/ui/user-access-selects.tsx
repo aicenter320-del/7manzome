@@ -6,13 +6,12 @@ import { toast } from "sonner";
 
 import { assignUserAccessAction } from "@/modules/identity/actions/user.actions";
 import {
-  ASSIGNABLE_ROLE_LABELS,
-  ASSIGNABLE_ROLES,
+  assignableRoleOptions,
   assignedRoleFromRoles,
-  isAssignableRole,
-  type AssignableRole,
+  isAssignableRoleValue,
+  labelForAssignedRole,
+  type StaffRoleOption,
 } from "@/modules/identity/domain/user-access";
-import type { UserRole } from "@/shared/types/enums";
 import { Button } from "@/shared/ui/button";
 import {
   Dialog,
@@ -33,14 +32,17 @@ import {
 export function UserRoleSelect({
   userId,
   roles,
+  staffRoles,
 }: {
   userId: string;
-  roles: UserRole[];
+  roles: readonly string[];
+  staffRoles: readonly StaffRoleOption[];
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
+  const options = assignableRoleOptions(staffRoles);
   const current = assignedRoleFromRoles(roles);
-  const [pending, setPending] = useState<AssignableRole | null>(null);
+  const [pending, setPending] = useState<string | null>(null);
   const [selectKey, setSelectKey] = useState(0);
 
   function closeDialog() {
@@ -71,7 +73,7 @@ export function UserRoleSelect({
         disabled={isPending}
         value={current}
         onValueChange={(value) => {
-          if (!isAssignableRole(value) || value === current) return;
+          if (!isAssignableRoleValue(value, staffRoles) || value === current) return;
           setPending(value);
         }}
       >
@@ -79,9 +81,9 @@ export function UserRoleSelect({
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
-          {ASSIGNABLE_ROLES.map((role) => (
-            <SelectItem key={role} value={role}>
-              {ASSIGNABLE_ROLE_LABELS[role]}
+          {options.map((option) => (
+            <SelectItem key={option.slug} value={option.slug}>
+              {option.title}
             </SelectItem>
           ))}
         </SelectContent>
@@ -98,7 +100,7 @@ export function UserRoleSelect({
             <DialogTitle>تغییر نقش کاربر</DialogTitle>
             <DialogDescription>
               {pending
-                ? `نقش به «${ASSIGNABLE_ROLE_LABELS[pending]}» تغییر می‌کند. ادامه می‌دهید؟`
+                ? `نقش به «${labelForAssignedRole(pending, staffRoles)}» تغییر می‌کند. ادامه می‌دهید؟`
                 : null}
             </DialogDescription>
           </DialogHeader>

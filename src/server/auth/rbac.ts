@@ -2,11 +2,17 @@ import "server-only";
 
 import { USER_ROLES, type UserRole } from "@/shared/types/enums";
 
+import {
+  cachedPermissionsForSlug,
+  cachedRoleSlugsWithPermission,
+  ensureRolePermissionCache,
+} from "./role-cache";
+
 /**
  * دسترسی نقش‌محور.
  *
- * از روز اول پیاده می‌شود چون افزودن آن بعداً به معنی بازبینی هر اکشن است.
- * مرجع نقش‌ها: docs/00-overview/personas.md
+ * فهرست PERMISSIONS ثابت است. منبع اعطا از نقش‌های دیتابیس (کش) می‌آید.
+ * مدیر ارشد همیشه همه مجوزها را دارد و `role:write` فقط او دارد.
  */
 
 export const PERMISSIONS = [
@@ -45,89 +51,56 @@ export const PERMISSIONS = [
 
 export type Permission = (typeof PERMISSIONS)[number];
 
-const ROLE_PERMISSIONS: Record<UserRole, readonly Permission[]> = {
-  super_admin: PERMISSIONS,
-
-  finance: [
-    "payment:read",
-    "payment:review",
-    "order:read",
-    "gold_price:read",
-    "gold_price:write",
-    "treasury:read",
-    "treasury:adjust",
-    "report:read",
-    "user:read",
-  ],
-
-  order_manager: [
-    "order:read",
-    "order:transition",
-    "order:cancel",
-    "payment:read",
-    "shipment:read",
-    "shipment:write",
-    "catalog:read",
-    "user:read",
-    "report:read",
-  ],
-
-  content_manager: ["catalog:read", "catalog:write", "content:write", "gold_price:read"],
-
-  customer_support: [
-    "order:read",
-    "payment:read",
-    "user:read",
-    "child:read",
-    "treasury:read",
-    "sms:read",
-    "catalog:read",
-  ],
-
-  fulfillment: [
-    "order:read",
-    "order:transition",
-    "shipment:read",
-    "shipment:write",
-    "catalog:read",
-  ],
-};
+function asPermissionList(values: readonly string[]): Permission[] {
+  return values.filter((value): value is Permission =>
+    (PERMISSIONS as readonly string[]).includes(value),
+  );
+}
 
 /** آیا مجموعه نقش‌های کاربر این مجوز را می‌دهد؟ */
-export function hasPermission(
-  roles: readonly UserRole[],
-  permission: Permission,
-): boolean {
-  return roles.some((role) => ROLE_PERMISSIONS[role]?.includes(permission));
+export function hasPermission(roles: readonly string[], permission: Permission): boolean {
+  if (roles.includes("super_admin")) return true;
+  return roles.some((role) => cachedPermissionsForSlug(role).includes(permission));
 }
 
 /** آیا کاربر همه این مجوزها را دارد؟ */
 export function hasAllPermissions(
-  roles: readonly UserRole[],
+  roles: readonly string[],
   permissions: readonly Permission[],
 ): boolean {
   return permissions.every((permission) => hasPermission(roles, permission));
 }
 
 /** آیا کاربر یکی از این نقش‌ها را دارد؟ */
-export function hasRole(roles: readonly UserRole[], allowed: readonly UserRole[]): boolean {
+export function hasRole(roles: readonly string[], allowed: readonly string[]): boolean {
   return roles.some((role) => allowed.includes(role));
 }
 
 /** فهرست مجوزهای یک مجموعه نقش؛ برای ساخت منوی پنل ادمین. */
-export function permissionsForRoles(roles: readonly UserRole[]): Permission[] {
+export function permissionsForRoles(roles: readonly string[]): Permission[] {
+  if (roles.includes("super_admin")) return [...PERMISSIONS];
   const granted = new Set<Permission>();
   for (const role of roles) {
-    for (const permission of ROLE_PERMISSIONS[role] ?? []) granted.add(permission);
+    for (const permission of asPermissionList(cachedPermissionsForSlug(role))) {
+      granted.add(permission);
+    }
   }
   return [...granted];
 }
 
+/** slug نقش‌هایی که این مجوز را دارند؛ برای اعلان گروهی. */
+export async function roleSlugsWithPermission(permission: Permission): Promise<string[]> {
+  await ensureRolePermissionCache();
+  return cachedRoleSlugsWithPermission(permission);
+}
+
 /** آیا این کاربر به پنل مدیریت دسترسی دارد؟ */
-export function isStaff(roles: readonly UserRole[]): boolean {
+export function isStaff(roles: readonly string[]): boolean {
   return roles.length > 0;
 }
 
 export function isValidRole(value: string): value is UserRole {
   return (USER_ROLES as readonly string[]).includes(value);
 }
+
+export { ensureRolePermissionCache, invalidateRolePermissionCache } from "./role-cache";
