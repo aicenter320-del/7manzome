@@ -11,6 +11,8 @@ const nextConfig: NextConfig = {
     serverActions: {
       bodySizeLimit: "8mb",
     },
+    // برای unauthorized() و forbidden() در نگهبان پنل ادمین.
+    authInterrupts: true,
   },
 
   // تصاویر آپلودی از مسیر کنترل‌شده سرو می‌شوند، نه مستقیم از فایل‌سیستم.
