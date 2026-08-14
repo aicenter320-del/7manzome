@@ -9,7 +9,7 @@ import type { FileVisibility } from "@/shared/types/enums";
 
 import type { SeedContext } from "./types";
 
-const HERO_PATH = join(process.cwd(), "src/assets/images/hero-gold-products.webp");
+const HERO_PATH = join(process.cwd(), "src/assets/images/hero-gold-products.jpg");
 
 const AVATAR_PALETTES: Array<[string, string]> = [
   ["#C9A227", "#8A6A12"],

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import heroGoldProducts from "@/assets/images/hero-gold-products.webp";
+import heroGoldProducts from "@/assets/images/hero-gold-products.jpg";
 import { GoldPriceBadge, type GoldPriceView } from "@/modules/pricing";
 import { site } from "@/shared/config/site";
 import { Button } from "@/shared/ui/button";
@@ -17,6 +17,8 @@ export function HomeHero({ goldPrice }: { goldPrice: GoldPriceView | null }) {
           alt=""
           fill
           priority
+          unoptimized
+          quality={100}
           sizes="100vw"
           className="object-cover object-center"
           aria-hidden
