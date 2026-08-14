@@ -1,10 +1,10 @@
 import Link from "next/link";
 
-import { DataTable, TableCell, TableRow } from "@/modules/admin";
+import { DataTable, GlassFilterPills, TableCell, TableRow } from "@/modules/admin";
 import { listOrdersForAdmin, OrderStatusBadge } from "@/modules/orders";
 import { requirePermission } from "@/server/auth/guards";
 import { formatJalaliDate } from "@/shared/lib/jalali";
-import { ORDER_STATUSES, type OrderStatus } from "@/shared/types/enums";
+import { ORDER_STATUS_LABELS, ORDER_STATUSES, type OrderStatus } from "@/shared/types/enums";
 import { Money } from "@/shared/ui/money";
 import { PageHeader } from "@/shared/ui/page-header";
 
@@ -34,20 +34,17 @@ export default async function AdminOrdersPage({
     <div className="grid gap-6">
       <PageHeader title="سفارش‌ها" />
 
-      <div className="flex flex-wrap gap-2 text-sm">
-        <Link href="/admin/orders" className={!status ? "text-gold-deep" : "text-muted-foreground"}>
-          همه
-        </Link>
-        {ORDER_STATUSES.map((item) => (
-          <Link
-            key={item}
-            href={`/admin/orders?status=${item}`}
-            className={status === item ? "text-gold-deep" : "text-muted-foreground"}
-          >
-            {item}
-          </Link>
-        ))}
-      </div>
+      <GlassFilterPills
+        ariaLabel="فیلتر وضعیت سفارش"
+        items={[
+          { href: "/admin/orders", label: "همه", isActive: !status },
+          ...ORDER_STATUSES.map((item) => ({
+            href: `/admin/orders?status=${item}`,
+            label: ORDER_STATUS_LABELS[item],
+            isActive: status === item,
+          })),
+        ]}
+      />
 
       <DataTable
         columns={["شماره", "وضعیت", "گیرنده", "مبلغ", "تاریخ"]}
