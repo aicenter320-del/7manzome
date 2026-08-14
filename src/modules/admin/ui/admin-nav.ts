@@ -18,6 +18,7 @@ export const adminNav: readonly AdminNavItem[] = [
   { href: "/children", label: "کودکان", requiredPermission: "child:read" },
   { href: "/treasures", label: "گنجینه‌ها", requiredPermission: "treasury:read" },
   { href: "/products", label: "محصولات", requiredPermission: "catalog:read" },
+  { href: "/files", label: "فایل‌ها", requiredPermission: null },
   { href: "/gold-price", label: "قیمت طلا", requiredPermission: "gold_price:read" },
   { href: "/bank-accounts", label: "حساب‌های بانکی", requiredPermission: "payment:review" },
   { href: "/gift-cards", label: "کارت هدیه", requiredPermission: "treasury:read" },

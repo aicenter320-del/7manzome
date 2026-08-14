@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { z } from "zod";
 
 import { confirmContribution } from "@/modules/gifting";
 import { getUserById } from "@/modules/identity";
@@ -19,9 +20,14 @@ import {
   ActionError,
   createAction,
   emptyInput,
+  ForbiddenError,
   NotFoundError,
 } from "@/server/actions/action-kit";
 import { describeError, logger } from "@/server/logger";
+import { getMediaFileRecord, softDeleteFile } from "@/server/storage/file-storage";
+import { idSchema } from "@/shared/lib/validators";
+
+import { canDeleteMediaFolder, isMediaFolder } from "../domain/media-access";
 
 /**
  * تایید/رد پرداخت و تسویه اثر آن روی سفارش یا مشارکت.
@@ -119,5 +125,34 @@ export const expireStalePaymentsAction = createAction({
     const count = await expireStalePayments();
     revalidatePath("/admin/payments");
     return { expiredCount: count };
+  },
+});
+
+const softDeleteMediaFileSchema = z.object({
+  fileId: idSchema,
+});
+
+export const softDeleteMediaFileAction = createAction({
+  name: "admin.softDeleteMediaFile",
+  schema: softDeleteMediaFileSchema,
+  auth: "required",
+  handler: async ({ input, user }) => {
+    const record = await getMediaFileRecord(input.fileId);
+    if (!record || record.deletedAt) {
+      throw new NotFoundError("فایل پیدا نشد.");
+    }
+
+    if (!isMediaFolder(record.folder) || !canDeleteMediaFolder(user.roles, record.folder)) {
+      throw new ForbiddenError();
+    }
+
+    await softDeleteFile(record.id);
+    logger.info("media file soft-deleted", {
+      fileId: record.id,
+      folder: record.folder,
+      actorUserId: user.id,
+    });
+    revalidatePath("/admin/files");
+    return { fileId: record.id };
   },
 });

@@ -15,8 +15,14 @@
 
 ```ts
 export type { DashboardStats, SalesReport, SalesReportRow, TreasuryReport } from "./domain/types";
+export type { MediaFolder } from "./domain/media-access";
+export { foldersForRoles, canDeleteMediaFolder } from "./domain/media-access";
 export { getDashboardStats, getSalesReport, getTreasuryReport } from "./service/report.service";
-export { reviewAndSettlePayment, expireStalePaymentsAction } from "./actions/admin.actions";
+export {
+  reviewAndSettlePayment,
+  expireStalePaymentsAction,
+  softDeleteMediaFileAction,
+} from "./actions/admin.actions";
 export { StatCard } from "./ui/stat-card";
 export { DataTable } from "./ui/data-table";
 export { adminNav, type AdminNavItem } from "./ui/admin-nav";
@@ -47,10 +53,18 @@ export { adminNav, type AdminNavItem } from "./ui/admin-nav";
 ## بخش‌های پنل
 
 سفارش‌ها، پرداخت‌ها و صف تایید، کاربران، کودکان، گنجینه‌ها، محصولات و گونه‌ها،
-دسته‌بندی و مناسبت‌ها، قیمت طلا، حساب‌های بانکی، لینک‌های هدیه، کارت‌های هدیه،
-شخصی‌سازی‌ها، ارسال‌ها، پیامک‌ها، محتوا، گزارش‌ها، تنظیمات.
+کتابخانه فایل، دسته‌بندی و مناسبت‌ها، قیمت طلا، حساب‌های بانکی، لینک‌های هدیه،
+کارت‌های هدیه، شخصی‌سازی‌ها، ارسال‌ها، پیامک‌ها، محتوا، گزارش‌ها، تنظیمات.
 
 صفحات `app/admin` روی همین API و ناوبری مجوز‌محور ساخته شده‌اند.
+
+## کتابخانه فایل
+
+مسیر `/admin/files` رکوردهای `media_files` را نشان می‌دهد. بایت فایل روی دیسک است.
+پوشه از پیشوند `storage_key` خوانده می‌شود و بر اساس نقش فیلتر می‌گردد:
+محصول (`catalog:read`)، کودک (`child:read`)، رسید (`payment:read`).
+حذف نرم است؛ رسید را فقط نقش با `payment:review` و عکس کودک را فقط مدیر ارشد
+می‌تواند حذف کند. آپلود از همین صفحه نیست؛ از فرم محصول، کودک یا پرداخت است.
 
 ## نقاط باز
 

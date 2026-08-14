@@ -4,7 +4,7 @@ import { createHash, randomBytes } from "node:crypto";
 import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import { dirname, join, normalize, resolve, sep } from "node:path";
 
-import { eq } from "drizzle-orm";
+import { and, desc, eq, isNull, like, or, type SQL } from "drizzle-orm";
 
 import { env } from "@/shared/config/env";
 import type { FileVisibility } from "@/shared/types/enums";
@@ -214,4 +214,84 @@ export async function readStoredFile(fileId: string): Promise<StoredFile | null>
 /** حذف نرم فایل؛ رکورد می‌ماند تا ارجاع‌های تاریخی نشکند. */
 export async function softDeleteFile(fileId: string): Promise<void> {
   await db.update(mediaFiles).set({ deletedAt: Date.now() }).where(eq(mediaFiles.id, fileId));
+}
+
+/** پوشه منطقی از کلید ذخیره‌سازی (`products/abc.jpg` → `products`). */
+export function folderFromStorageKey(storageKey: string): string {
+  const slash = storageKey.indexOf("/");
+  return slash <= 0 ? storageKey : storageKey.slice(0, slash);
+}
+
+export interface MediaFileRecord {
+  id: string;
+  storageKey: string;
+  folder: string;
+  originalName: string | null;
+  mimeType: string;
+  sizeBytes: number;
+  visibility: FileVisibility;
+  deletedAt: number | null;
+  createdAt: number;
+}
+
+export async function getMediaFileRecord(fileId: string): Promise<MediaFileRecord | null> {
+  const rows = await db
+    .select({
+      id: mediaFiles.id,
+      storageKey: mediaFiles.storageKey,
+      originalName: mediaFiles.originalName,
+      mimeType: mediaFiles.mimeType,
+      sizeBytes: mediaFiles.sizeBytes,
+      visibility: mediaFiles.visibility,
+      deletedAt: mediaFiles.deletedAt,
+      createdAt: mediaFiles.createdAt,
+    })
+    .from(mediaFiles)
+    .where(eq(mediaFiles.id, fileId))
+    .limit(1);
+
+  const row = rows[0];
+  if (!row) return null;
+
+  return { ...row, folder: folderFromStorageKey(row.storageKey) };
+}
+
+export interface ListMediaFilesInput {
+  folders: readonly string[];
+  includeDeleted?: boolean;
+  limit?: number;
+  offset?: number;
+}
+
+/** فهرست رکوردهای رسانه برای کتابخانه ادمین. بررسی مجوز پوشه وظیفه فراخوان است. */
+export async function listMediaFiles(input: ListMediaFilesInput): Promise<MediaFileRecord[]> {
+  const folders = input.folders.filter((folder) => folder.length > 0);
+  if (folders.length === 0) return [];
+
+  const folderClause = or(
+    ...folders.map((folder) => like(mediaFiles.storageKey, `${folder}/%`)),
+  ) as SQL;
+
+  const filters = input.includeDeleted
+    ? folderClause
+    : and(folderClause, isNull(mediaFiles.deletedAt));
+
+  const rows = await db
+    .select({
+      id: mediaFiles.id,
+      storageKey: mediaFiles.storageKey,
+      originalName: mediaFiles.originalName,
+      mimeType: mediaFiles.mimeType,
+      sizeBytes: mediaFiles.sizeBytes,
+      visibility: mediaFiles.visibility,
+      deletedAt: mediaFiles.deletedAt,
+      createdAt: mediaFiles.createdAt,
+    })
+    .from(mediaFiles)
+    .where(filters)
+    .orderBy(desc(mediaFiles.createdAt))
+    .limit(input.limit ?? 100)
+    .offset(input.offset ?? 0);
+
+  return rows.map((row) => ({ ...row, folder: folderFromStorageKey(row.storageKey) }));
 }

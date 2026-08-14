@@ -8,11 +8,25 @@
  */
 
 export type { DashboardStats, SalesReport, SalesReportRow, TreasuryReport } from "./domain/types";
+export type { MediaFolder } from "./domain/media-access";
+export {
+  MEDIA_FOLDER_LABELS,
+  MEDIA_FOLDERS,
+  canDeleteMediaFolder,
+  foldersForRoles,
+  isMediaFolder,
+} from "./domain/media-access";
 
 export { getDashboardStats, getSalesReport, getTreasuryReport } from "./service/report.service";
 
-export { reviewAndSettlePayment, expireStalePaymentsAction } from "./actions/admin.actions";
+export {
+  expireStalePaymentsAction,
+  reviewAndSettlePayment,
+  softDeleteMediaFileAction,
+} from "./actions/admin.actions";
 
 export { StatCard } from "./ui/stat-card";
 export { DataTable, TableCell, TableRow } from "./ui/data-table";
 export { adminNav, type AdminNavItem } from "./ui/admin-nav";
+export { DeleteMediaFileButton } from "./ui/delete-media-file-button";
+export { FolderFilterLinks, MediaFileCard, mediaFolderLabel } from "./ui/media-file-card";
