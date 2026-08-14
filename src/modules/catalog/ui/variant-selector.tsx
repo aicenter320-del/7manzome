@@ -48,7 +48,7 @@ export function VariantSelector({
               "flex cursor-pointer items-center gap-3 rounded-lg border p-3.5 transition-colors",
               isSelected
                 ? "border-gold bg-gold-soft/40"
-                : "border-border bg-card hover:border-gold/50",
+                : "glass hover:border-gold/50",
               !isAvailable && "cursor-not-allowed opacity-55",
             )}
           >

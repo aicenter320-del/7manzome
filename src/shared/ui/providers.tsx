@@ -3,6 +3,8 @@
 import { DirectionProvider } from "@radix-ui/react-direction";
 import type * as React from "react";
 
+import { TooltipProvider } from "./tooltip";
+
 /**
  * پرووایدرهای سراسری سمت کلاینت.
  *
@@ -10,5 +12,9 @@ import type * as React from "react";
  * بدون آن جهت کلیدهای جهت‌دار صفحه‌کلید و محاسبه align منوها اشتباه می‌شود.
  */
 export function AppProviders({ children }: { children: React.ReactNode }) {
-  return <DirectionProvider dir="rtl">{children}</DirectionProvider>;
+  return (
+    <DirectionProvider dir="rtl">
+      <TooltipProvider delayDuration={200}>{children}</TooltipProvider>
+    </DirectionProvider>
+  );
 }

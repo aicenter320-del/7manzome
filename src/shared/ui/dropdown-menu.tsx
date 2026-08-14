@@ -6,6 +6,8 @@ import type * as React from "react";
 
 import { cn } from "@/shared/lib/cn";
 
+import { GlassSurface } from "./glass";
+
 export const DropdownMenu = DropdownMenuPrimitive.Root;
 export const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger;
 export const DropdownMenuGroup = DropdownMenuPrimitive.Group;
@@ -13,6 +15,7 @@ export const DropdownMenuGroup = DropdownMenuPrimitive.Group;
 export function DropdownMenuContent({
   className,
   sideOffset = 6,
+  children,
   ...props
 }: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
   return (
@@ -21,13 +24,17 @@ export function DropdownMenuContent({
         data-slot="dropdown-menu-content"
         sideOffset={sideOffset}
         className={cn(
-          "z-50 min-w-40 overflow-hidden rounded-2xl p-1 text-popover-foreground glass-strong",
+          "z-50 min-w-40 overflow-hidden rounded-2xl border-0 bg-transparent p-0 text-popover-foreground shadow-none",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
           className,
         )}
         {...props}
-      />
+      >
+        <GlassSurface radius={16} tint={0.55} className="min-w-40" contentClassName="p-1">
+          {children}
+        </GlassSurface>
+      </DropdownMenuPrimitive.Content>
     </DropdownMenuPrimitive.Portal>
   );
 }

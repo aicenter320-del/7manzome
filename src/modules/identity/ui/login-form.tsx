@@ -133,7 +133,7 @@ export function LoginForm({ returnTo }: { returnTo?: string }) {
         submitCode();
       }}
     >
-      <div className="rounded-lg bg-muted px-4 py-3 text-sm">
+      <div className="rounded-2xl glass px-4 py-3 text-sm">
         کد تایید به شماره{" "}
         <span className="font-medium">{formatPhoneFa(phone)}</span> ارسال شد.
         <button

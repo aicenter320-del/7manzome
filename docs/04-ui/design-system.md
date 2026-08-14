@@ -49,6 +49,8 @@
 | `--border` | `border-border` | خط جداکننده |
 | `--ring` | `ring-ring` | حلقه فوکوس |
 | `--glass` | `bg-glass` / کلاس `.glass` | سطح شیشه‌ای روشن |
+| `--glass-strong` | کلاس `.glass-strong` | شیشهٔ غلیظ‌تر برای شناورها |
+| `--glass-sheen` / `--glass-rim` | داخل `.glass` | درخشش مورب و سایهٔ لبه |
 | `--shadow-glow-gold` | `.shadow-glow` | سایهٔ پهن طلایی |
 
 قانون: **هیچ رنگ hard-coded.** نه `#fff`، نه `text-gray-500`، نه `bg-yellow-400`.
@@ -95,8 +97,12 @@
 ## شیشه
 
 موتور از [website-glass](https://websiteglass.com/) در `src/shared/ui/glass.tsx` است
-(ADR-0011). `GlassSurface` و `GlassButton` برای هدر، کارت هیرو، شیت موبایل و دیسک آیکون؛
-کارت‌ها و فرم‌ها با کلاس CSS `.glass` تا جدول ادمین سنگین نشود.
+(ADR-0011).
+
+- لنز کامل (`Glass` / `GlassIconButton`): فقط هدر کپسولی و دیسک آیکون.
+- `GlassSurface`: سطوح شناور — دیالوگ، سلکت، دراپ‌داون، پاپ‌اور، تولتیپ، شیت، هیرو.
+- کلاس CSS `.glass` / `.glass-strong`: کارت، جدول، حالت خالی و پنل‌های سرور؛ درخشش و
+  سایهٔ لبه با توکن‌های `--glass-sheen` و `--glass-rim` تا شبیه `GlassSurface` بماند.
 
 آیکون عملیاتی (سبد، منو، بستن) باید `GlassIconButton` باشد؛ آیکون تزئینی داخل متن نه.
 در رابط کاربری از ایموجی استفاده نمی‌شود؛ مناسبت‌ها با `OccasionIcon` (Lucide) نمایش داده می‌شوند.
@@ -106,9 +112,9 @@
 همه در `src/shared/ui/` و سبک shadcn (کد داخل مخزن، نه وابستگی خارجی):
 
 `button`، `input`، `textarea`، `label`، `card`، `badge`، `separator`، `skeleton`،
-`dialog`، `dropdown-menu`، `select`، `tabs`، `progress`، `avatar`، `checkbox`،
-`switch`، `radio-group`، `table`، `alert`، `accordion`، `form-field`، `page-header`،
-`empty-state`، `glass`، `glass-button`، `glass-icon-button`، `glass-sheet`،
+`dialog`، `dropdown-menu`، `select`، `popover`، `tooltip`، `tabs`، `progress`، `avatar`،
+`checkbox`، `switch`، `radio-group`، `table`، `alert`، `accordion`، `form-field`،
+`page-header`، `empty-state`، `glass`، `glass-button`، `glass-icon-button`، `glass-sheet`،
 `gold-glow`، `app-nav-shell`
 
 **قانون مهم:** کامپوننت‌های `shared/ui/` هیچ دانشی از دامنه ندارند. کامپوننتی که بداند

@@ -48,9 +48,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Toaster
           position="top-center"
           dir="rtl"
-          richColors
           closeButton
-          toastOptions={{ className: iranSansX.className }}
+          toastOptions={{
+            className: iranSansX.className,
+            classNames: {
+              toast: "glass-strong !border-transparent",
+            },
+          }}
         />
       </body>
     </html>

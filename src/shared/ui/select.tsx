@@ -6,6 +6,8 @@ import type * as React from "react";
 
 import { cn } from "@/shared/lib/cn";
 
+import { GlassSurface } from "./glass";
+
 export const Select = SelectPrimitive.Root;
 export const SelectGroup = SelectPrimitive.Group;
 export const SelectValue = SelectPrimitive.Value;
@@ -48,7 +50,7 @@ export function SelectContent({
         data-slot="select-content"
         position={position}
         className={cn(
-          "relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-2xl glass-strong text-popover-foreground",
+          "relative z-50 max-h-72 min-w-[8rem] overflow-hidden rounded-2xl border-0 bg-transparent text-popover-foreground shadow-none",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           "data-[state=closed]:animate-out data-[state=closed]:fade-out-0",
           position === "popper" && "data-[side=bottom]:translate-y-1",
@@ -56,20 +58,27 @@ export function SelectContent({
         )}
         {...props}
       >
-        <SelectPrimitive.ScrollUpButton className="flex h-6 items-center justify-center">
-          <ChevronUpIcon className="size-4" />
-        </SelectPrimitive.ScrollUpButton>
-        <SelectPrimitive.Viewport
-          className={cn(
-            "p-1",
-            position === "popper" && "w-full min-w-[var(--radix-select-trigger-width)]",
-          )}
+        <GlassSurface
+          radius={16}
+          tint={0.55}
+          className="max-h-72 w-full"
+          contentClassName="flex max-h-72 flex-col overflow-hidden"
         >
-          {children}
-        </SelectPrimitive.Viewport>
-        <SelectPrimitive.ScrollDownButton className="flex h-6 items-center justify-center">
-          <ChevronDownIcon className="size-4" />
-        </SelectPrimitive.ScrollDownButton>
+          <SelectPrimitive.ScrollUpButton className="flex h-6 items-center justify-center">
+            <ChevronUpIcon className="size-4" />
+          </SelectPrimitive.ScrollUpButton>
+          <SelectPrimitive.Viewport
+            className={cn(
+              "p-1",
+              position === "popper" && "w-full min-w-[var(--radix-select-trigger-width)]",
+            )}
+          >
+            {children}
+          </SelectPrimitive.Viewport>
+          <SelectPrimitive.ScrollDownButton className="flex h-6 items-center justify-center">
+            <ChevronDownIcon className="size-4" />
+          </SelectPrimitive.ScrollDownButton>
+        </GlassSurface>
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
   );

@@ -6,6 +6,9 @@ import type * as React from "react";
 
 import { cn } from "@/shared/lib/cn";
 
+import { GlassSurface } from "./glass";
+import { GlassIconButton } from "./glass-icon-button";
+
 export const Dialog = DialogPrimitive.Root;
 export const DialogTrigger = DialogPrimitive.Trigger;
 export const DialogClose = DialogPrimitive.Close;
@@ -43,7 +46,7 @@ export function DialogContent({
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
-          "fixed start-1/2 top-1/2 z-50 grid w-[calc(100%-2rem)] max-w-lg translate-x-1/2 -translate-y-1/2 gap-4 rounded-3xl p-6 glass-strong",
+          "fixed start-1/2 top-1/2 z-50 w-[calc(100%-2rem)] max-w-lg -translate-y-1/2 border-0 bg-transparent p-0 shadow-none outline-none",
           "rtl:translate-x-1/2 ltr:-translate-x-1/2",
           "data-[state=open]:animate-in data-[state=open]:fade-in-0 data-[state=open]:zoom-in-95",
           "data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95",
@@ -51,15 +54,21 @@ export function DialogContent({
         )}
         {...props}
       >
-        {children}
-        {showCloseButton ? (
-          <DialogPrimitive.Close
-            className="absolute end-4 top-4 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-gold-soft/50 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-            aria-label="بستن"
-          >
-            <XIcon className="size-4" />
-          </DialogPrimitive.Close>
-        ) : null}
+        <GlassSurface
+          radius={24}
+          tint={0.55}
+          className="w-full"
+          contentClassName="relative grid gap-4 p-6"
+        >
+          {children}
+          {showCloseButton ? (
+            <DialogPrimitive.Close asChild>
+              <GlassIconButton className="absolute end-3 top-3" aria-label="بستن">
+                <XIcon />
+              </GlassIconButton>
+            </DialogPrimitive.Close>
+          ) : null}
+        </GlassSurface>
       </DialogPrimitive.Content>
     </DialogPortal>
   );
