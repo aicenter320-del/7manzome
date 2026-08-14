@@ -1,7 +1,8 @@
 FROM node:20-bookworm-slim AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci --omit=dev=false
+# هوک گیت (prepare) در این لایه فایل اسکریپت ندارد و نباید اجرا شود.
+RUN npm ci --ignore-scripts
 
 FROM node:20-bookworm-slim AS builder
 WORKDIR /app

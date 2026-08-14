@@ -80,6 +80,9 @@ WantedBy=multi-user.target
 بیلد Docker یک `SESSION_SECRET` ساختگی دارد چون `.env*` وارد ایمیج نمی‌شود.
 مقدار واقعی باید در runtime از `env_file` یا secrets برسد؛ بدون آن سشن production بالا نمی‌آید.
 
+مرحله نصب وابستگی‌ها `npm ci --ignore-scripts` است: اسکریپت `prepare` فقط هوک گیت
+محلی را نصب می‌کند و در لایه `deps` فایل اسکریپت کپی نشده؛ بدون این فلگ بیلد می‌شکند.
+
 ## یکپارچه‌سازی مداوم
 
 روی هر push به `main` و هر pull request، گردش‌کار
