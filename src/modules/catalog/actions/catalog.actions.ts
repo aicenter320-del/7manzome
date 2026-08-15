@@ -16,6 +16,7 @@ import {
   deleteProductMediaRow,
   findMediaForProduct,
   findProductById,
+  findProductBySlug,
   findProductMediaById,
   insertCategory,
   insertOccasion,
@@ -65,8 +66,15 @@ export const createProduct = createAction({
   auth: "required",
   permissions: ["catalog:write"],
   handler: async ({ input, user }) => {
+    let slug = input.slug;
+    let suffix = 2;
+    while (await findProductBySlug(slug)) {
+      slug = `${input.slug}-${suffix}`;
+      suffix += 1;
+    }
+
     const product = await insertProduct({
-      slug: input.slug,
+      slug,
       title: input.title,
       subtitle: input.subtitle ?? null,
       description: input.description ?? null,
@@ -92,7 +100,7 @@ export const createProduct = createAction({
     revalidatePath("/admin/products");
     revalidatePath("/products");
 
-    return { productId: product.id };
+    return { productId: product.id, slug: product.slug };
   },
 });
 

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { getChildrenForUser } from "@/modules/children";
 import { requireUser } from "@/server/auth/guards";
+import { copy, cta } from "@/shared/config/copy";
 import { Button } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -26,17 +27,17 @@ export default async function NewTreasurePage({
   return (
     <div className="grid gap-6">
       <PageHeader
-        title="گنجینه جدید"
-        description="هر کودک می‌تواند بیش از یک گنجینه داشته باشد؛ مثلاً گنجینه دائمی و گنجینه تولد."
+        title={cta.createTreasure}
+        description={copy.dashboard.newTreasureDescription}
       />
 
       {children.length === 0 ? (
         <EmptyState
-          title="ابتدا پروفایل کودک را بسازید"
-          description="گنجینه باید به یک کودک مشخص گره بخورد."
+          title={copy.dashboard.needChildTitle}
+          description={copy.dashboard.needChildDescription}
           action={
             <Button asChild>
-              <Link href="/dashboard/children/new">افزودن کودک</Link>
+              <Link href="/dashboard/children/new">{cta.addChild}</Link>
             </Button>
           }
         />

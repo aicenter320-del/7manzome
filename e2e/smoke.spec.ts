@@ -3,9 +3,9 @@ import { expect, test } from "@playwright/test";
 test.describe("مسیرهای عمومی", () => {
   test("صفحه اصلی روایت برند را نشان می‌دهد", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("heading", { name: /گنجینه طلای فرزندت را بساز/ })).toBeVisible();
-    await expect(page.getByRole("link", { name: "مشاهده محصولات" })).toBeVisible();
-    await expect(page.getByRole("main").getByRole("link", { name: "هدیه بده" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: /طلای کودک، هدیه‌ای که می‌ماند/ })).toBeVisible();
+    await expect(page.getByRole("link", { name: "دیدن طلای کودک" })).toBeVisible();
+    await expect(page.getByRole("main").getByRole("link", { name: "هدیه طلا بده" }).first()).toBeVisible();
   });
 
   test("صفحه محصولات قابل مشاهده است", async ({ page }) => {

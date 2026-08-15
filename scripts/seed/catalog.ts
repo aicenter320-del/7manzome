@@ -344,12 +344,12 @@ const PRODUCTS: ProductSeed[] = [
   {
     slug: "baby-bar-1g",
     title: "شمش یک گرمی کودک",
-    subtitle: "طلای سرمایه‌ای با گواهی وزن",
-    description: `شمش یک گرمی ۲۴ عیار در بسته وکیوم، مخصوص گنجینه نه زیور.
+    subtitle: "طلای خالص با گواهی وزن، برای گنجینه",
+    description: `شمش یک گرمی ۲۴ عیار در بسته وکیوم؛ برای افزودن وزن به گنجینه، نه برای زیور.
 
-روی قطعه وزن و عیار حک شده و حباب جداگانه اعلام می‌شود. این محصول برای کسانی است که می‌خواهند هدیه نقدی‌شان مستقیم به طلا تبدیل شود.
+روی قطعه وزن و عیار حک شده و حباب جداگانه اعلام می‌شود. هدیه‌ای که مستقیم به طلا تبدیل می‌شود.
 
-مناسب نوروز، یلدا و مشارکت مهمان‌ها در لینک هدیه.`,
+مناسب نوروز، یلدا و سهم مهمان‌ها در لینک هدیه.`,
     categorySlug: "coin-bar",
     kind: "bar",
     brandLine: "standard",
@@ -417,12 +417,12 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
   const categoryRows = await ctx.db
     .insert(schema.categories)
     .values([
-      { slug: "bracelet", title: "دستبند", description: "دستبند طلای کودک", sortOrder: 1 },
-      { slug: "necklace", title: "گردنبند و پلاک", description: "پلاک و گردنبند با امکان حکاکی نام", sortOrder: 2 },
-      { slug: "earring", title: "گوشواره", description: "گوشواره سبک کودکانه", sortOrder: 3 },
-      { slug: "coin-bar", title: "سکه و شمش", description: "طلای سرمایه‌ای برای گنجینه", sortOrder: 4 },
-      { slug: "ring", title: "انگشتر", description: "انگشتر باریک با سایز کودک", sortOrder: 5 },
-      { slug: "anklet", title: "پابند", description: "پابند نوزادی و زنگوله‌دار", sortOrder: 6 },
+      { slug: "bracelet", title: "دستبند", description: "دستبند ظریف برای نوزاد تا کودک", sortOrder: 1 },
+      { slug: "necklace", title: "گردنبند و پلاک", description: "پلاک با نام او؛ هدیه‌ای که روی سینه می‌ماند", sortOrder: 2 },
+      { slug: "earring", title: "گوشواره", description: "گوشواره سبک با قفل ایمن کودک", sortOrder: 3 },
+      { slug: "coin-bar", title: "سکه و شمش", description: "سکه و شمش برای سنگین‌تر کردن گنجینه", sortOrder: 4 },
+      { slug: "ring", title: "انگشتر", description: "انگشتر باریک با امکان حکاکی نام", sortOrder: 5 },
+      { slug: "anklet", title: "پابند", description: "پابند نوزادی؛ سنت با وزن طلا", sortOrder: 6 },
     ])
     .returning();
 
@@ -434,7 +434,7 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
       {
         slug: "birthday",
         title: "تولد",
-        description: "هدیه‌ای که هر سال به گنجینه او اضافه می‌شود و داستان رشدش را می‌سازد.",
+        description: "هر سال یک قطعه طلا؛ قصه‌ای که با او بزرگ می‌شود، نه هدیه‌ای که تا هفته بعد فراموش شود.",
         emoji: "🎂",
         ageMinMonths: 0,
         ageMaxMonths: 216,
@@ -444,7 +444,7 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
       {
         slug: "first-tooth",
         title: "اولین دندان",
-        description: "یادگاری اولین دندان، ماندگارتر از یک هدیه مصرفی.",
+        description: "اولین دندان را با طلا جشن بگیرید؛ یادگاری که در گنجینه می‌ماند.",
         emoji: "🦷",
         ageMinMonths: 4,
         ageMaxMonths: 18,
@@ -454,7 +454,7 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
       {
         slug: "nowruz",
         title: "نوروز",
-        description: "عیدی طلایی برای شروع سال نو؛ مناسب سکه و شمش گنجینه.",
+        description: "عیدی که خرج نمی‌شود: سکه یا شمش برای گنجینه سال نو او.",
         emoji: "🌸",
         ageMinMonths: 0,
         ageMaxMonths: 216,
@@ -464,7 +464,7 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
       {
         slug: "jashn-taklif",
         title: "جشن تکلیف",
-        description: "هدیه‌ای سنگین و معنادار برای این نقطه عطف.",
+        description: "برای این نقطه عطف، قطعه‌ای بدهید که سال‌ها با او بماند.",
         emoji: "✨",
         ageMinMonths: 96,
         ageMaxMonths: 120,
@@ -474,7 +474,7 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
       {
         slug: "aqiqah",
         title: "عقیقه",
-        description: "سنت عقیقه با قطعه‌ای که در گنجینه می‌ماند، نه با هدیه‌ای که مصرف می‌شود.",
+        description: "سنت عقیقه با طلایی که در گنجینه می‌ماند، نه هدیه‌ای که مصرف می‌شود.",
         emoji: "🌙",
         ageMinMonths: 0,
         ageMaxMonths: 12,
@@ -484,7 +484,7 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
       {
         slug: "yalda",
         title: "یلدا",
-        description: "شب چله خانوادگی با سهمی از طلا برای کودک.",
+        description: "شب چله خانواده؛ سهمی از طلا برای گنجینه کودک روی سفره.",
         emoji: "🍉",
         ageMinMonths: 0,
         ageMaxMonths: 216,
@@ -504,7 +504,7 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
       {
         slug: "school-start",
         title: "شروع مدرسه",
-        description: "یادگاری سال اول دبستان؛ سبک و مناسب استفاده گاه‌به‌گاه.",
+        description: "یادگاری سال اول دبستان؛ قطعه‌ای سبک که گاه‌به‌گاه با او می‌ماند.",
         emoji: "📚",
         ageMinMonths: 72,
         ageMaxMonths: 96,
@@ -514,7 +514,7 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
       {
         slug: "milk-tooth",
         title: "دندان شیری",
-        description: "وقتی دندان شیری می‌افتد، به‌جای سکه زیر بالش، سهمی به گنجینه اضافه کنید.",
+        description: "دندان شیری افتاد؛ به‌جای سکه زیر بالش، سهمی به گنجینه اضافه کنید.",
         emoji: "✨",
         ageMinMonths: 60,
         ageMaxMonths: 108,
@@ -524,7 +524,7 @@ export async function seedCatalog(ctx: SeedContext): Promise<SeedCatalog> {
       {
         slug: "chelleh",
         title: "شب چله نوزاد",
-        description: "چهلمین شب تولد؛ مناسب پابند و دستبند نوزادی.",
+        description: "چهلمین شب؛ دستبند یا پابند نوزادی که اولین گرم گنجینه باشد.",
         emoji: "🕯️",
         ageMinMonths: 0,
         ageMaxMonths: 2,

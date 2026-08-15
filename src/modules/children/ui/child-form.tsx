@@ -12,13 +12,7 @@ import { Button } from "@/shared/ui/button";
 import { FormField } from "@/shared/ui/form-field";
 import { Input } from "@/shared/ui/input";
 import { JalaliDateInput } from "@/shared/ui/jalali-date-input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/ui/select";
+import { SearchSelect } from "@/shared/ui/search-select";
 import { Textarea } from "@/shared/ui/textarea";
 
 import { createChildProfile, updateChildProfile } from "../actions/child.actions";
@@ -157,37 +151,37 @@ export function ChildForm({
 
       <div className="grid gap-5 sm:grid-cols-2">
         <FormField id="gender" label="جنسیت">
-          <Select value={gender} onValueChange={(value) => setGender(value as ChildGender)}>
-            <SelectTrigger id="gender">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {Object.entries(CHILD_GENDER_LABELS).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+          <SearchSelect
+            id="gender"
+            value={gender}
+            options={Object.entries(CHILD_GENDER_LABELS).map(([value, label]) => ({
+              value,
+              label,
+            }))}
+            onChange={(next) => {
+              if (next in CHILD_GENDER_LABELS) {
+                setGender(next as ChildGender);
+              }
+            }}
+          />
         </FormField>
 
         {!isEdit ? (
           <FormField id="relation" label="نسبت شما با کودک" required>
-            <Select
+            <SearchSelect
+              id="relation"
               value={relation}
-              onValueChange={(value) => setRelation(value as GuardianRelation)}
-            >
-              <SelectTrigger id="relation">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {Object.entries(GUARDIAN_RELATION_LABELS).map(([value, label]) => (
-                  <SelectItem key={value} value={value}>
-                    {label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              placeholder="نسبت را بنویسید یا انتخاب کنید"
+              options={Object.entries(GUARDIAN_RELATION_LABELS).map(([value, label]) => ({
+                value,
+                label,
+              }))}
+              onChange={(next) => {
+                if (next in GUARDIAN_RELATION_LABELS) {
+                  setRelation(next as GuardianRelation);
+                }
+              }}
+            />
           </FormField>
         ) : null}
       </div>

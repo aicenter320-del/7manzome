@@ -1,5 +1,6 @@
 import { MessageCircleHeartIcon } from "lucide-react";
 
+import { copy } from "@/shared/config/copy";
 import { EmptyState } from "@/shared/ui/empty-state";
 
 import type { PublicKeepsake } from "../domain/types";
@@ -10,8 +11,8 @@ export function KeepsakeList({ keepsakes }: { keepsakes: PublicKeepsake[] }) {
     return (
       <EmptyState
         icon={<MessageCircleHeartIcon />}
-        title="هنوز پیام یادگاری ثبت نشده"
-        description="اولین نفری باشید که برای این گنجینه پیام می‌گذارد."
+        title={copy.gift.keepsakeEmptyTitle}
+        description={copy.gift.keepsakeEmptyDescription}
       />
     );
   }

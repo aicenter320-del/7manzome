@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { CheckoutForm, getCart } from "@/modules/orders";
 import { requireUser } from "@/server/auth/guards";
+import { copy, cta } from "@/shared/config/copy";
 import { Button } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { GoldWeight } from "@/shared/ui/gold-weight";
@@ -15,14 +16,14 @@ export default async function CheckoutPage() {
   if (cart.items.length === 0) {
     return (
       <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
-        <PageHeader title="ثبت سفارش" />
+        <PageHeader title={copy.checkout.title} />
         <EmptyState
           className="mt-8"
-          title="سبد خرید خالی است"
-          description="ابتدا محصولی به سبد اضافه کنید."
+          title={copy.cart.emptyTitle}
+          description={copy.checkout.emptyDescription}
           action={
             <Button asChild>
-              <Link href="/products">مشاهده محصولات</Link>
+              <Link href="/products">{cta.shop}</Link>
             </Button>
           }
         />
@@ -34,10 +35,7 @@ export default async function CheckoutPage() {
 
   return (
     <main className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-10 sm:px-6">
-      <PageHeader
-        title="ثبت سفارش"
-        description="پس از ثبت، قیمت برای شما قفل می‌شود و به صفحه پرداخت می‌روید."
-      />
+      <PageHeader title={copy.checkout.title} description={copy.checkout.description} />
 
       <div className="glass rounded-3xl p-5 text-sm">
         <p>
@@ -59,7 +57,7 @@ export default async function CheckoutPage() {
         />
       ) : (
         <p className="text-sm text-muted-foreground">
-          تا ثبت قیمت روز طلا، امکان نهایی‌کردن سفارش وجود ندارد.
+          {copy.checkout.priceUnavailable}
         </p>
       )}
     </main>

@@ -2,6 +2,7 @@
 
 import { cn } from "@/shared/lib/cn";
 import { formatKarat, formatMg } from "@/shared/lib/gold";
+import { copy } from "@/shared/config/copy";
 import { Money } from "@/shared/ui/money";
 
 import { stockLabel } from "../domain/product-filter";
@@ -34,7 +35,7 @@ export function VariantSelector({
 
   return (
     <fieldset className={cn("grid gap-2", className)}>
-      <legend className="mb-1 text-sm font-medium">انتخاب وزن و عیار</legend>
+      <legend className="mb-2 text-sm font-medium">{copy.productDetail.variantLegend}</legend>
 
       {variants.map((variant) => {
         const stock = stockLabel(variant);
@@ -45,10 +46,10 @@ export function VariantSelector({
           <label
             key={variant.id}
             className={cn(
-              "flex cursor-pointer items-center gap-3 rounded-lg border p-3.5 transition-colors",
+              "flex cursor-pointer items-center gap-3 rounded-lg border p-4 transition-colors has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring has-[:focus-visible]:ring-offset-2",
               isSelected
-                ? "border-gold bg-gold-soft/40"
-                : "glass hover:border-gold/50",
+                ? "border-gold bg-gold-soft/40 shadow-product"
+                : "border-transparent bg-card shadow-product hover:border-gold/40",
               !isAvailable && "cursor-not-allowed opacity-55",
             )}
           >
@@ -59,15 +60,13 @@ export function VariantSelector({
               checked={isSelected}
               onChange={() => onSelect(variant.id)}
               disabled={!isAvailable}
-              className="size-4 accent-[var(--gold-deep)]"
+              className="sr-only"
             />
 
             <span className="min-w-0 flex-1">
               <span className="flex flex-wrap items-baseline gap-x-2">
                 <span className="font-medium">{formatMg(variant.weightMg)}</span>
-                <span className="text-xs text-muted-foreground">
-                  {formatKarat(variant.karat)}
-                </span>
+                <span className="text-xs text-muted-foreground">{formatKarat(variant.karat)}</span>
               </span>
               <span
                 className={cn(
@@ -81,7 +80,7 @@ export function VariantSelector({
               </span>
             </span>
 
-            <span className="shrink-0 text-sm font-semibold">
+            <span className="shrink-0 text-sm font-semibold text-gold-deep">
               {variant.price ? (
                 <Money rial={variant.price.unitPriceRial} />
               ) : (

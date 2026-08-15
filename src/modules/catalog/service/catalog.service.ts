@@ -268,6 +268,14 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
   return buildDetail(product);
 }
 
+/** جزئیات محصول برای ویرایش روی ویترین؛ پیش‌نویس را هم برمی‌گرداند. */
+export async function getProductBySlugForStaff(slug: string): Promise<ProductDetail | null> {
+  const product = await findProductBySlug(slug);
+  if (!product) return null;
+
+  return buildDetail(product, { includeInactiveVariants: true });
+}
+
 /** جزئیات محصول بدون فیلتر وضعیت؛ برای پنل ادمین. */
 export async function getProductForAdmin(productId: string): Promise<ProductDetail | null> {
   const product = await findProductById(productId);
@@ -301,6 +309,20 @@ export async function suggestProducts(input: {
     ...(input.ageMonths !== undefined ? { ageMonths: input.ageMonths } : {}),
     limit: input.limit ?? 8,
   });
+}
+
+/** قطعه‌های نزدیک در صفحهٔ محصول؛ خودِ قطعه از فهرست حذف می‌شود. */
+export async function listRelatedProducts(
+  productId: string,
+  options: { occasionSlug?: string; kind?: ProductListItem["kind"]; limit?: number },
+): Promise<ProductListItem[]> {
+  const limit = options.limit ?? 4;
+  const rows = await listProducts({
+    ...(options.occasionSlug ? { occasionSlug: options.occasionSlug } : {}),
+    ...(!options.occasionSlug && options.kind ? { kind: options.kind } : {}),
+    limit: limit + 4,
+  });
+  return rows.filter((item) => item.id !== productId).slice(0, limit);
 }
 
 export type { InventoryVariantRow };

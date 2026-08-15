@@ -1,5 +1,6 @@
 import { PackageSearchIcon } from "lucide-react";
 
+import { copy } from "@/shared/config/copy";
 import { cn } from "@/shared/lib/cn";
 import { EmptyState } from "@/shared/ui/empty-state";
 
@@ -9,8 +10,8 @@ import { ProductCard } from "./product-card";
 export function ProductGrid({
   products,
   className,
-  emptyTitle = "محصولی با این مشخصات پیدا نشد",
-  emptyDescription = "فیلترها را تغییر دهید یا از میان مناسبت‌ها انتخاب کنید.",
+  emptyTitle = copy.products.emptyTitle,
+  emptyDescription = copy.products.emptyDescription,
 }: {
   products: readonly ProductListItem[];
   className?: string;

@@ -14,13 +14,7 @@ import { Button } from "@/shared/ui/button";
 import { FormField } from "@/shared/ui/form-field";
 import { Input } from "@/shared/ui/input";
 import { JalaliDateInput } from "@/shared/ui/jalali-date-input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/shared/ui/select";
+import { SearchSelect } from "@/shared/ui/search-select";
 import { Textarea } from "@/shared/ui/textarea";
 
 const KIND_LABELS: Record<TreasureKind, string> = {
@@ -85,18 +79,16 @@ export function CreateTreasureForm({
       ) : null}
 
       <FormField id="childId" label="کودک" required>
-        <Select value={childId} onValueChange={setChildId}>
-          <SelectTrigger id="childId">
-            <SelectValue placeholder="کودک را انتخاب کنید" />
-          </SelectTrigger>
-          <SelectContent>
-            {childrenList.map((child) => (
-              <SelectItem key={child.id} value={child.id}>
-                {child.displayName}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SearchSelect
+          id="childId"
+          value={childId}
+          placeholder="نام کودک را بنویسید یا انتخاب کنید"
+          options={childrenList.map((child) => ({
+            value: child.id,
+            label: child.displayName,
+          }))}
+          onChange={setChildId}
+        />
       </FormField>
 
       <FormField id="title" label="عنوان گنجینه" required>
@@ -104,18 +96,19 @@ export function CreateTreasureForm({
       </FormField>
 
       <FormField id="kind" label="نوع">
-        <Select value={kind} onValueChange={(value) => setKind(value as TreasureKind)}>
-          <SelectTrigger id="kind">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            {TREASURE_KINDS.map((value) => (
-              <SelectItem key={value} value={value}>
-                {KIND_LABELS[value]}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <SearchSelect
+          id="kind"
+          value={kind}
+          options={TREASURE_KINDS.map((value) => ({
+            value,
+            label: KIND_LABELS[value],
+          }))}
+          onChange={(next) => {
+            if (next === "personal" || next === "event") {
+              setKind(next);
+            }
+          }}
+        />
       </FormField>
 
       {kind === "event" ? (

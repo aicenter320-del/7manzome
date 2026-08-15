@@ -40,12 +40,14 @@ export {
   listCategories,
   listOccasions,
   getProductBySlug,
+  getProductBySlugForStaff,
   getProductForAdmin,
   getCategoryBySlug,
   getOccasionBySlug,
   getVariantWithProduct,
   listActiveInventoryVariants,
   suggestProducts,
+  listRelatedProducts,
 } from "./service/catalog.service";
 
 export { decrementStock, incrementStock } from "./repo/catalog.repo";
@@ -68,7 +70,14 @@ export {
 
 export { ProductCard } from "./ui/product-card";
 export { ProductGrid } from "./ui/product-grid";
+export { ProductSlider } from "./ui/product-slider";
 export { ProductGallery } from "./ui/product-gallery";
+export { ProductDetailHeading } from "./ui/product-detail-heading";
+export { ProductStory } from "./ui/product-story";
+export { ProductEditProvider } from "./ui/product-edit-context";
+export { ProductEditBar } from "./ui/product-edit-bar";
+export { EditableProductOccasions } from "./ui/editable-product-occasions";
+export { StorefrontAddProduct } from "./ui/storefront-add-product";
 export { ProductGalleryManager } from "./ui/product-gallery-manager";
 export { ProductOccasionsManager } from "./ui/product-occasions-manager";
 export { ProductVariantsManager } from "./ui/product-variants-manager";

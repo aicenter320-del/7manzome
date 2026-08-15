@@ -5,6 +5,7 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 
+import { copy, cta } from "@/shared/config/copy";
 import { formatRial, parseTomanInput } from "@/shared/lib/money";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
@@ -92,9 +93,9 @@ export function ContributionForm({
 
       <FormField
         id="amountRial"
-        label="مبلغ هدیه"
+        label={copy.gift.amountLabel}
         required
-        hint="طلا پس از تایید پرداخت، با قیمت همان لحظه به گنجینه اضافه می‌شود."
+        hint={copy.gift.amountHint}
         {...(fieldErrors.amountRial?.[0] ? { error: fieldErrors.amountRial[0] } : {})}
       >
         <div className="flex flex-wrap gap-2">
@@ -121,7 +122,7 @@ export function ContributionForm({
           inputMode="numeric"
           dir="ltr"
           className="mt-3 text-start"
-          placeholder="مبلغ دلخواه به تومان"
+          placeholder={copy.gift.customAmount}
           value={customToman}
           onChange={(event) => {
             setCustomToman(event.target.value);
@@ -132,14 +133,14 @@ export function ContributionForm({
 
       <FormField
         id="contributorName"
-        label="نام شما"
+        label={copy.gift.nameLabel}
         required
         {...(fieldErrors.contributorName?.[0] ? { error: fieldErrors.contributorName[0] } : {})}
       >
         <Input
           id="contributorName"
           name="contributorName"
-          placeholder="مثلاً خاله سارا"
+          placeholder={copy.gift.namePlaceholder}
           required
         />
       </FormField>
@@ -147,7 +148,7 @@ export function ContributionForm({
       <FormField
         id="contributorPhone"
         label="شماره موبایل"
-        hint="اختیاری است؛ برای پیگیری پرداخت."
+        hint={copy.gift.phoneHint}
         {...(fieldErrors.contributorPhone?.[0] ? { error: fieldErrors.contributorPhone[0] } : {})}
       >
         <Input
@@ -162,17 +163,17 @@ export function ContributionForm({
 
       <FormField
         id="relationLabel"
-        label="نسبت شما با کودک"
-        hint="مثلاً خاله، دوست مامان. اختیاری است."
+        label={copy.gift.relationLabel}
+        hint={copy.gift.relationHint}
         {...(fieldErrors.relationLabel?.[0] ? { error: fieldErrors.relationLabel[0] } : {})}
       >
-        <Input id="relationLabel" name="relationLabel" placeholder="خاله" />
+        <Input id="relationLabel" name="relationLabel" placeholder={copy.gift.relationPlaceholder} />
       </FormField>
 
       <FormField
         id="keepsakeMessage"
-        label={`پیام یادگاری برای ${childFirstName}`}
-        hint="این پیام در گنجینه می‌ماند. حداکثر ۳۰۰ حرف."
+        label={copy.gift.keepsakeLabel(childFirstName)}
+        hint={copy.gift.keepsakeHint}
         {...(fieldErrors.keepsakeMessage?.[0] ? { error: fieldErrors.keepsakeMessage[0] } : {})}
       >
         <Textarea id="keepsakeMessage" name="keepsakeMessage" rows={4} maxLength={300} />
@@ -185,13 +186,13 @@ export function ContributionForm({
           onCheckedChange={(value) => setIsAnonymous(value === true)}
         />
         <Label htmlFor="isAnonymous" className="font-normal">
-          پیام من برای مهمان‌های دیگر بدون نام نمایش داده شود
+          {copy.gift.anonymous}
         </Label>
       </div>
 
-      <Button type="submit" disabled={isPending} className="justify-self-start">
+      <Button type="submit" variant="gold" size="lg" disabled={isPending} className="justify-self-start">
         {isPending ? <Loader2Icon className="animate-spin" /> : null}
-        ادامه به پرداخت
+        {cta.payGift}
       </Button>
     </form>
   );

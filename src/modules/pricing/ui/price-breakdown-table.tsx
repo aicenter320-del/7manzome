@@ -14,15 +14,17 @@ import type { PriceBreakdown } from "../domain/types";
 export function PriceBreakdownTable({
   breakdown,
   className,
+  showHeading = true,
 }: {
   breakdown: PriceBreakdown;
   className?: string;
+  showHeading?: boolean;
 }) {
   const rows = toBreakdownRows(breakdown);
 
   return (
-    <div className={cn("glass rounded-3xl p-4", className)}>
-      <p className="mb-3 text-sm font-medium">جزئیات کامل قیمت</p>
+    <div className={cn(showHeading && "rounded-lg bg-card p-5 shadow-product", className)}>
+      {showHeading ? <p className="mb-4 text-sm font-medium">جزئیات کامل قیمت</p> : null}
 
       <dl className="grid gap-2.5 text-sm">
         {rows.map((row, index) => (

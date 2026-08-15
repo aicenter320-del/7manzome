@@ -15,6 +15,7 @@ export { getCart, addToCart, CartError } from "./service/cart.service";
 export { getOrderById, getOrdersForUser, getLatestOrderStatusByUserIds, listOrdersForAdmin, placeOrder } from "./service/order.service";
 export { transitionOrder, settlePaidOrder, cancelOrder } from "./service/order-status.service";
 export { canTransition, nextStatuses, ORDER_STATUSES, buildOrderNumber } from "./domain/order-status";
+export { CartLine, CartPanel, AddToCartPanel, ProductBuySection, CheckoutForm } from "./ui/...";
 export type { Cart, Order, OrderItem, OrderStatus, Shipment } from "./domain/types";
 ```
 
@@ -45,15 +46,16 @@ export type { Cart, Order, OrderItem, OrderStatus, Shipment } from "./domain/typ
 - `order_number` قابل‌نمایش با الگوی `HM-<سال شمسی>-<شماره ترتیبی>` ساخته می‌شود.
 - سبد مهمان با کوکی `anon_token` نگه داشته می‌شود و هنگام ورود به سبد کاربر ادغام می‌گردد.
 - طلا فقط در `settlePaidOrder` (پس از تایید قطعی پرداخت) و فقط اگر `treasureId` روی سفارش باشد وارد دفتر کل می‌شود.
+- سبد مسیر اصلی‌اش شیت هدر است؛ `/cart` همان شیت را باز می‌کند. استان و شهر ثبت سفارش از فهرست ایران انتخاب می‌شوند، نه تایپ آزاد.
 
 ## مسیرها
 
-- `app/(site)/cart`
+- `app/(site)/cart` — لینک مستقیم؛ شیت سبد را باز می‌کند
 - `app/(site)/checkout`
 - `app/(dashboard)/dashboard/orders` و `[orderId]`
 - `app/admin/orders`
 
-صفحات مسیر بالا روی API عمومی این ماژول ساخته شده‌اند؛ `AddToCartPanel` گونه را انتخاب و به سبد اضافه می‌کند.
+صفحات مسیر بالا روی API عمومی این ماژول ساخته شده‌اند؛ `AddToCartPanel` گونه را انتخاب و به سبد اضافه می‌کند و شیت سبد را باز می‌کند.
 
 ## نقاط باز
 

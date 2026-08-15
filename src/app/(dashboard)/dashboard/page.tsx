@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ChildAvatar, getChildrenForUser } from "@/modules/children";
 import { getTreasuresForUser, TreasureCard } from "@/modules/treasury";
 import { requireUser } from "@/server/auth/guards";
+import { copy, cta } from "@/shared/config/copy";
 import { Button } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -17,29 +18,29 @@ export default async function DashboardHomePage() {
   return (
     <div className="grid gap-10">
       <PageHeader
-        title={`سلام ${user.firstName ?? user.displayName}`}
-        description="کودکان و گنجینه‌هایتان را از اینجا مدیریت کنید."
+        title={copy.dashboard.greeting(user.firstName ?? user.displayName)}
+        description={copy.dashboard.homeDescription}
         actions={
           <Button asChild variant="gold">
-            <Link href="/dashboard/treasures/new">گنجینه جدید</Link>
+            <Link href="/dashboard/treasures/new">{cta.createTreasure}</Link>
           </Button>
         }
       />
 
       <section className="grid gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">کودکان</h2>
+          <h2 className="text-lg font-semibold">{copy.dashboard.children}</h2>
           <Button asChild variant="outline" size="sm">
             <Link href="/dashboard/children">همه</Link>
           </Button>
         </div>
         {children.length === 0 ? (
           <EmptyState
-            title="هنوز پروفایل کودکی نساخته‌اید"
-            description="با ساخت پروفایل کودک، گنجینه طلای او را شروع کنید."
+            title={copy.dashboard.emptyChildTitle}
+            description={copy.dashboard.emptyChildDescription}
             action={
               <Button asChild>
-                <Link href="/dashboard/children/new">افزودن کودک</Link>
+                <Link href="/dashboard/children/new">{cta.addChild}</Link>
               </Button>
             }
           />
@@ -68,18 +69,18 @@ export default async function DashboardHomePage() {
 
       <section className="grid gap-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold">گنجینه‌ها</h2>
+          <h2 className="text-lg font-semibold">{copy.dashboard.treasures}</h2>
           <Button asChild variant="outline" size="sm">
             <Link href="/dashboard/treasures">همه</Link>
           </Button>
         </div>
         {treasures.length === 0 ? (
           <EmptyState
-            title="هنوز گنجینه‌ای ندارید"
-            description="برای کودک یک گنجینه بسازید و لینک هدیه را با خانواده به اشتراک بگذارید."
+            title={copy.dashboard.emptyTreasureTitle}
+            description={copy.dashboard.emptyTreasureDescription}
             action={
               <Button asChild>
-                <Link href="/dashboard/treasures/new">ساخت گنجینه</Link>
+                <Link href="/dashboard/treasures/new">{cta.createTreasure}</Link>
               </Button>
             }
           />

@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { getTreasuresForUser, TreasureCard } from "@/modules/treasury";
 import { requireUser } from "@/server/auth/guards";
+import { copy, cta } from "@/shared/config/copy";
 import { Button } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -13,22 +14,22 @@ export default async function TreasuresListPage() {
   return (
     <div className="grid gap-6">
       <PageHeader
-        title="گنجینه‌ها"
-        description="وزن طلا معیار اصلی است؛ هر هدیه یک قدم به هدف نزدیک‌تر می‌کند."
+        title={copy.dashboard.treasures}
+        description={copy.dashboard.treasuresPageDescription}
         actions={
           <Button asChild>
-            <Link href="/dashboard/treasures/new">گنجینه جدید</Link>
+            <Link href="/dashboard/treasures/new">{cta.createTreasure}</Link>
           </Button>
         }
       />
 
       {treasures.length === 0 ? (
         <EmptyState
-          title="هنوز گنجینه‌ای نساخته‌اید"
-          description="ابتدا پروفایل کودک را بسازید، سپس گنجینه را باز کنید."
+          title={copy.dashboard.emptyTreasureTitle}
+          description={copy.dashboard.emptyTreasureDescription}
           action={
             <Button asChild>
-              <Link href="/dashboard/treasures/new">ساخت گنجینه</Link>
+              <Link href="/dashboard/treasures/new">{cta.createTreasure}</Link>
             </Button>
           }
         />

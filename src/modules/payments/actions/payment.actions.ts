@@ -105,9 +105,9 @@ export const submitReceiptAction = createAction({
         paidAmountRial: input.paidAmountRial,
         payerName: input.payerName,
         ...(input.payerCardLast4 ? { payerCardLast4: input.payerCardLast4 } : {}),
-        ...(input.bankName ? { bankName: input.bankName } : {}),
+        bankName: input.bankName,
         paidAt: input.paidAt,
-        ...(input.receiptFileId ? { receiptFileId: input.receiptFileId } : {}),
+        receiptFileId: input.receiptFileId,
         ...(input.note ? { note: input.note } : {}),
         actorUserId: user?.id ?? null,
       });

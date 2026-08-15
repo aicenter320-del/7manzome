@@ -2,6 +2,8 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { BabyIcon, GiftIcon, Link2Icon, PenLineIcon, ScaleIcon, SparklesIcon } from "lucide-react";
 
+import { GoldPriceBadge, type GoldPriceView } from "@/modules/pricing";
+import { copy, cta } from "@/shared/config/copy";
 import { site } from "@/shared/config/site";
 import { Button } from "@/shared/ui/button";
 
@@ -45,38 +47,58 @@ function TrustCard({
   );
 }
 
+/** نوار اعتماد زیر هیرو: قیمت زنده و سه وعده کوتاه، قبل از ویترین. */
+export function HomeProofBar({ goldPrice }: { goldPrice: GoldPriceView | null }) {
+  return (
+    <section className="border-y border-gold/20 bg-card px-4 py-3 sm:px-6 sm:py-4">
+      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 sm:flex-row sm:gap-6">
+        <GoldPriceBadge price={goldPrice} />
+        <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
+          {copy.proof.chips.map((chip) => (
+            <li key={chip} className="flex items-center gap-2">
+              <span className="size-1 shrink-0 rounded-full bg-gold" aria-hidden />
+              {chip}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 /** مسیر ساخت گنجینه؛ همان کارهایی که در پنل والد انجام می‌شود. */
 export function HomeHowItWorks() {
   return (
-    <section className="bg-secondary px-4 py-20 sm:px-6 sm:py-24">
+    <section className="bg-background px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto grid w-full max-w-6xl gap-12">
         <div className="max-w-2xl grid gap-3">
-          <h2 className="text-xl font-semibold sm:text-2xl">از پروفایل کودک تا گنجینه</h2>
-          <p className="text-muted-foreground">
-            در حساب کاربری، کودک را ثبت می‌کنید، گنجینه می‌سازید و لینک هدیه را با خانواده
-            به اشتراک می‌گذارید.
+          <p className="flex items-center gap-3 text-xs font-medium tracking-wide text-gold-deep">
+            <span className="h-px w-8 shrink-0 bg-gold" aria-hidden />
+            {copy.how.kicker}
           </p>
+          <h2 className="text-xl font-semibold sm:text-2xl">{copy.how.title}</h2>
+          <p className="text-muted-foreground">{copy.how.body}</p>
         </div>
         <ol className="grid gap-6 sm:grid-cols-3">
           <Step
             icon={<BabyIcon className="size-5" aria-hidden />}
-            title="کودک را بشناسید"
-            body="نام و تاریخ تولد را وارد کنید تا مناسبت‌ها و پیشنهاد هدیه با سن او هماهنگ باشد."
+            title={copy.how.steps[0].title}
+            body={copy.how.steps[0].body}
           />
           <Step
             icon={<SparklesIcon className="size-5" aria-hidden />}
-            title="گنجینه باز کنید"
-            body="برای او یک گنجینه بسازید، هدف تعیین کنید و پیشرفت وزن طلا را ببینید."
+            title={copy.how.steps[1].title}
+            body={copy.how.steps[1].body}
           />
           <Step
             icon={<GiftIcon className="size-5" aria-hidden />}
-            title="خانواده را دعوت کنید"
-            body="لینک هدیه را بفرستید. فامیل بدون ساخت حساب مشارکت می‌کند و پیام یادگاری می‌گذارد."
+            title={copy.how.steps[2].title}
+            body={copy.how.steps[2].body}
           />
         </ol>
         <div>
           <Button asChild variant="gold" size="lg">
-            <Link href="/login?returnTo=/dashboard/treasures/new">شروع گنجینه</Link>
+            <Link href="/login?returnTo=/dashboard/treasures/new">{cta.startTreasure}</Link>
           </Button>
         </div>
       </div>
@@ -87,36 +109,28 @@ export function HomeHowItWorks() {
 /** دعوت به هدیه مهمان؛ مسیر واقعی /gift و لینک گنجینه. */
 export function HomeGiftBand() {
   return (
-    <section className="bg-background px-4 py-20 sm:px-6 sm:py-24">
+    <section className="bg-background px-4 py-16 sm:px-6 sm:py-20">
       <div className="glass-strong mx-auto grid w-full max-w-6xl gap-10 rounded-lg px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
         <div className="grid gap-5">
           <h2 className="text-2xl font-semibold text-balance sm:text-3xl">
-            فامیل بدون ورود، طلا هدیه می‌دهد
+            {copy.giftBand.title}
           </h2>
-          <p className="max-w-xl leading-relaxed text-muted-foreground">
-            لینک گنجینه را بفرستید. مهمان مبلغ را انتخاب می‌کند، یادگاری می‌نویسد و پس از تایید
-            پرداخت، طلا با قیمت همان لحظه به گنجینه کودک اضافه می‌شود. کارت هدیه فیزیکی با کد
-            هم قابل استفاده است.
-          </p>
+          <p className="max-w-xl leading-relaxed text-muted-foreground">{copy.giftBand.body}</p>
           <div className="flex flex-wrap gap-3">
             <Button asChild variant="gold" size="lg">
-              <Link href="/gift">هدیه بده</Link>
+              <Link href="/gift">{cta.gift}</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
-              <Link href="/treasures">گنجینه‌های در حال ساخت</Link>
+              <Link href="/treasures">{copy.giftBand.browseTreasures}</Link>
             </Button>
           </div>
         </div>
         <ul className="grid gap-3 text-sm">
-          <li className="rounded-lg bg-card px-5 py-4 shadow-product">
-            بدون ساخت حساب برای مهمان
-          </li>
-          <li className="rounded-lg bg-card px-5 py-4 shadow-product">
-            پیام یادگاری کنار هر هدیه
-          </li>
-          <li className="rounded-lg bg-card px-5 py-4 shadow-product">
-            طلا فقط پس از تایید پرداخت
-          </li>
+          {copy.giftBand.bullets.map((item) => (
+            <li key={item} className="rounded-lg bg-card px-5 py-4 shadow-product">
+              {item}
+            </li>
+          ))}
         </ul>
       </div>
     </section>
@@ -126,29 +140,27 @@ export function HomeGiftBand() {
 /** اعتماد: شفافیت قیمت و شخصی‌سازی واقعی صفحه محصول. */
 export function HomeTrustBand() {
   return (
-    <section className="bg-background px-4 py-20 sm:px-6 sm:py-24">
+    <section className="bg-background px-4 py-12 sm:px-6 sm:py-16">
       <div className="mx-auto grid w-full max-w-6xl gap-12">
         <div className="max-w-2xl grid gap-3">
-          <h2 className="text-xl font-semibold sm:text-2xl">شفاف، ماندگار، به نام او</h2>
-          <p className="text-muted-foreground">
-            همان چیزهایی که در فروشگاه و پنل می‌بینید: ریزقیمت، حکاکی، و لینک دعوت خانواده.
-          </p>
+          <h2 className="text-xl font-semibold sm:text-2xl">{copy.trust.title}</h2>
+          <p className="text-muted-foreground">{copy.trust.body}</p>
         </div>
         <div className="grid gap-6 sm:grid-cols-3">
           <TrustCard
             icon={<ScaleIcon className="size-5" aria-hidden />}
-            title="قیمت کاملاً باز"
-            body="وزن، عیار، ارزش طلای خام، اجرت، سود و مالیات روی هر محصول دیده می‌شود. سفارش با همان اعداد قفل می‌شود."
+            title={copy.trust.cards[0].title}
+            body={copy.trust.cards[0].body}
           />
           <TrustCard
             icon={<PenLineIcon className="size-5" aria-hidden />}
-            title="به نام کودک"
-            body="روی قطعه‌های قابل شخصی‌سازی می‌توانید نام یا یادگاری حک کنید؛ هدیه‌ای که مال اوست."
+            title={copy.trust.cards[1].title}
+            body={copy.trust.cards[1].body}
           />
           <TrustCard
             icon={<Link2Icon className="size-5" aria-hidden />}
-            title="یک لینک برای همه"
-            body="به‌جای بیست هدیه پراکنده، سهم خانواده در یک گنجینه جمع می‌شود و پیشرفت وزن طلا را می‌بینید."
+            title={copy.trust.cards[2].title}
+            body={copy.trust.cards[2].body}
           />
         </div>
       </div>
@@ -159,17 +171,17 @@ export function HomeTrustBand() {
 /** شعار برند؛ سکشن پایانی روی کاغذ کرم، طلا فقط لهجه. */
 export function HomeSloganBand() {
   return (
-    <section className="bg-background px-4 py-24 sm:px-6 sm:py-28">
+    <section className="bg-background px-4 py-16 sm:px-6 sm:py-20">
       <div className="mx-auto grid w-full max-w-3xl justify-items-center gap-8 text-center">
         <p className="text-2xl font-semibold text-balance text-treasure sm:text-4xl">
           {site.slogan}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
           <Button asChild variant="gold" size="lg">
-            <Link href="/products">مشاهده محصولات</Link>
+            <Link href="/products">{cta.shop}</Link>
           </Button>
           <Button asChild variant="outline" size="lg">
-            <Link href="/login?returnTo=/dashboard">ورود به حساب</Link>
+            <Link href="/login?returnTo=/dashboard">{cta.login}</Link>
           </Button>
         </div>
       </div>

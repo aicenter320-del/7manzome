@@ -393,23 +393,24 @@
     -webkit-backdrop-filter: blur(12px);
   }
 
-  /* عکس هیرو تا بالای ویوپورت می‌رود و از زیر نوار چسبان شروع می‌شود */
+  /* اولین صفحه: عکس از زیر نوار تا لبهٔ پایین ویوپورت؛ نوار کرم بین هیرو و بخش بعد نیست */
   .home-hero {
     margin-top: calc(-1 * var(--site-header-height));
-    min-height: calc(32rem + var(--site-header-height));
+    min-height: 100dvh;
     padding-top: calc(var(--site-header-height) + 2rem);
-  }
-
-  @media (width >= 40rem) {
-    .home-hero {
-      min-height: calc(36rem + var(--site-header-height));
-    }
+    padding-bottom: 2rem;
   }
 
   @media (width >= 64rem) {
     .home-hero {
-      min-height: calc(32rem + var(--site-header-height));
-      padding-top: calc(var(--site-header-height) + 5rem);
+      padding-top: calc(var(--site-header-height) + 4rem);
+      padding-bottom: 4rem;
+    }
+
+    .home-hero .hero-photo {
+      object-position: 82% center;
+      mask-image: linear-gradient(to left, black 70%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to left, black 70%, transparent 100%);
     }
   }
 
@@ -510,7 +511,8 @@
     background-color: var(--card);
   }
 
-  .hero-photo-mask {
+  .hero-photo-mask,
+  .home-hero .hero-photo {
     mask-image: none;
     -webkit-mask-image: none;
   }

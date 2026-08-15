@@ -44,6 +44,12 @@ describe("تبدیل شمسی و میلادی", () => {
       expect(back).toMatchObject({ year: 1404, month, day: 15 });
     }
   });
+
+  it("ساعت تهران را در رفت‌وبرگشت نگه می‌دارد", () => {
+    const epoch = fromJalali({ year: 1404, month: 6, day: 25 }, { hour: 20, minute: 19 });
+    const back = toJalali(epoch);
+    expect(back).toMatchObject({ year: 1404, month: 6, day: 25, hour: 20, minute: 19 });
+  });
 });
 
 describe("قالب‌بندی تاریخ", () => {

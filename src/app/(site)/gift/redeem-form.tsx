@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 
 import { redeemGiftCardAction } from "@/modules/gifting/actions/gifting.actions";
+import { copy, cta } from "@/shared/config/copy";
 import { toEnglishDigits } from "@/shared/lib/persian";
 import { Button } from "@/shared/ui/button";
 import { FormField } from "@/shared/ui/form-field";
@@ -35,7 +36,7 @@ export function RedeemGiftCardForm() {
         });
       }}
     >
-      <FormField id="giftCardCode" label="کد کارت هدیه" required {...(error ? { error } : {})}>
+      <FormField id="giftCardCode" label={copy.gift.redeemLabel} required {...(error ? { error } : {})}>
         <Input
           id="giftCardCode"
           name="code"
@@ -43,13 +44,13 @@ export function RedeemGiftCardForm() {
           className="text-start ltr-nums"
           value={code}
           onChange={(event) => setCode(event.target.value)}
-          placeholder="کد روی کارت"
+          placeholder={copy.gift.redeemPlaceholder}
           required
         />
       </FormField>
       <Button type="submit" disabled={isPending}>
         {isPending ? <Loader2Icon className="animate-spin" /> : null}
-        رفتن به گنجینه
+        {cta.redeemCard}
       </Button>
     </form>
   );

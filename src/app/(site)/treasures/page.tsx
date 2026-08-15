@@ -1,10 +1,14 @@
+import Link from "next/link";
+
 import { getPublicTreasures } from "@/modules/treasury";
+import { copy, cta } from "@/shared/config/copy";
+import { toPersianDigits } from "@/shared/lib/persian";
+import { Button } from "@/shared/ui/button";
 import { Card, CardContent } from "@/shared/ui/card";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { GoldWeight } from "@/shared/ui/gold-weight";
 import { PageHeader } from "@/shared/ui/page-header";
 import { Progress } from "@/shared/ui/progress";
-import { toPersianDigits } from "@/shared/lib/persian";
 
 export default async function PublicTreasuresPage() {
   const treasures = await getPublicTreasures(12);
@@ -12,15 +16,20 @@ export default async function PublicTreasuresPage() {
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
       <PageHeader
-        title="گنجینه‌هایی که در حال ساخته‌شدن‌اند"
-        description="هر هدیه، یک قدم برای ساختن آینده یک کودک است. اینجا فقط نام کوچک و پیشرفت دیده می‌شود."
+        title={copy.treasuresPublic.title}
+        description={copy.treasuresPublic.description}
       />
 
       {treasures.length === 0 ? (
         <EmptyState
           className="mt-8"
-          title="هنوز گنجینه عمومی‌ای نیست"
-          description="وقتی خانواده‌ها گنجینه می‌سازند، داستان پیشرفت‌شان اینجا الهام‌بخش می‌شود."
+          title={copy.treasuresPublic.emptyTitle}
+          description={copy.treasuresPublic.emptyDescription}
+          action={
+            <Button asChild variant="gold">
+              <Link href="/login?returnTo=/dashboard/treasures/new">{cta.startTreasure}</Link>
+            </Button>
+          }
         />
       ) : (
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -41,7 +50,7 @@ export default async function PublicTreasuresPage() {
                     <Progress value={summary.progressPercent} />
                   </div>
                 ) : (
-                  <p className="text-sm text-muted-foreground">هر هدیه‌ای به این گنجینه ارزشمند است.</p>
+                  <p className="text-sm text-muted-foreground">{copy.treasuresPublic.noGoal}</p>
                 )}
               </CardContent>
             </Card>

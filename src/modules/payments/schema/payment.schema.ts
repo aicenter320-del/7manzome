@@ -1,7 +1,8 @@
 import { z } from "zod";
 
-import { cardNumberSchema, epochSchema, idSchema, ibanSchema } from "@/shared/lib/validators";
+import { isIranBankName } from "@/shared/data/iran-banks";
 import { toEnglishDigits } from "@/shared/lib/persian";
+import { cardNumberSchema, epochSchema, idSchema, ibanSchema } from "@/shared/lib/validators";
 
 export const submitReceiptSchema = z.object({
   paymentId: idSchema,
@@ -34,10 +35,14 @@ export const submitReceiptSchema = z.object({
     })
     .optional(),
 
-  bankName: z.string().trim().max(60).optional(),
+  bankName: z
+    .string()
+    .trim()
+    .min(2, "بانک واریزکننده را انتخاب کنید")
+    .refine((value) => isIranBankName(value), { message: "بانک را از فهرست انتخاب کنید" }),
   paidAt: epochSchema,
   note: z.string().trim().max(300).optional(),
-  receiptFileId: idSchema.optional(),
+  receiptFileId: idSchema,
 });
 
 export const reviewPaymentSchema = z

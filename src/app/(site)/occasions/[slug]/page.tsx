@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { getOccasionBySlug, listProducts, OccasionLabel, ProductGrid } from "@/modules/catalog";
+import { copy } from "@/shared/config/copy";
 import { PageHeader } from "@/shared/ui/page-header";
 
 export async function generateMetadata({
@@ -38,14 +39,14 @@ export default async function OccasionDetailPage({
           />
         }
         description={
-          occasion.description ?? "برای این مناسبت، هدیه‌ای ماندگار از طلا انتخاب کنید."
+          occasion.description ?? copy.occasions.fallbackDescription
         }
       />
       <div className="mt-8">
         <ProductGrid
           products={products}
-          emptyTitle="هنوز محصولی برای این مناسبت نیست"
-          emptyDescription="از صفحه محصولات دیدن کنید یا بعداً سر بزنید."
+          emptyTitle={copy.occasions.emptyProductsTitle}
+          emptyDescription={copy.occasions.emptyProductsDescription}
         />
       </div>
     </main>

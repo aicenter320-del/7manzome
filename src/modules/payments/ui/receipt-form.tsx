@@ -5,26 +5,30 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Loader2Icon, UploadIcon } from "lucide-react";
 
-import { parseTomanInput, formatRial } from "@/shared/lib/money";
+import { IRAN_BANK_NAMES } from "@/shared/data/iran-banks";
 import { toEnglishDigits } from "@/shared/lib/persian";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/shared/ui/accordion";
 import { Button } from "@/shared/ui/button";
 import { FormField } from "@/shared/ui/form-field";
 import { Input } from "@/shared/ui/input";
+import { JalaliDateInput } from "@/shared/ui/jalali-date-input";
+import { Money } from "@/shared/ui/money";
+import { SearchSelect } from "@/shared/ui/search-select";
 import { Textarea } from "@/shared/ui/textarea";
 
 import { submitReceiptAction, uploadPaymentReceipt } from "../actions/payment.actions";
 
-function toDatetimeLocalValue(epochMs: number): string {
-  const date = new Date(epochMs);
-  const pad = (value: number) => String(value).padStart(2, "0");
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-}
-
-function datetimeLocalToEpoch(value: string): number | null {
-  if (!value) return null;
-  const epoch = new Date(value).getTime();
-  return Number.isFinite(epoch) ? epoch : null;
-}
+const BANK_ALIASES = ["بانک"] as const;
+const BANK_OPTIONS = IRAN_BANK_NAMES.map((name) => ({
+  value: name,
+  label: name,
+  keywords: [`بانک ${name}`],
+}));
 
 function firstFieldError(
   fieldErrors: Record<string, string[]> | undefined,
@@ -39,18 +43,17 @@ export function ReceiptForm({
   redirectTo,
 }: {
   paymentId: string;
-  expectedAmountRial?: number;
+  expectedAmountRial: number;
   redirectTo?: string;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   const [referenceNumber, setReferenceNumber] = useState("");
-  const [paidAmountToman, setPaidAmountToman] = useState("");
   const [payerName, setPayerName] = useState("");
   const [payerCardLast4, setPayerCardLast4] = useState("");
   const [bankName, setBankName] = useState("");
-  const [paidAt, setPaidAt] = useState(() => toDatetimeLocalValue(Date.now()));
+  const [paidAt, setPaidAt] = useState<number | null>(() => Date.now());
   const [note, setNote] = useState("");
   const [file, setFile] = useState<File | null>(null);
   const [uploadedFileId, setUploadedFileId] = useState<string | null>(null);
@@ -61,14 +64,17 @@ export function ReceiptForm({
     setFormError(null);
     setFieldErrors({});
 
-    const paidAmountRial = parseTomanInput(paidAmountToman);
-    if (paidAmountRial === null) {
-      setFieldErrors({ paidAmountRial: ["مبلغ واریزی را به تومان وارد کنید"] });
+    if (!file && !uploadedFileId) {
+      setFieldErrors({ receiptFileId: ["عکس رسید را انتخاب کنید"] });
       return;
     }
 
-    const paidAtEpoch = datetimeLocalToEpoch(paidAt);
-    if (paidAtEpoch === null) {
+    if (!bankName) {
+      setFieldErrors({ bankName: ["بانک واریزکننده را انتخاب کنید"] });
+      return;
+    }
+
+    if (paidAt === null) {
       setFieldErrors({ paidAt: ["زمان واریز را انتخاب کنید"] });
       return;
     }
@@ -92,18 +98,23 @@ export function ReceiptForm({
         setUploadedFileId(receiptFileId);
       }
 
+      if (!receiptFileId) {
+        setFieldErrors({ receiptFileId: ["عکس رسید را انتخاب کنید"] });
+        return;
+      }
+
       const last4 = toEnglishDigits(payerCardLast4).replace(/\D/g, "");
 
       const result = await submitReceiptAction({
         paymentId,
         referenceNumber,
-        paidAmountRial,
+        paidAmountRial: expectedAmountRial,
         payerName,
         ...(last4 ? { payerCardLast4: last4 } : {}),
-        ...(bankName.trim() ? { bankName: bankName.trim() } : {}),
-        paidAt: paidAtEpoch,
+        bankName,
+        paidAt,
         ...(note.trim() ? { note: note.trim() } : {}),
-        ...(receiptFileId ? { receiptFileId } : {}),
+        receiptFileId,
       });
 
       if (!result.ok) {
@@ -133,6 +144,12 @@ export function ReceiptForm({
         submit();
       }}
     >
+      <FormField id="paidAmount" label="مبلغ واریزی" hint="مبلغ سفارش قفل شده و عوض نمی‌شود.">
+        <p className="text-lg font-semibold text-gold-deep">
+          <Money rial={expectedAmountRial} />
+        </p>
+      </FormField>
+
       <FormField
         id="referenceNumber"
         label="شماره پیگیری"
@@ -152,29 +169,6 @@ export function ReceiptForm({
       </FormField>
 
       <FormField
-        id="paidAmountToman"
-        label="مبلغ واریزی (تومان)"
-        hint={
-          expectedAmountRial !== undefined
-            ? `مبلغ این پرداخت ${formatRial(expectedAmountRial)} است.`
-            : "مبلغ را به تومان وارد کنید."
-        }
-        error={firstFieldError(fieldErrors, "paidAmountRial")}
-        required
-      >
-        <Input
-          id="paidAmountToman"
-          name="paidAmountToman"
-          inputMode="numeric"
-          className="ltr-nums"
-          dir="ltr"
-          value={paidAmountToman}
-          onChange={(event) => setPaidAmountToman(event.target.value)}
-          required
-        />
-      </FormField>
-
-      <FormField
         id="payerName"
         label="نام واریزکننده"
         error={firstFieldError(fieldErrors, "payerName")}
@@ -189,54 +183,34 @@ export function ReceiptForm({
         />
       </FormField>
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <FormField
-          id="payerCardLast4"
-          label="چهار رقم آخر کارت"
-          hint="اختیاری"
-          error={firstFieldError(fieldErrors, "payerCardLast4")}
-        >
-          <Input
-            id="payerCardLast4"
-            name="payerCardLast4"
-            inputMode="numeric"
-            maxLength={4}
-            className="ltr-nums"
-            dir="ltr"
-            value={payerCardLast4}
-            onChange={(event) => setPayerCardLast4(event.target.value)}
-          />
-        </FormField>
-
-        <FormField
+      <FormField
+        id="bankName"
+        label="بانک واریزکننده"
+        error={firstFieldError(fieldErrors, "bankName")}
+        required
+      >
+        <SearchSelect
           id="bankName"
-          label="نام بانک مبدأ"
-          hint="اختیاری"
-          error={firstFieldError(fieldErrors, "bankName")}
-        >
-          <Input
-            id="bankName"
-            name="bankName"
-            value={bankName}
-            onChange={(event) => setBankName(event.target.value)}
-          />
-        </FormField>
-      </div>
+          value={bankName}
+          placeholder="نام بانک را بنویسید یا انتخاب کنید"
+          queryAliases={BANK_ALIASES}
+          options={BANK_OPTIONS}
+          onChange={setBankName}
+        />
+      </FormField>
 
       <FormField
         id="paidAt"
-        label="زمان واریز"
+        label="تاریخ واریز"
         error={firstFieldError(fieldErrors, "paidAt")}
         required
       >
-        <Input
+        <JalaliDateInput
           id="paidAt"
-          name="paidAt"
-          type="datetime-local"
-          className="ltr-nums"
           value={paidAt}
-          onChange={(event) => setPaidAt(event.target.value)}
-          required
+          withTime
+          timeLabel="ساعت واریز"
+          onChange={setPaidAt}
         />
       </FormField>
 
@@ -260,15 +234,40 @@ export function ReceiptForm({
         />
       </FormField>
 
-      <FormField id="note" label="توضیح" hint="اختیاری" error={firstFieldError(fieldErrors, "note")}>
-        <Textarea
-          id="note"
-          name="note"
-          value={note}
-          onChange={(event) => setNote(event.target.value)}
-          maxLength={300}
-        />
-      </FormField>
+      <Accordion type="single" collapsible>
+        <AccordionItem value="extra">
+          <AccordionTrigger>جزئیات بیشتر</AccordionTrigger>
+          <AccordionContent className="grid gap-5 text-foreground">
+            <FormField
+              id="payerCardLast4"
+              label="چهار رقم آخر کارت"
+              hint="اختیاری"
+              error={firstFieldError(fieldErrors, "payerCardLast4")}
+            >
+              <Input
+                id="payerCardLast4"
+                name="payerCardLast4"
+                inputMode="numeric"
+                maxLength={4}
+                className="ltr-nums"
+                dir="ltr"
+                value={payerCardLast4}
+                onChange={(event) => setPayerCardLast4(event.target.value)}
+              />
+            </FormField>
+
+            <FormField id="note" label="توضیح" hint="اختیاری" error={firstFieldError(fieldErrors, "note")}>
+              <Textarea
+                id="note"
+                name="note"
+                value={note}
+                onChange={(event) => setNote(event.target.value)}
+                maxLength={300}
+              />
+            </FormField>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       {formError ? (
         <p role="alert" className="text-sm font-medium text-destructive">

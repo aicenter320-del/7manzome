@@ -1,3 +1,4 @@
+import { copy } from "@/shared/config/copy";
 import { cn } from "@/shared/lib/cn";
 import { toPersianDigits } from "@/shared/lib/persian";
 import { GoldWeight } from "@/shared/ui/gold-weight";
@@ -31,14 +32,14 @@ export function GiftProgress({
       </header>
 
       <div className="grid gap-1">
-        <p className="text-xs text-muted-foreground">طلای ذخیره‌شده</p>
+        <p className="text-xs text-muted-foreground">{copy.gift.progressStored}</p>
         <GoldWeight mg={balanceMg} size="hero" className="text-treasure" />
       </div>
 
       {goalTargetMg && goalTargetMg > 0 ? (
         <div className="grid gap-2">
           <div className="flex items-baseline justify-between gap-3 text-sm">
-            <span className="text-muted-foreground">پیشرفت تا هدف</span>
+            <span className="text-muted-foreground">{copy.gift.progressToGoal}</span>
             <span className="font-semibold text-gold-deep">
               {toPersianDigits(progressPercent)}٪
             </span>
@@ -47,7 +48,7 @@ export function GiftProgress({
         </div>
       ) : (
         <p className="text-sm text-muted-foreground">
-          هنوز هدفی برای این گنجینه تعیین نشده؛ هر هدیه‌ای ارزشمند است.
+          {copy.gift.noGoal}
         </p>
       )}
     </section>

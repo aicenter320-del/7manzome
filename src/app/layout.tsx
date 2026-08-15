@@ -21,6 +21,7 @@ export const metadata: Metadata = {
     "سکه کودک",
     "گنجینه طلا",
     "طلای نوزاد",
+    "هدیه تولد کودک",
     "هفت منظومه",
   ],
   authors: [{ name: site.name }],

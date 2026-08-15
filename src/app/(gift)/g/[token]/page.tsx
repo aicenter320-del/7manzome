@@ -7,6 +7,7 @@ import {
   GiftProgress,
   KeepsakeList,
 } from "@/modules/gifting";
+import { copy } from "@/shared/config/copy";
 import { site } from "@/shared/config/site";
 
 import { isGiftViewAccepting } from "./is-accepting";
@@ -22,7 +23,7 @@ export async function generateMetadata({
 
   return {
     title: `گنجینه ${view.childFirstName}`,
-    description: `هدیه طلا برای ${view.childFirstName}`,
+    description: copy.gift.metadataDescription(view.childFirstName),
     robots: { index: false, follow: false },
   };
 }
@@ -57,7 +58,7 @@ export default async function GiftLinkPage({
 
       {accepting ? (
         <section className="grid gap-4">
-          <h2 className="text-lg font-semibold">مشارکت در گنجینه {view.childFirstName}</h2>
+          <h2 className="text-lg font-semibold">{copy.gift.contributeTitle(view.childFirstName)}</h2>
           <ContributionForm
             token={view.token}
             suggestedAmountsRial={view.suggestedAmountsRial}
@@ -66,13 +67,12 @@ export default async function GiftLinkPage({
         </section>
       ) : (
         <p className="glass rounded-3xl p-5 text-sm text-muted-foreground">
-          این لینک هدیه در حال حاضر مشارکت نمی‌پذیرد. اگر کارت هدیه دارید، از صفحه هدیه سایت استفاده
-          کنید یا با خانواده کودک هماهنگ شوید.
+          {copy.gift.closed}
         </p>
       )}
 
       <section className="grid gap-4">
-        <h2 className="text-lg font-semibold">پیام‌های یادگاری</h2>
+        <h2 className="text-lg font-semibold">{copy.gift.keepsakesTitle}</h2>
         <KeepsakeList keepsakes={view.keepsakes} />
       </section>
 

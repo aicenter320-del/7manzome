@@ -29,7 +29,7 @@ export default async function AdminProductsPage() {
     <div className="grid gap-8">
       <PageHeader
         title="محصولات"
-        description="عنوان، وضعیت، ترتیب نمایش و گالری هر محصول را از صفحهٔ ویرایش تنظیم کنید."
+        description="عنوان و عکس را می‌توانید روی خود ویترین هم ویرایش کنید. فرم زیر همان ساخت سریع پنل است."
       />
 
       <DataTable

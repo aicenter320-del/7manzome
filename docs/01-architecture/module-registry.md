@@ -70,6 +70,8 @@ flowchart TD
 | محاسبه و فرمت پول | `shared/lib/money.ts` |
 | محاسبه و فرمت وزن طلا | `shared/lib/gold.ts` |
 | تبدیل و فرمت تاریخ جلالی | `shared/lib/jalali.ts` |
+| ورودی تاریخ و ساعت شمسی | `shared/ui/jalali-date-input.tsx` |
+| انتخاب با تایپ و فیلتر فهرست | `shared/ui/search-select.tsx` |
 | تبدیل ارقام فارسی/انگلیسی | `shared/lib/persian.ts` |
 | اعتبارسنجی موبایل و کد ملی | `shared/lib/validators.ts` |
 | ساخت Server Action امن | `server/actions/action-kit.ts` |
@@ -77,7 +79,9 @@ flowchart TD
 | بررسی نقش و مجوز | `server/auth/rbac.ts` |
 | ذخیره و خواندن فایل آپلودی | `server/storage/file-storage.ts` |
 | لاگ ساخت‌یافته | `server/logger.ts` |
-| کامپوننت‌های پایه UI | `shared/ui/` شامل موتور Liquid Glass |
+| اسلایدر افقی با نقطه | `shared/ui/snap-slide-track.tsx` |
+| استان و شهر ایران | `shared/data/iran-places.ts` |
+| فهرست بانک‌های ایران | `shared/data/iran-banks.ts` |
 
 ## چک‌لیست افزودن ماژول جدید
 

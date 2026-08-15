@@ -5,7 +5,14 @@ import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Loader2Icon } from "lucide-react";
 
+import { copy, cta } from "@/shared/config/copy";
 import { toEnglishDigits } from "@/shared/lib/persian";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/shared/ui/accordion";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
 import { FormField } from "@/shared/ui/form-field";
@@ -13,6 +20,7 @@ import { Input } from "@/shared/ui/input";
 import { Textarea } from "@/shared/ui/textarea";
 
 import { placeOrderAction } from "../actions/order.actions";
+import { IranPlaceFields } from "./iran-place-fields";
 
 export function CheckoutForm({
   defaultRecipientName,
@@ -27,6 +35,9 @@ export function CheckoutForm({
   const [isPending, startTransition] = useTransition();
   const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const [formError, setFormError] = useState<string | null>(null);
+
+  const hideName = Boolean(defaultRecipientName);
+  const hidePhone = Boolean(defaultRecipientPhone);
 
   const handleSubmit = (formData: FormData) => {
     setFieldErrors({});
@@ -72,30 +83,37 @@ export function CheckoutForm({
         </Alert>
       ) : null}
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      {hideName || hidePhone ? (
+        <div className="grid gap-1 text-sm text-muted-foreground">
+          {hideName ? <input type="hidden" name="recipientName" value={defaultRecipientName} /> : null}
+          {hidePhone ? (
+            <input type="hidden" name="recipientPhone" value={defaultRecipientPhone} />
+          ) : null}
+          <p>
+            {copy.checkout.recipientFromAccount}
+            {hideName ? ` — ${defaultRecipientName}` : null}
+            {hidePhone ? ` — ${defaultRecipientPhone}` : null}
+          </p>
+        </div>
+      ) : null}
+
+      {hideName ? null : (
         <FormField
           id="recipientName"
           label="نام گیرنده"
           required
-          {...(fieldErrors.recipientName?.[0]
-            ? { error: fieldErrors.recipientName[0] }
-            : {})}
+          {...(fieldErrors.recipientName?.[0] ? { error: fieldErrors.recipientName[0] } : {})}
         >
-          <Input
-            id="recipientName"
-            name="recipientName"
-            defaultValue={defaultRecipientName ?? ""}
-            required
-          />
+          <Input id="recipientName" name="recipientName" required />
         </FormField>
+      )}
 
+      {hidePhone ? null : (
         <FormField
           id="recipientPhone"
           label="شماره موبایل گیرنده"
           required
-          {...(fieldErrors.recipientPhone?.[0]
-            ? { error: fieldErrors.recipientPhone[0] }
-            : {})}
+          {...(fieldErrors.recipientPhone?.[0] ? { error: fieldErrors.recipientPhone[0] } : {})}
         >
           <Input
             id="recipientPhone"
@@ -103,36 +121,20 @@ export function CheckoutForm({
             inputMode="tel"
             dir="ltr"
             className="ltr-nums text-start"
-            defaultValue={defaultRecipientPhone ?? ""}
             placeholder="09121234567"
             required
           />
         </FormField>
-      </div>
+      )}
 
-      <div className="grid gap-5 sm:grid-cols-2">
-        <FormField
-          id="province"
-          label="استان"
-          required
-          {...(fieldErrors["shippingAddress.province"]?.[0]
-            ? { error: fieldErrors["shippingAddress.province"][0] }
-            : {})}
-        >
-          <Input id="province" name="province" required />
-        </FormField>
-
-        <FormField
-          id="city"
-          label="شهر"
-          required
-          {...(fieldErrors["shippingAddress.city"]?.[0]
-            ? { error: fieldErrors["shippingAddress.city"][0] }
-            : {})}
-        >
-          <Input id="city" name="city" required />
-        </FormField>
-      </div>
+      <IranPlaceFields
+        {...(fieldErrors["shippingAddress.province"]?.[0]
+          ? { provinceError: fieldErrors["shippingAddress.province"][0] }
+          : {})}
+        {...(fieldErrors["shippingAddress.city"]?.[0]
+          ? { cityError: fieldErrors["shippingAddress.city"][0] }
+          : {})}
+      />
 
       <FormField
         id="addressLine"
@@ -145,46 +147,53 @@ export function CheckoutForm({
         <Textarea id="addressLine" name="addressLine" rows={3} required />
       </FormField>
 
-      <div className="grid gap-5 sm:grid-cols-3">
-        <FormField
-          id="postalCode"
-          label="کد پستی"
-          hint="اختیاری؛ ۱۰ رقم."
-          {...(fieldErrors["shippingAddress.postalCode"]?.[0]
-            ? { error: fieldErrors["shippingAddress.postalCode"][0] }
-            : {})}
-        >
-          <Input
-            id="postalCode"
-            name="postalCode"
-            inputMode="numeric"
-            dir="ltr"
-            className="ltr-nums text-start"
-            maxLength={10}
-          />
-        </FormField>
+      <Accordion type="single" collapsible>
+        <AccordionItem value="more">
+          <AccordionTrigger>{copy.checkout.moreDetails}</AccordionTrigger>
+          <AccordionContent className="grid gap-5 text-foreground">
+            <div className="grid gap-5 sm:grid-cols-3">
+              <FormField
+                id="postalCode"
+                label="کد پستی"
+                hint="اختیاری؛ ۱۰ رقم."
+                {...(fieldErrors["shippingAddress.postalCode"]?.[0]
+                  ? { error: fieldErrors["shippingAddress.postalCode"][0] }
+                  : {})}
+              >
+                <Input
+                  id="postalCode"
+                  name="postalCode"
+                  inputMode="numeric"
+                  dir="ltr"
+                  className="ltr-nums text-start"
+                  maxLength={10}
+                />
+              </FormField>
 
-        <FormField id="plate" label="پلاک" hint="اختیاری.">
-          <Input id="plate" name="plate" />
-        </FormField>
+              <FormField id="plate" label="پلاک" hint="اختیاری.">
+                <Input id="plate" name="plate" />
+              </FormField>
 
-        <FormField id="unit" label="واحد" hint="اختیاری.">
-          <Input id="unit" name="unit" />
-        </FormField>
-      </div>
+              <FormField id="unit" label="واحد" hint="اختیاری.">
+                <Input id="unit" name="unit" />
+              </FormField>
+            </div>
 
-      <FormField
-        id="customerNote"
-        label="یادداشت سفارش"
-        hint="اختیاری؛ روی بسته نوشته نمی‌شود."
-        {...(fieldErrors.customerNote?.[0] ? { error: fieldErrors.customerNote[0] } : {})}
-      >
-        <Textarea id="customerNote" name="customerNote" rows={3} />
-      </FormField>
+            <FormField
+              id="customerNote"
+              label="یادداشت سفارش"
+              hint="اختیاری؛ روی بسته نوشته نمی‌شود."
+              {...(fieldErrors.customerNote?.[0] ? { error: fieldErrors.customerNote[0] } : {})}
+            >
+              <Textarea id="customerNote" name="customerNote" rows={3} />
+            </FormField>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
 
       <Button type="submit" disabled={isPending} className="justify-self-start">
         {isPending ? <Loader2Icon className="animate-spin" /> : null}
-        ثبت سفارش و رفتن به پرداخت
+        {cta.checkout}
       </Button>
     </form>
   );

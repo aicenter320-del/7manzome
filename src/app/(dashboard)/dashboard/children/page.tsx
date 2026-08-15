@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ChildAvatar, getChildrenForUser } from "@/modules/children";
 import { requireUser } from "@/server/auth/guards";
+import { copy, cta } from "@/shared/config/copy";
 import { Button } from "@/shared/ui/button";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { PageHeader } from "@/shared/ui/page-header";
@@ -13,22 +14,22 @@ export default async function ChildrenListPage() {
   return (
     <div className="grid gap-6">
       <PageHeader
-        title="کودکان"
-        description="پروفایل هر کودک جدا از حساب شماست؛ گنجینه به نام او ساخته می‌شود."
+        title={copy.dashboard.children}
+        description={copy.dashboard.childrenPageDescription}
         actions={
           <Button asChild>
-            <Link href="/dashboard/children/new">کودک جدید</Link>
+            <Link href="/dashboard/children/new">{cta.addChild}</Link>
           </Button>
         }
       />
 
       {children.length === 0 ? (
         <EmptyState
-          title="هنوز کودکی ثبت نشده"
-          description="نام و تاریخ تولد او را وارد کنید تا مناسبت‌ها و هدایا درست پیشنهاد شوند."
+          title={copy.dashboard.emptyChildTitle}
+          description={copy.dashboard.emptyChildDescription}
           action={
             <Button asChild>
-              <Link href="/dashboard/children/new">افزودن کودک</Link>
+              <Link href="/dashboard/children/new">{cta.addChild}</Link>
             </Button>
           }
         />

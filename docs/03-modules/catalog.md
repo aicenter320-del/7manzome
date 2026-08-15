@@ -11,10 +11,10 @@
 ## API عمومی
 
 ```ts
-export { listProducts, getProductBySlug, getProductForAdmin, listCategories, listOccasions } from "./service/catalog.service";
+export { listProducts, getProductBySlug, getProductBySlugForStaff, getProductForAdmin, listCategories, listOccasions, listRelatedProducts } from "./service/catalog.service";
 export { createProduct, updateProduct, setProductStatus, createVariant, updateVariant, attachProductOccasion, detachProductOccasion, uploadProductImage, deleteProductMedia, setProductHero, reorderProductMedia } from "./actions/...";
 export { hoverFileId, orderedGallery, MAX_PRODUCT_IMAGES } from "./domain/product-gallery";
-export { ProductCard, ProductGrid, ProductGallery, ProductGalleryManager } from "./ui/...";
+export { ProductCard, ProductGrid, ProductSlider, ProductGallery, ProductDetailHeading, ProductStory, ProductGalleryManager, ProductEditProvider, ProductEditBar, StorefrontAddProduct } from "./ui/...";
 export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from "./domain/types";
 ```
 
@@ -41,11 +41,13 @@ export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from ".
 - مناسبت در رابط کاربری با آیکون Lucide (`OccasionIcon`) نشان داده می‌شود، نه ایموجی.
   روی کارت‌ها (`OccasionCard`) آیکون واترمارک بزرگ و کم‌رنگ در انتهای پس‌زمینه است.
   ستون `emoji` فقط برای نگاشت سازگار با دادهٔ قدیمی می‌ماند.
+- اسلایدر خانه (`OccasionSlider` و `ProductSlider`) زیر کارت‌ها نقطه‌های کوچک دارد؛ اسلاید فعال کپسول طلایی کوتاه است. موتور مشترک: `SnapSlideTrack`.
+- مدیر با مجوز `catalog:write` می‌تواند روی همان صفحهٔ محصول ویترین، عنوان و عکس و گونه را کلیک‌به‌کلیک ویرایش کند؛ خریدار این کنترل‌ها را نمی‌بیند. پیش‌نویس فقط برای همین نقش دیده می‌شود. افزودن قطعه از `/products` است.
 
 ## مسیرها
 
-- `app/(site)/products` — فهرست با فیلتر
-- `app/(site)/products/[slug]` — جزئیات با گالری و ریزمحاسبات شفاف قیمت
+- `app/(site)/products` — فهرست با فیلتر؛ دکمهٔ افزودن قطعه برای `catalog:write`
+- `app/(site)/products/[slug]` — جزئیات با گالری، حکاکی زیر عکس، سبد بالا، ریزقیمت در آکوردئون؛ ویرایش درون‌ویترینی برای مدیر
 - `app/(site)/occasions` و `app/(site)/occasions/[slug]`
 - `app/admin/products` — فهرست همه وضعیت‌ها
 - `app/admin/products/[productId]` — ویرایش مشخصات، مناسبت، گونه، گالری

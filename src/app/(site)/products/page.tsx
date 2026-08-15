@@ -7,7 +7,11 @@ import {
   listProducts,
   OccasionLabel,
   ProductGrid,
+  StorefrontAddProduct,
 } from "@/modules/catalog";
+import { optionalUser } from "@/server/auth/guards";
+import { hasPermission } from "@/server/auth/rbac";
+import { copy } from "@/shared/config/copy";
 import { cn } from "@/shared/lib/cn";
 import { PageHeader } from "@/shared/ui/page-header";
 
@@ -25,21 +29,25 @@ export default async function ProductsPage({
   const categorySlug = firstParam(params.category);
   const occasionSlug = firstParam(params.occasion);
 
-  const [categories, occasions, products] = await Promise.all([
+  const [categories, occasions, products, user] = await Promise.all([
     listCategories(),
     listOccasions(),
     listProducts({
       ...(categorySlug ? { categorySlug } : {}),
       ...(occasionSlug ? { occasionSlug } : {}),
     }),
+    optionalUser(),
   ]);
+  const canWrite = user ? hasPermission(user.roles, "catalog:write") : false;
 
   return (
     <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-      <PageHeader
-        title="طلا برای کودک"
-        description="قطعه‌ای که امروز هدیه می‌شود، می‌تواند بخشی از گنجینه فردای او باشد."
-      />
+      <PageHeader title={copy.products.title} description={copy.products.description} />
+      {canWrite ? (
+        <div className="mt-6">
+          <StorefrontAddProduct />
+        </div>
+      ) : null}
 
       <div className="mt-8 grid gap-6">
         <div className="flex flex-wrap gap-2">
@@ -74,7 +82,11 @@ export default async function ProductsPage({
           ))}
         </div>
 
-        <ProductGrid products={products} />
+        <ProductGrid
+          products={products}
+          emptyTitle={copy.products.emptyTitle}
+          emptyDescription={copy.products.emptyDescription}
+        />
       </div>
     </main>
   );
