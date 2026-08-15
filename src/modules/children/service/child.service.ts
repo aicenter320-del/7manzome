@@ -6,12 +6,13 @@ import { sanitizeText } from "@/shared/lib/persian";
 import type { AccessLevel, ChildGender, GuardianRelation } from "@/shared/types/enums";
 
 import { buildDisplayName, computeAgeInfo, validateBirthDate } from "../domain/child-age";
-import type { Child, ChildSummary, Guardianship, TimelineEvent } from "../domain/types";
+import type { AdminChildListItem, Child, ChildSummary, Guardianship, TimelineEvent } from "../domain/types";
 import {
   archiveChild,
   countChildren,
   findAccessLevel,
   findChildById,
+  findChildrenForAdmin,
   findChildrenForUser,
   findGuardianships,
   findTimelineEvents,
@@ -349,4 +350,22 @@ export async function addTimelineEvent(input: {
 
 export async function getChildCount(): Promise<number> {
   return countChildren();
+}
+
+export async function listChildrenForAdmin(limit = 100): Promise<AdminChildListItem[]> {
+  const rows = await findChildrenForAdmin(limit);
+
+  return rows.map((row) => {
+    const ownerDisplayName =
+      [row.ownerFirstName, row.ownerLastName].filter(Boolean).join(" ").trim() || row.ownerPhone;
+
+    return {
+      id: row.child.id,
+      firstName: row.child.firstName,
+      ageLabel: computeAgeInfo(row.child.birthDateAt).ageLabel,
+      ownerUserId: row.child.ownerUserId,
+      ownerDisplayName,
+      ownerPhone: row.ownerPhone,
+    };
+  });
 }

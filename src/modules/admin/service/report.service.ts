@@ -1,17 +1,21 @@
 import "server-only";
 
+import { listActiveInventoryVariants } from "@/modules/catalog";
 import { getSetting } from "@/modules/content";
 import { countConfirmedContributionsSince } from "@/modules/gifting";
 import { getUserCount } from "@/modules/identity";
-import { countOrdersSince, sumGoldTotalMgSince } from "@/modules/orders";
+import { countOrdersSince, countStuckOrders, sumGoldTotalMgSince } from "@/modules/orders";
 import {
   countInReviewQueue,
   getConfirmedAmountSince,
 } from "@/modules/payments";
-import { getActiveTreasureCount, getTotalGoldSavedMg } from "@/modules/treasury";
+import { getActiveTreasureCount, getGoldCoverSummary, getTotalGoldSavedMg } from "@/modules/treasury";
 import { startOfJalaliMonth, startOfTehranDay } from "@/shared/lib/jalali";
 
 import type { DashboardStats, SalesReport, SalesReportRow, TreasuryReport } from "../domain/types";
+
+const DAY_MS = 86_400_000;
+const STUCK_AFTER_MS = 3 * DAY_MS;
 
 async function periodRow(input: {
   periodLabel: string;
@@ -38,6 +42,7 @@ async function periodRow(input: {
 
 export async function getDashboardStats(): Promise<DashboardStats> {
   const todayStart = startOfTehranDay();
+  const stuckCutoff = Date.now() - STUCK_AFTER_MS;
 
   const [
     todaySalesRial,
@@ -46,6 +51,9 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     activeTreasureCount,
     todayGiftCount,
     pendingReviewCount,
+    stuckOrderCount,
+    goldCover,
+    inventory,
     totalUsers,
     shopOpen,
   ] = await Promise.all([
@@ -55,6 +63,9 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     getActiveTreasureCount(),
     countConfirmedContributionsSince(todayStart),
     countInReviewQueue(),
+    countStuckOrders(stuckCutoff),
+    getGoldCoverSummary(),
+    listActiveInventoryVariants(),
     getUserCount(),
     getSetting("shop.is_open"),
   ]);
@@ -66,6 +77,9 @@ export async function getDashboardStats(): Promise<DashboardStats> {
     activeTreasureCount,
     todayGiftCount,
     pendingReviewCount,
+    stuckOrderCount,
+    uncoveredGoldMg: goldCover.remainingMg,
+    outOfStockCount: inventory.filter((variant) => variant.stockQty <= 0).length,
     totalUsers,
     shopOpen,
   };

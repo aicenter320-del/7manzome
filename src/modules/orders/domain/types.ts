@@ -134,6 +134,7 @@ export interface OrderSummary {
   recipientName: string;
   placedAt: number | null;
   createdAt: number;
+  updatedAt: number;
 }
 
 export interface PlaceOrderResult {

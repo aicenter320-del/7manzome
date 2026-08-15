@@ -175,6 +175,14 @@ export const LEDGER_SOURCE_LABELS: Record<LedgerSource, string> = {
   correction: "اصلاح",
 };
 
+export const GOLD_COVER_SOURCES = ["purchase", "correction"] as const;
+export type GoldCoverSource = (typeof GOLD_COVER_SOURCES)[number];
+
+export const GOLD_COVER_SOURCE_LABELS: Record<GoldCoverSource, string> = {
+  purchase: "خرید بازار",
+  correction: "اصلاح",
+};
+
 export const GOAL_STATUSES = ["active", "achieved", "cancelled"] as const;
 export type GoalStatus = (typeof GOAL_STATUSES)[number];
 

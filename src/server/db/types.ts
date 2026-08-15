@@ -38,6 +38,8 @@ export type GoldLedgerEntryRow = Row<typeof schema.goldLedgerEntries>;
 export type NewGoldLedgerEntryRow = NewRow<typeof schema.goldLedgerEntries>;
 export type TreasureGoalRow = Row<typeof schema.treasureGoals>;
 export type TreasureMilestoneRow = Row<typeof schema.treasureMilestones>;
+export type GoldCoverEntryRow = Row<typeof schema.goldCoverEntries>;
+export type NewGoldCoverEntryRow = NewRow<typeof schema.goldCoverEntries>;
 
 // --- هدیه ---
 export type GiftLinkRow = Row<typeof schema.giftLinks>;

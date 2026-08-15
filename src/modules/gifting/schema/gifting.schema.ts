@@ -47,3 +47,12 @@ export const createGiftCardsSchema = z.object({
 export const redeemGiftCardSchema = z.object({
   code: z.string().trim().min(4, "کد کارت معتبر نیست").max(20, "کد کارت معتبر نیست"),
 });
+
+export const assignGiftCardSchema = z.object({
+  giftCardId: idSchema,
+  treasureId: idSchema,
+});
+
+export const giftCardIdSchema = z.object({
+  giftCardId: idSchema,
+});

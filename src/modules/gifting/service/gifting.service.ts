@@ -267,8 +267,16 @@ export async function getGiftLinksForTreasure(
 ): Promise<Array<GiftLink & { url: string }>> {
   await assertTreasureAccess(treasureId, userId);
 
-  const rows = await findGiftLinksForTreasureRows(treasureId);
+  return mapGiftLinksWithUrl(await findGiftLinksForTreasureRows(treasureId));
+}
 
+export async function getGiftLinksForTreasureUnchecked(
+  treasureId: string,
+): Promise<Array<GiftLink & { url: string }>> {
+  return mapGiftLinksWithUrl(await findGiftLinksForTreasureRows(treasureId));
+}
+
+function mapGiftLinksWithUrl(rows: GiftLinkRow[]): Array<GiftLink & { url: string }> {
   return rows.map((row) => {
     const link = toGiftLink(row);
     return { ...link, url: buildGiftUrl(env.APP_URL, link.token) };

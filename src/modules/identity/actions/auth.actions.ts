@@ -9,6 +9,7 @@ import { destroySession } from "@/server/auth/session";
 
 import { requestOtpSchema, verifyOtpSchema } from "../schema/identity.schema";
 import { OtpError, requestOtp, verifyOtpAndLogin } from "../service/auth.service";
+import { postLoginPath } from "../domain/post-login";
 
 /** استخراج آی‌پی و مرورگر از هدرها برای ثبت در سشن و گزارش رخداد. */
 async function requestMeta(): Promise<{ ip: string | null; userAgent: string }> {
@@ -58,7 +59,7 @@ export const verifyLoginCode = createAction({
 
       return {
         isNewUser: result.isNewUser,
-        redirectTo: input.returnTo ?? "/dashboard",
+        redirectTo: postLoginPath(result.isStaff, input.returnTo),
       };
     } catch (error) {
       if (error instanceof OtpError) {

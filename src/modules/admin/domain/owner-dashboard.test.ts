@@ -54,6 +54,7 @@ describe("classifyOverallHealth", () => {
     outOfStockCount: 0,
     lowStockCount: 0,
     rejectedPaymentCount: 0,
+    uncoveredGoldMg: 0,
     salesChangeBp: 0,
     profitChangeBp: 0,
   };
@@ -92,6 +93,7 @@ describe("buildAttentionItems", () => {
         outOfStockCount: 0,
         lowStockCount: 0,
         rejectedPaymentCount: 0,
+        uncoveredGoldMg: 0,
         salesChangeBp: 100,
         profitChangeBp: 50,
       }),
@@ -107,11 +109,29 @@ describe("buildAttentionItems", () => {
       outOfStockCount: 0,
       lowStockCount: 0,
       rejectedPaymentCount: 0,
+      uncoveredGoldMg: 0,
       salesChangeBp: 0,
       profitChangeBp: 0,
     });
     expect(items[0]?.id).toBe("gold-price-missing");
     expect(items[0]?.severity).toBe("critical");
+  });
+
+  it("طلای پوشش‌نداده را هشدار می‌آورد", () => {
+    const items = buildAttentionItems({
+      shopOpen: true,
+      goldPriceAvailable: true,
+      pendingReviewCount: 0,
+      stuckOrderCount: 0,
+      outOfStockCount: 0,
+      lowStockCount: 0,
+      rejectedPaymentCount: 0,
+      uncoveredGoldMg: 2_000,
+      salesChangeBp: 0,
+      profitChangeBp: 0,
+    });
+    expect(items[0]?.id).toBe("uncovered-gold");
+    expect(items[0]?.href).toBe("/admin/treasures");
   });
 });
 

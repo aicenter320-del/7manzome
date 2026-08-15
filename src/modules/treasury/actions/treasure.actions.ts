@@ -8,11 +8,13 @@ import { ActionError, createAction } from "@/server/actions/action-kit";
 import { goldValueRial } from "@/shared/lib/gold";
 
 import { LedgerValidationError } from "../domain/gold-ledger";
+import { GoldCoverValidationError } from "../domain/gold-cover";
 import {
   adjustLedgerSchema,
   changeTreasureStatusSchema,
   createTreasureSchema,
   editTreasureSchema,
+  recordGoldCoverSchema,
   setGoalSchema,
 } from "../schema/treasure.schema";
 import {
@@ -21,6 +23,7 @@ import {
   InsufficientBalanceError,
   TreasureClosedError,
 } from "../service/gold-ledger.service";
+import { recordGoldCoverPurchase } from "../service/gold-cover.service";
 import {
   changeTreasureStatus,
   createTreasure,
@@ -35,7 +38,8 @@ function rethrowDomainError(error: unknown): never {
     error instanceof ChildAccessError ||
     error instanceof TreasureClosedError ||
     error instanceof InsufficientBalanceError ||
-    error instanceof LedgerValidationError
+    error instanceof LedgerValidationError ||
+    error instanceof GoldCoverValidationError
   ) {
     throw new ActionError(error.message);
   }
@@ -170,6 +174,35 @@ export const adjustTreasureLedger = createAction({
       revalidatePath(`/admin/treasures/${input.treasureId}`);
 
       return { ledgerEntryId: result.ledgerEntryId };
+    } catch (error) {
+      rethrowDomainError(error);
+    }
+  },
+});
+
+/**
+ * ثبت خرید طلای پوشش گنجینه. به دفتر کل کودک دست نمی‌زند.
+ */
+export const recordGoldCoverAction = createAction({
+  name: "treasury.recordGoldCover",
+  schema: recordGoldCoverSchema,
+  auth: "required",
+  permissions: ["treasury:adjust"],
+  handler: async ({ input, user }) => {
+    try {
+      const entry = await recordGoldCoverPurchase({
+        actorUserId: user.id,
+        amountMg: input.amountMg,
+        karat: input.karat,
+        purchasedAt: input.purchasedAt,
+        ...(input.paidRial !== undefined ? { paidRial: input.paidRial } : {}),
+        ...(input.note ? { note: input.note } : {}),
+      });
+
+      revalidatePath("/admin/treasures");
+      revalidatePath("/admin");
+
+      return { coverEntryId: entry.id };
     } catch (error) {
       rethrowDomainError(error);
     }

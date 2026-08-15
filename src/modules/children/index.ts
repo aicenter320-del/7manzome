@@ -5,7 +5,7 @@
  * مستندات: docs/03-modules/children.md
  */
 
-export type { Child, ChildSummary, Guardianship, TimelineEvent } from "./domain/types";
+export type { Child, ChildSummary, Guardianship, TimelineEvent, AdminChildListItem } from "./domain/types";
 
 export {
   computeAgeInfo,
@@ -23,6 +23,7 @@ export {
   getChildById,
   getChildUnchecked,
   getChildCount,
+  listChildrenForAdmin,
   getGuardianships,
   getTimeline,
   createChild,

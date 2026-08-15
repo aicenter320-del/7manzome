@@ -20,6 +20,7 @@ erDiagram
     treasures ||--o{ treasure_milestones : "نقاط عطف"
     treasures ||--o{ gift_links : "لینک‌های هدیه"
     users ||--o{ treasures : "مالک دارایی"
+    users ||--o{ gold_cover_entries : "ثبت پوشش"
 ```
 
 ## هدیه و مشارکت

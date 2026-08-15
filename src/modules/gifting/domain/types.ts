@@ -81,6 +81,12 @@ export interface GiftCard {
   createdAt: number;
 }
 
+export interface AdminGiftCardView extends GiftCard {
+  treasureTitle: string | null;
+  childFirstName: string | null;
+  giftLinkToken: string | null;
+}
+
 export interface StartContributionInput {
   token: string;
   contributorName: string;

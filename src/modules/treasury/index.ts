@@ -16,6 +16,9 @@ export type {
   LedgerEntry,
   GoldBalance,
   Milestone,
+  GoldCoverEntry,
+  GoldCoverSummary,
+  AdminTreasureListItem,
 } from "./domain/types";
 
 export {
@@ -50,6 +53,8 @@ export {
   deleteEmptyTreasureAsAdmin,
   getTotalGoldSavedMg,
   getActiveTreasureCount,
+  countTreasuresForChildren,
+  listTreasuresForAdmin,
   TreasureAccessError,
   TreasureNotEmptyError,
 } from "./service/treasure.service";
@@ -63,7 +68,16 @@ export {
   type CreditGoldResult,
 } from "./service/gold-ledger.service";
 
-export { createTreasureSchema, setGoalSchema, editTreasureSchema, changeTreasureStatusSchema } from "./schema/treasure.schema";
+export {
+  getGoldCoverSummary,
+  listGoldCoverEntries,
+  recordGoldCoverPurchase,
+  GoldCoverValidationError,
+} from "./service/gold-cover.service";
+
+export { computeCoverPosition, prepareCoverEntry } from "./domain/gold-cover";
+
+export { createTreasureSchema, setGoalSchema, editTreasureSchema, changeTreasureStatusSchema, recordGoldCoverSchema } from "./schema/treasure.schema";
 
 export {
   createTreasureAction,
@@ -71,6 +85,7 @@ export {
   updateTreasureAction,
   changeTreasureStatusAction,
   adjustTreasureLedger,
+  recordGoldCoverAction,
 } from "./actions/treasure.actions";
 
 export { TreasureCard } from "./ui/treasure-card";

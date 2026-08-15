@@ -159,12 +159,18 @@ export function SiteHeaderBar({
 
           {signedIn ? (
             <>
-              <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
-                <Link href="/dashboard">حساب من</Link>
-              </Button>
               {isStaffUser ? (
-                <Button asChild variant="ghost" size="sm" className="hidden lg:inline-flex">
+                <Button asChild variant="gold" size="sm" className="hidden lg:inline-flex">
                   <Link href="/admin">مدیریت</Link>
+                </Button>
+              ) : (
+                <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                  <Link href="/dashboard">حساب من</Link>
+                </Button>
+              )}
+              {isStaffUser ? (
+                <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                  <Link href="/dashboard">حساب من</Link>
                 </Button>
               ) : null}
             </>

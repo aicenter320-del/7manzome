@@ -311,6 +311,12 @@ export async function listContributionsForTreasure(
 
 export const getContributionsForTreasure = listContributionsForTreasure;
 
+/** فهرست مشارکت برای پنل ادمین؛ بدون محدودیت مالک. */
+export async function listContributionsForAdmin(treasureId: string): Promise<Contribution[]> {
+  const rows = await findContributionsForTreasure(treasureId);
+  return rows.map(toContribution);
+}
+
 export async function countConfirmedContributionsSince(fromAt: number): Promise<number> {
   return countConfirmedSince(fromAt);
 }

@@ -5,15 +5,24 @@ import { revalidatePath } from "next/cache";
 import { ActionError, createAction } from "@/server/actions/action-kit";
 
 import {
+  assignGiftCardSchema,
   createGiftCardsSchema,
   createGiftLinkSchema,
+  giftCardIdSchema,
   giftLinkIdSchema,
   redeemGiftCardSchema,
   saveKeepsakeSchema,
   startContributionSchema,
 } from "../schema/gifting.schema";
 import { saveKeepsake, startContribution, ContributionError } from "../service/contribution.service";
-import { createGiftCards, GiftCardError, redeemGiftCard } from "../service/gift-card.service";
+import {
+  assignGiftCard,
+  createGiftCards,
+  GiftCardError,
+  markPrinted,
+  redeemGiftCard,
+  voidGiftCard,
+} from "../service/gift-card.service";
 import {
   closeGiftLink,
   createGiftLink,
@@ -167,6 +176,58 @@ export const redeemGiftCardAction = createAction({
   handler: async ({ input }) => {
     try {
       return await redeemGiftCard(input.code);
+    } catch (error) {
+      rethrowDomainError(error);
+    }
+  },
+});
+
+export const assignGiftCardAction = createAction({
+  name: "gifting.assignGiftCard",
+  schema: assignGiftCardSchema,
+  auth: "required",
+  permissions: ["treasury:read"],
+  handler: async ({ input, user }) => {
+    try {
+      await assignGiftCard({
+        userId: user.id,
+        giftCardId: input.giftCardId,
+        treasureId: input.treasureId,
+      });
+      revalidatePath("/admin/gift-cards");
+      return { ok: true as const };
+    } catch (error) {
+      rethrowDomainError(error);
+    }
+  },
+});
+
+export const markGiftCardPrintedAction = createAction({
+  name: "gifting.markGiftCardPrinted",
+  schema: giftCardIdSchema,
+  auth: "required",
+  permissions: ["treasury:read"],
+  handler: async ({ input, user }) => {
+    try {
+      await markPrinted(input.giftCardId, user.id);
+      revalidatePath("/admin/gift-cards");
+      return { ok: true as const };
+    } catch (error) {
+      rethrowDomainError(error);
+    }
+  },
+});
+
+export const voidGiftCardAction = createAction({
+  name: "gifting.voidGiftCard",
+  schema: giftCardIdSchema,
+  auth: "required",
+  permissions: ["treasury:read"],
+  handler: async ({ input, user }) => {
+    try {
+      await voidGiftCard(input.giftCardId, user.id);
+      revalidatePath("/admin/gift-cards");
+      return { ok: true as const };
     } catch (error) {
       rethrowDomainError(error);
     }

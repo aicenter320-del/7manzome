@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, count, countDistinct, desc, eq, inArray, sum } from "drizzle-orm";
+import { and, asc, count, countDistinct, desc, eq, inArray, max, sum } from "drizzle-orm";
 
 import { db, type Database } from "@/server/db";
 import {
@@ -10,6 +10,7 @@ import {
   treasureGoals,
   treasureMilestones,
   treasures,
+  users,
 } from "@/server/db/schema";
 import type {
   GoldLedgerEntryRow,
@@ -124,6 +125,79 @@ export async function countActiveTreasures(): Promise<number> {
     .where(eq(treasures.status, "active"));
 
   return rows[0]?.value ?? 0;
+}
+
+export async function countTreasuresByChildIds(
+  childIds: readonly string[],
+): Promise<Map<string, number>> {
+  const counts = new Map<string, number>();
+  if (childIds.length === 0) return counts;
+
+  const rows = await db
+    .select({ childId: treasures.childId, value: count() })
+    .from(treasures)
+    .where(inArray(treasures.childId, [...childIds]))
+    .groupBy(treasures.childId);
+
+  for (const row of rows) {
+    counts.set(row.childId, row.value);
+  }
+
+  return counts;
+}
+
+export async function findActiveTreasuresForAdmin(limit = 100): Promise<
+  Array<{
+    treasure: TreasureRow;
+    childFirstName: string;
+    ownerUserId: string;
+    ownerFirstName: string | null;
+    ownerLastName: string | null;
+    ownerPhone: string;
+  }>
+> {
+  return db
+    .select({
+      treasure: treasures,
+      childFirstName: children.firstName,
+      ownerUserId: users.id,
+      ownerFirstName: users.firstName,
+      ownerLastName: users.lastName,
+      ownerPhone: users.phone,
+    })
+    .from(treasures)
+    .innerJoin(children, eq(treasures.childId, children.id))
+    .innerJoin(users, eq(treasures.assetOwnerUserId, users.id))
+    .where(eq(treasures.status, "active"))
+    .orderBy(desc(treasures.createdAt))
+    .limit(limit);
+}
+
+export async function findLastConfirmedContributionAt(
+  treasureIds: readonly string[],
+): Promise<Map<string, number>> {
+  const lastAt = new Map<string, number>();
+  if (treasureIds.length === 0) return lastAt;
+
+  const rows = await db
+    .select({
+      treasureId: contributions.treasureId,
+      lastAt: max(contributions.confirmedAt),
+    })
+    .from(contributions)
+    .where(
+      and(
+        inArray(contributions.treasureId, [...treasureIds]),
+        eq(contributions.status, "confirmed"),
+      ),
+    )
+    .groupBy(contributions.treasureId);
+
+  for (const row of rows) {
+    if (row.lastAt != null) lastAt.set(row.treasureId, Number(row.lastAt));
+  }
+
+  return lastAt;
 }
 
 // ------------------------------------------------------------------

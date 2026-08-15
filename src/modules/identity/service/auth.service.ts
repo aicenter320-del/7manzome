@@ -4,6 +4,7 @@ import { sendOtpSms } from "@/modules/notifications";
 import { recordAudit } from "@/server/audit";
 import { generateOtpCode, hashSecret, safeCompare } from "@/server/auth/crypto";
 import { createSession } from "@/server/auth/session";
+import { isStaff } from "@/server/auth/rbac";
 import { logger } from "@/server/logger";
 import { env } from "@/shared/config/env";
 import type { OtpPurpose } from "@/shared/types/enums";
@@ -27,7 +28,7 @@ import {
   insertOtp,
   saveRateWindow,
 } from "../repo/otp.repo";
-import { findUserByPhone, insertUser } from "../repo/user.repo";
+import { findUserByPhone, findRolesForUser, insertUser } from "../repo/user.repo";
 
 /**
  * ورود با کد یک‌بارمصرف.
@@ -116,6 +117,7 @@ export async function requestOtp(input: {
 export interface VerifyOtpResult {
   userId: string;
   isNewUser: boolean;
+  isStaff: boolean;
 }
 
 /**
@@ -181,5 +183,7 @@ export async function verifyOtpAndLogin(input: {
 
   logger.info("otp verified", { userId: user.id, isNewUser: !existing });
 
-  return { userId: user.id, isNewUser: !existing };
+  const roles = await findRolesForUser(user.id);
+
+  return { userId: user.id, isNewUser: !existing, isStaff: isStaff(roles) };
 }

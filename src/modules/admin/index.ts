@@ -52,7 +52,7 @@ export {
 export { StatCard } from "./ui/stat-card";
 export { DataTable, TableCell, TableRow } from "./ui/data-table";
 export { GlassFilterPills } from "./ui/glass-filter-pills";
-export { adminNav, type AdminNavItem } from "./ui/admin-nav";
+export { adminNav, ADMIN_NAV_GROUPS, type AdminNavItem, type AdminNavGroupId } from "./ui/admin-nav";
 export { AdminNavLink } from "./ui/admin-nav-link";
 export { DeleteMediaFileButton } from "./ui/delete-media-file-button";
 export { FolderFilterLinks, MediaFileCard, mediaFolderLabel } from "./ui/media-file-card";

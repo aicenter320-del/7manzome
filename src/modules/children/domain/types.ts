@@ -40,3 +40,13 @@ export interface TimelineEvent {
   occurredAt: number;
   note: string | null;
 }
+
+/** فهرست عملیاتی پنل؛ بدون کد ملی و آدرس. */
+export interface AdminChildListItem {
+  id: string;
+  firstName: string;
+  ageLabel: string;
+  ownerUserId: string;
+  ownerDisplayName: string;
+  ownerPhone: string;
+}

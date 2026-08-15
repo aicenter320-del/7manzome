@@ -11,6 +11,7 @@ import type { TreasureKind, TreasureStatus, TreasureVisibility } from "@/shared/
 
 import { computeBalance, computeProgress } from "../domain/gold-ledger";
 import type {
+  AdminTreasureListItem,
   GoldBalance,
   LedgerEntry,
   Milestone,
@@ -22,8 +23,11 @@ import {
   countActiveTreasures,
   countAllContributions,
   countContributors,
+  countTreasuresByChildIds,
   findActiveGoal,
+  findActiveTreasuresForAdmin,
   findChildBrief,
+  findLastConfirmedContributionAt,
   findLedgerEntries,
   findMilestones,
   findPublicTreasures,
@@ -446,4 +450,45 @@ export async function getTotalGoldSavedMg(): Promise<number> {
 
 export async function getActiveTreasureCount(): Promise<number> {
   return countActiveTreasures();
+}
+
+export async function countTreasuresForChildren(
+  childIds: readonly string[],
+): Promise<Map<string, number>> {
+  return countTreasuresByChildIds(childIds);
+}
+
+export async function listTreasuresForAdmin(limit = 100): Promise<AdminTreasureListItem[]> {
+  const rows = await findActiveTreasuresForAdmin(limit);
+  const treasureIds = rows.map((row) => row.treasure.id);
+
+  const [lastContributionAt, balances] = await Promise.all([
+    findLastConfirmedContributionAt(treasureIds),
+    Promise.all(
+      treasureIds.map(async (treasureId) => {
+        const sums = await sumPureMg(treasureId);
+        const pure = Math.max(0, sums.inPureMg - sums.outPureMg);
+        return { treasureId, balanceMg: pure > 0 ? fromPureMg(pure, DISPLAY_KARAT) : 0 };
+      }),
+    ),
+  ]);
+
+  const balanceById = new Map(balances.map((item) => [item.treasureId, item.balanceMg]));
+
+  return rows.map((row) => {
+    const ownerDisplayName =
+      [row.ownerFirstName, row.ownerLastName].filter(Boolean).join(" ").trim() || row.ownerPhone;
+
+    return {
+      treasureId: row.treasure.id,
+      title: row.treasure.title,
+      childId: row.treasure.childId,
+      childFirstName: row.childFirstName,
+      ownerUserId: row.ownerUserId,
+      ownerDisplayName,
+      ownerPhone: row.ownerPhone,
+      balanceMg: balanceById.get(row.treasure.id) ?? 0,
+      lastContributionAt: lastContributionAt.get(row.treasure.id) ?? null,
+    };
+  });
 }

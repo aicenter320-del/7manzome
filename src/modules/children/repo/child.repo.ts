@@ -3,7 +3,7 @@ import "server-only";
 import { and, asc, count, desc, eq, isNull, or } from "drizzle-orm";
 
 import { db } from "@/server/db";
-import { childTimelineEvents, children, guardianships } from "@/server/db/schema";
+import { childTimelineEvents, children, guardianships, users } from "@/server/db/schema";
 import type { ChildRow, ChildTimelineEventRow, GuardianshipRow } from "@/server/db/types";
 import type { AccessLevel, ChildGender, GuardianRelation } from "@/shared/types/enums";
 
@@ -130,6 +130,28 @@ export async function countChildren(): Promise<number> {
     .where(isNull(children.archivedAt));
 
   return rows[0]?.value ?? 0;
+}
+
+export async function findChildrenForAdmin(limit = 100): Promise<
+  Array<{
+    child: ChildRow;
+    ownerPhone: string;
+    ownerFirstName: string | null;
+    ownerLastName: string | null;
+  }>
+> {
+  return db
+    .select({
+      child: children,
+      ownerPhone: users.phone,
+      ownerFirstName: users.firstName,
+      ownerLastName: users.lastName,
+    })
+    .from(children)
+    .innerJoin(users, eq(children.ownerUserId, users.id))
+    .where(isNull(children.archivedAt))
+    .orderBy(desc(children.createdAt))
+    .limit(limit);
 }
 
 // ------------------------------------------------------------------

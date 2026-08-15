@@ -9,7 +9,7 @@
 | --- | --- | --- | --- |
 | `identity` | ✅ | کاربر، ورود با کد یک‌بارمصرف، سشن، نقش‌ها، احراز هویت کامل | [`../03-modules/identity.md`](../03-modules/identity.md) |
 | `children` | ✅ | پروفایل کودک، رابطه سرپرستی، تایم‌لاین زندگی | [`../03-modules/children.md`](../03-modules/children.md) |
-| `treasury` | ✅ | گنجینه، دفتر کل طلا، اهداف، مایل‌استون‌ها | [`../03-modules/treasury.md`](../03-modules/treasury.md) |
+| `treasury` | ✅ | گنجینه، دفتر کل طلا، پوشش طلا، اهداف، مایل‌استون‌ها | [`../03-modules/treasury.md`](../03-modules/treasury.md) |
 | `gifting` | ✅ | لینک هدیه، مشارکت، پیام یادگاری، کارت هدیه فیزیکی | [`../03-modules/gifting.md`](../03-modules/gifting.md) |
 | `catalog` | ✅ | محصول، گونه، دسته‌بندی، مناسبت، جست‌وجو | [`../03-modules/catalog.md`](../03-modules/catalog.md) |
 | `pricing` | ✅ | قیمت مرجع طلا و موتور قیمت‌گذاری شفاف محصول | [`../03-modules/pricing.md`](../03-modules/pricing.md) |

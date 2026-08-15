@@ -23,6 +23,7 @@ import {
   listGoldPriceHistory,
   tryGetCurrentGoldPrice,
 } from "@/modules/pricing";
+import { getGoldCoverSummary } from "@/modules/treasury";
 import { DISPLAY_KARAT } from "@/shared/lib/gold";
 import { startOfJalaliMonth, startOfTehranDay } from "@/shared/lib/jalali";
 import { mulDiv, sumIntegers } from "@/shared/lib/math";
@@ -158,6 +159,7 @@ export async function getOwnerDashboard(
     returnedShipmentCount,
     buyers,
     newCustomerCount,
+    goldCover,
   ] = await Promise.all([
     getSetting("shop.is_open"),
     tryGetCurrentGoldPrice(DISPLAY_KARAT),
@@ -186,6 +188,7 @@ export async function getOwnerDashboard(
     countReturnedShipments(),
     findBuyerStats(),
     getCustomerSignupCount(last30d.fromAt, last30d.toAt),
+    getGoldCoverSummary(),
   ]);
 
   const monthProfitRial = totalMargins(monthMarginItems);
@@ -292,6 +295,7 @@ export async function getOwnerDashboard(
     outOfStockCount,
     lowStockCount,
     rejectedPaymentCount,
+    uncoveredGoldMg: goldCover.remainingMg,
     salesChangeBp,
     profitChangeBp,
   };

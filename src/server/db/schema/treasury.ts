@@ -2,6 +2,7 @@ import { index, sqliteTable, text, uniqueIndex } from "drizzle-orm/sqlite-core";
 
 import type {
   GoalStatus,
+  GoldCoverSource,
   GoldKarat,
   LedgerDirection,
   LedgerSource,
@@ -175,4 +176,29 @@ export const treasureMilestones = sqliteTable(
     uniqueIndex("treasure_milestones_unique").on(table.treasureId, table.thresholdMg),
     index("treasure_milestones_treasure_idx").on(table.treasureId),
   ],
+);
+
+/**
+ * پوشش طلای گنجینه. ⚠️ append-only
+ *
+ * طلای فیزیکی که فروشگاه برای پشتوانهٔ دفتر کل کودک خریده است.
+ * جدا از موجودی گونه و جدا از بازخرید به کاربر. (ADR-0015)
+ */
+export const goldCoverEntries = sqliteTable(
+  "gold_cover_entries",
+  {
+    id: primaryId(),
+    amountMg: mg("amount_mg").notNull(),
+    karat: counter("karat").$type<GoldKarat>().notNull().default(18),
+    pureMg: mg("pure_mg").notNull(),
+    paidRial: rial("paid_rial"),
+    source: text("source").$type<GoldCoverSource>().notNull().default("purchase"),
+    note: text("note"),
+    purchasedAt: timestamp("purchased_at").notNull(),
+    createdByUserId: idRef("created_by_user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    createdAt: createdAt(),
+  },
+  (table) => [index("gold_cover_purchased_at_idx").on(table.purchasedAt)],
 );

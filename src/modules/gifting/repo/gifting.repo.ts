@@ -3,7 +3,7 @@ import "server-only";
 import { and, count, desc, eq, gte, inArray, isNotNull, or, sql } from "drizzle-orm";
 
 import { db } from "@/server/db";
-import { contributions, giftCards, giftLinks, users } from "@/server/db/schema";
+import { contributions, children, giftCards, giftLinks, treasures, users } from "@/server/db/schema";
 import type { ContributionRow, GiftCardRow, GiftLinkRow } from "@/server/db/types";
 import type {
   ContributionStatus,
@@ -254,6 +254,68 @@ export async function findGiftCards(options?: {
   }
 
   return db.select().from(giftCards).orderBy(desc(giftCards.createdAt)).limit(limit);
+}
+
+export async function findGiftCardsWithTreasure(options?: {
+  status?: GiftCardStatus;
+  limit?: number;
+}): Promise<
+  Array<{
+    card: GiftCardRow;
+    treasureTitle: string | null;
+    childFirstName: string | null;
+  }>
+> {
+  const limit = options?.limit ?? 200;
+  const query = db
+    .select({
+      card: giftCards,
+      treasureTitle: treasures.title,
+      childFirstName: children.firstName,
+    })
+    .from(giftCards)
+    .leftJoin(treasures, eq(giftCards.treasureId, treasures.id))
+    .leftJoin(children, eq(treasures.childId, children.id));
+
+  if (options?.status) {
+    return query
+      .where(eq(giftCards.status, options.status))
+      .orderBy(desc(giftCards.createdAt))
+      .limit(limit);
+  }
+
+  return query.orderBy(desc(giftCards.createdAt)).limit(limit);
+}
+
+export async function findPreferredGiftLinkTokens(
+  treasureIds: readonly string[],
+): Promise<Map<string, string>> {
+  const tokens = new Map<string, string>();
+  if (treasureIds.length === 0) return tokens;
+
+  const rows = await db
+    .select({
+      treasureId: giftLinks.treasureId,
+      token: giftLinks.token,
+      status: giftLinks.status,
+    })
+    .from(giftLinks)
+    .where(inArray(giftLinks.treasureId, [...treasureIds]))
+    .orderBy(desc(giftLinks.createdAt));
+
+  const grouped = new Map<string, Array<{ token: string; status: GiftLinkStatus }>>();
+  for (const row of rows) {
+    const list = grouped.get(row.treasureId) ?? [];
+    list.push({ token: row.token, status: row.status });
+    grouped.set(row.treasureId, list);
+  }
+
+  for (const [treasureId, list] of grouped) {
+    const preferred = list.find((item) => item.status === "active") ?? list[0];
+    if (preferred) tokens.set(treasureId, preferred.token);
+  }
+
+  return tokens;
 }
 
 export async function findGiftCardsForUser(

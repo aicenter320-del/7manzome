@@ -6,13 +6,15 @@ import { recordAudit } from "@/server/audit";
 import type { GiftCardRow } from "@/server/db/types";
 import type { GiftCardStatus } from "@/shared/types/enums";
 
-import type { GiftCard } from "../domain/types";
+import type { GiftCard, AdminGiftCardView } from "../domain/types";
 import {
   findGiftCardByCode,
   findGiftCardById,
   findGiftCards as findGiftCardRows,
   findGiftCardsForUser as findGiftCardRowsForUser,
+  findGiftCardsWithTreasure,
   findGiftLinksForTreasure,
+  findPreferredGiftLinkTokens,
   insertGiftCard,
   updateGiftCard,
 } from "../repo/gifting.repo";
@@ -207,6 +209,28 @@ export async function listGiftCards(options?: {
 }): Promise<GiftCard[]> {
   const rows = await findGiftCardRows(options);
   return rows.map(toGiftCard);
+}
+
+export async function listGiftCardsForAdmin(options?: {
+  status?: GiftCardStatus;
+  limit?: number;
+}): Promise<AdminGiftCardView[]> {
+  const rows = await findGiftCardsWithTreasure(options);
+  const treasureIds = [
+    ...new Set(
+      rows
+        .map((row) => row.card.treasureId)
+        .filter((id): id is string => Boolean(id)),
+    ),
+  ];
+  const tokens = await findPreferredGiftLinkTokens(treasureIds);
+
+  return rows.map((row) => ({
+    ...toGiftCard(row.card),
+    treasureTitle: row.treasureTitle,
+    childFirstName: row.childFirstName,
+    giftLinkToken: row.card.treasureId ? (tokens.get(row.card.treasureId) ?? null) : null,
+  }));
 }
 
 export async function listGiftCardsForUser(

@@ -16,6 +16,7 @@ export type {
   PublicKeepsake,
   Contribution,
   GiftCard,
+  AdminGiftCardView,
   StartContributionInput,
 } from "./domain/types";
 
@@ -44,6 +45,7 @@ export {
   closeGiftLinkAsAdmin,
   getGiftLinkByToken,
   getGiftLinksForTreasure,
+  getGiftLinksForTreasureUnchecked,
   getGiftLinksForUser,
   GiftLinkError,
   GiftLinkInactiveError,
@@ -57,6 +59,7 @@ export {
   saveKeepsake,
   listContributionsForTreasure,
   getContributionsForTreasure,
+  listContributionsForAdmin,
   countConfirmedContributionsSince,
   ContributionError,
 } from "./service/contribution.service";
@@ -67,6 +70,7 @@ export {
   markPrinted,
   redeemGiftCard,
   listGiftCards,
+  listGiftCardsForAdmin,
   listGiftCardsForUser,
   voidGiftCard,
   GiftCardError,
@@ -78,6 +82,8 @@ export {
   saveKeepsakeSchema,
   createGiftCardsSchema,
   redeemGiftCardSchema,
+  assignGiftCardSchema,
+  giftCardIdSchema,
   giftLinkIdSchema,
 } from "./schema/gifting.schema";
 
@@ -90,6 +96,9 @@ export {
   saveKeepsakeAction,
   createGiftCardsAction,
   redeemGiftCardAction,
+  assignGiftCardAction,
+  markGiftCardPrintedAction,
+  voidGiftCardAction,
 } from "./actions/gifting.actions";
 
 export { GiftProgress } from "./ui/gift-progress";

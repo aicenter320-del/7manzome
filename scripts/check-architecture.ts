@@ -228,7 +228,7 @@ function checkDatabaseDocs(): void {
 // ۵. قوانین دامنه که لینتر نمی‌بیند
 // ------------------------------------------------------------------
 
-const APPEND_ONLY_TABLES = ["goldLedgerEntries", "goldPrices", "auditLogs"];
+const APPEND_ONLY_TABLES = ["goldLedgerEntries", "goldCoverEntries", "goldPrices", "auditLogs"];
 
 function checkAppendOnlyTables(): void {
   for (const file of walkFiles("src", [".ts", ".tsx"])) {

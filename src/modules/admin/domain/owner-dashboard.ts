@@ -51,6 +51,7 @@ export interface HealthSignals {
   outOfStockCount: number;
   lowStockCount: number;
   rejectedPaymentCount: number;
+  uncoveredGoldMg: number;
   salesChangeBp: number | null;
   profitChangeBp: number | null;
 }
@@ -204,6 +205,7 @@ export function classifyOverallHealth(signals: HealthSignals): HealthLevel {
     classifyCountHealth(signals.outOfStockCount, 1, 4),
     classifyCountHealth(signals.lowStockCount, 3, 10),
     classifyCountHealth(signals.rejectedPaymentCount, 1, 6),
+    classifyCountHealth(signals.uncoveredGoldMg > 0 ? 1 : 0, 1, 99),
   ]);
 }
 
@@ -334,6 +336,15 @@ export function buildAttentionItems(signals: HealthSignals): AttentionItem[] {
       title: "گونه موجودی محدود دارد.",
       href: "/admin/products",
       count: signals.lowStockCount,
+    });
+  }
+
+  if (signals.uncoveredGoldMg > 0) {
+    items.push({
+      id: "uncovered-gold",
+      severity: "warning",
+      title: "طلای گنجینه هنوز خرید نشده.",
+      href: "/admin/treasures",
     });
   }
 

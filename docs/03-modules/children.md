@@ -41,6 +41,7 @@ export type { Child, Guardianship, GuardianRelation, AccessLevel } from "./domai
 - `app/(dashboard)/dashboard/children`
 - `app/(dashboard)/dashboard/children/[childId]`
 - `app/admin/users/[userId]` — تب کودکان
+- `app/admin/children` — فهرست عملیاتی (نام کوچک، سن، دارنده، تعداد گنجینه)
 
 ## نقاط باز
 

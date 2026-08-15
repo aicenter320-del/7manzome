@@ -17,6 +17,9 @@ export interface DashboardStats {
   activeTreasureCount: number;
   todayGiftCount: number;
   pendingReviewCount: number;
+  stuckOrderCount: number;
+  uncoveredGoldMg: number;
+  outOfStockCount: number;
   totalUsers: number;
   shopOpen: boolean;
 }

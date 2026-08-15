@@ -108,6 +108,37 @@ export function OwnerDashboardView({
         <LiveMarkupForm markupBp={liveMarkupBp} canEdit={canEditLiveMarkup} />
       </div>
 
+      <Section title="کار امروز">
+        {dashboard.attention.length === 0 ? (
+          <p className="text-sm text-muted-foreground">
+            کار بازی برای امروز نیست.
+          </p>
+        ) : (
+          <ul className="grid gap-1">
+            {dashboard.attention.map((item) => (
+              <li key={item.id}>
+                <Link
+                  href={item.href}
+                  className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 hover:bg-muted"
+                >
+                  <span className="text-sm">
+                    {item.title}
+                    {item.count !== undefined ? (
+                      <span className="ms-2 text-muted-foreground">
+                        {toPersianDigits(item.count)}
+                      </span>
+                    ) : null}
+                  </span>
+                  <Badge variant={item.severity === "critical" ? "destructive" : "warning"}>
+                    {item.severity === "critical" ? "بحرانی" : "هشدار"}
+                  </Badge>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Section>
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           label="فروش امروز"
@@ -171,46 +202,13 @@ export function OwnerDashboardView({
         )}
       </Section>
 
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Section title="نیازمند توجه">
-          {dashboard.attention.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              در حال حاضر مورد مهمی برای توجه وجود ندارد.
-            </p>
-          ) : (
-            <ul className="grid gap-1">
-              {dashboard.attention.map((item) => (
-                <li key={item.id}>
-                  <Link
-                    href={item.href}
-                    className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 hover:bg-muted"
-                  >
-                    <span className="text-sm">
-                      {item.title}
-                      {item.count !== undefined ? (
-                        <span className="ms-2 text-muted-foreground">
-                          {toPersianDigits(item.count)}
-                        </span>
-                      ) : null}
-                    </span>
-                    <Badge variant={item.severity === "critical" ? "destructive" : "warning"}>
-                      {item.severity === "critical" ? "بحرانی" : "هشدار"}
-                    </Badge>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Section>
-
-        <Section title="سفارش‌ها">
-          <div className="grid grid-cols-2 gap-4">
-            {dashboard.orders.map((row) => (
-              <Metric key={row.key} label={row.label} value={toPersianDigits(row.count)} />
-            ))}
-          </div>
-        </Section>
-      </div>
+      <Section title="سفارش‌ها">
+        <div className="grid grid-cols-2 gap-4">
+          {dashboard.orders.map((row) => (
+            <Metric key={row.key} label={row.label} value={toPersianDigits(row.count)} />
+          ))}
+        </div>
+      </Section>
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Section title="وضعیت طلای فروشگاه">

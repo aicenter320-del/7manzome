@@ -6,9 +6,10 @@
 
 ## مسئولیت
 
-گنجینه کودک، دفتر کل طلا، محاسبه موجودی، اهداف و نقاط عطف.
+گنجینه کودک، دفتر کل طلا، محاسبه موجودی، اهداف، نقاط عطف، و پوشش طلای فروشگاه.
 
 مسئول **نیست** برای: دریافت پول (آن در `payments` است) و لینک هدیه (آن در `gifting` است).
+پوشش طلا بازخرید به کاربر نیست.
 
 ## API عمومی
 
@@ -22,7 +23,7 @@ export type { TreasureSummary, LedgerEntry, GoldBalance } from "./domain/types";
 
 ## جدول‌های دیتابیس
 
-`treasures`، `gold_ledger_entries`، `treasure_goals`، `treasure_milestones`
+`treasures`، `gold_ledger_entries`، `treasure_goals`، `treasure_milestones`، `gold_cover_entries`
 
 ## وابستگی‌ها
 
@@ -43,6 +44,7 @@ export type { TreasureSummary, LedgerEntry, GoldBalance } from "./domain/types";
 - درج قلم و به‌روزرسانی وضعیت مرتبط (مشارکت یا سفارش) در **یک تراکنش** انجام می‌شود.
 - گنجینه `archived` قلم جدید نمی‌پذیرد.
 - ادمین می‌تواند گنجینه را ببندد؛ حذف فیزیکی فقط وقتی دفتر کل و مشارکت خالی باشد.
+- پوشش طلا جدول جدا و append-only است؛ با `adjustTreasureLedger` قاطی نمی‌شود.
 
 ## مسیرها
 
@@ -50,6 +52,8 @@ export type { TreasureSummary, LedgerEntry, GoldBalance } from "./domain/types";
 - `app/(dashboard)/dashboard/treasures/[treasureId]`
 - `app/(site)/treasures` — نمای عمومی (فقط گنجینه‌های با `visibility = link`)
 - `app/admin/users/[userId]` — تب گنجینه‌های کاربر
+- `app/admin/treasures` — فهرست عملیاتی، پوشش طلا و ثبت خرید
+- `app/admin/treasures/[treasureId]` — مشارکت‌ها و لینک هدیه
 
 ## نقاط باز
 

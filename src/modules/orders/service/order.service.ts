@@ -189,6 +189,7 @@ function toSummary(row: OrderRow, itemCount: number): OrderSummary {
     recipientName: row.recipientName,
     placedAt: row.placedAt,
     createdAt: row.createdAt,
+    updatedAt: row.updatedAt,
   };
 }
 
