@@ -12,85 +12,86 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* --- پایه: کاغذ گرم روشن، نه سفید خالص --- */
-  --background: #f7f4ee;
-  --foreground: #1c1917;
+  /* --- پایه: کاغذ کرم روشن، نه سفید خالص --- */
+  --background: #fdfbf7;
+  --foreground: #1a1a1a;
 
   --card: #ffffff;
-  --card-foreground: #1c1917;
+  --card-foreground: #1a1a1a;
 
   --popover: #ffffff;
-  --popover-foreground: #1c1917;
+  --popover-foreground: #1a1a1a;
 
-  /* --- برند اصلی: شب‌آبی منظومه --- */
-  --primary: #16233f;
-  --primary-foreground: #fbf9f6;
+  /* --- کنش پیش‌فرض: ذغالی نرم، نه شب‌آبی بلوکی --- */
+  --primary: #2c2c2c;
+  --primary-foreground: #fdfbf7;
 
   /* --- ثانویه: شنی گرم --- */
-  --secondary: #ede4d6;
+  --secondary: #efe6d8;
   --secondary-foreground: #3c2f21;
 
-  --muted: #f2eee8;
-  --muted-foreground: #6b6257;
+  --muted: #f5f0e8;
+  --muted-foreground: #3a3a3a;
 
-  /* --- تاکید: طلایی، فقط به‌عنوان لهجه و نه رنگ غالب --- */
-  --accent: #c8a24a;
-  --accent-foreground: #1c1917;
+  /* --- تاکید: طلای شامپاین؛ فقط لهجه، نه سطح غالب --- */
+  --accent: #c5a059;
+  --accent-foreground: #1a1a1a;
 
   --destructive: #b3261e;
-  --destructive-foreground: #fbf9f6;
+  --destructive-foreground: #fdfbf7;
 
   --success: #2e7d5b;
-  --success-foreground: #fbf9f6;
+  --success-foreground: #fdfbf7;
 
   --warning: #b8860b;
-  --warning-foreground: #1c1917;
+  --warning-foreground: #1a1a1a;
 
   --info: #2a5d8f;
-  --info-foreground: #fbf9f6;
+  --info-foreground: #fdfbf7;
 
-  --border: #e6dfd4;
-  --input: #e6dfd4;
-  --ring: #c8a24a;
+  --border: #ebe4d8;
+  --input: #ebe4d8;
+  --ring: #c5a059;
 
-  --radius: 1.25rem;
+  --radius: 1rem;
 
   /* --- توکن‌های معنایی مخصوص دامنه --- */
-  --gold: #c8a24a;
-  --gold-soft: #f0e3c6;
-  --gold-deep: #9a7a2e;
-  --treasure: #16233f;
-  --treasure-soft: #e7eaf1;
-  --product-card-wash: linear-gradient(
-    158deg,
-    var(--gold-soft) 0%,
-    var(--card) 46%,
-    var(--treasure-soft) 100%
-  );
+  --gold: #c5a059;
+  --gold-bright: #d4af37;
+  --gold-soft: #f3ebd8;
+  --gold-deep: #9a7530;
+  --treasure: #2c2c2c;
+  --treasure-soft: #f6efe4;
+  --product-card-wash: var(--card);
 
-  /* طوسی گرم برای نوار محصولات؛ کنتراست با کاغذ کرم و شیشه طلایی */
+  /* طوسی گرم برای نوار خنثی در صورت نیاز */
   --section-stone: #d4d1cb;
-  --section-stone-foreground: #1c1917;
+  --section-stone-foreground: #1a1a1a;
 
-  /* --- شیشه روشن طلایی --- */
+  /* --- شیشه روشن طلایی شامپاین --- */
   --glass: rgb(255 252 247 / 0.18);
   --glass-strong: rgb(255 252 247 / 0.34);
   --glass-tint: 255, 252, 247;
   --glass-border-from: rgb(255 255 255 / 0.92);
-  --glass-border-to: rgb(200 162 74 / 0.45);
+  --glass-border-to: rgb(197 160 89 / 0.42);
   --glass-sheen: linear-gradient(
     135deg,
     rgb(255 255 255 / 0.55) 0%,
     transparent 38%,
     transparent 62%,
-    rgb(200 162 74 / 0.14) 100%
+    rgb(197 160 89 / 0.14) 100%
   );
   --glass-rim:
-    inset 0 1px 1px rgb(255 255 255 / 0.95), inset 0 0 0 1px rgb(200 162 74 / 0.38);
+    inset 0 1px 1px rgb(255 255 255 / 0.95), inset 0 0 0 1px rgb(197 160 89 / 0.32);
   --shadow-glow-gold:
-    0 18px 50px -18px rgb(200 162 74 / 0.32), 0 8px 24px -12px rgb(22 35 63 / 0.08);
+    0 18px 50px -18px rgb(197 160 89 / 0.28), 0 8px 24px -12px rgb(26 26 26 / 0.06);
   --shadow-product:
-    0 8px 20px -8px rgb(200 162 74 / 0.22), 0 2px 6px rgb(200 162 74 / 0.1);
+    0 12px 40px -16px rgb(197 160 89 / 0.22), 0 4px 14px -6px rgb(26 26 26 / 0.06);
+  --shadow-product-hover:
+    0 22px 52px -16px rgb(197 160 89 / 0.34), 0 8px 18px -6px rgb(26 26 26 / 0.08);
+
+  /* نوار شناور ویترین: سفید نیمه‌شفاف تا محتوا از زیر نرم دیده شود */
+  --nav-frost: rgb(255 255 255 / 0.8);
 }
 
 .dark {
@@ -132,20 +133,18 @@
   --ring: #d4b263;
 
   --gold: #d4b263;
+  --gold-bright: #e5c885;
   --gold-soft: #3a3122;
   --gold-deep: #e5c885;
-  --treasure: #e7eaf1;
-  --treasure-soft: #23272f;
-  --product-card-wash: linear-gradient(
-    158deg,
-    var(--gold-soft) 0%,
-    var(--card) 46%,
-    var(--treasure-soft) 100%
-  );
+  --treasure: #f5f1ea;
+  --treasure-soft: #2a2621;
+  --product-card-wash: var(--card);
   --section-stone: #3a3834;
   --section-stone-foreground: #f5f1ea;
   --shadow-product:
-    0 8px 20px -8px rgb(212 178 99 / 0.18), 0 2px 6px rgb(0 0 0 / 0.2);
+    0 12px 40px -16px rgb(212 178 99 / 0.18), 0 4px 14px -6px rgb(0 0 0 / 0.2);
+  --shadow-product-hover:
+    0 22px 52px -16px rgb(212 178 99 / 0.24), 0 8px 18px -6px rgb(0 0 0 / 0.28);
 }
 
 @theme inline {
@@ -187,6 +186,7 @@
   --color-ring: var(--ring);
 
   --color-gold: var(--gold);
+  --color-gold-bright: var(--gold-bright);
   --color-gold-soft: var(--gold-soft);
   --color-gold-deep: var(--gold-deep);
   --color-treasure: var(--treasure);
@@ -196,7 +196,7 @@
   --color-glass: var(--glass);
   --color-glass-strong: var(--glass-strong);
 
-  --font-sans: var(--font-iran-sans-x), Tahoma, ui-sans-serif, sans-serif;
+  --font-sans: var(--font-pinar), Tahoma, ui-sans-serif, sans-serif;
 
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -249,9 +249,9 @@
   body {
     background-color: var(--background);
     background-image:
-      radial-gradient(90% 55% at 50% -10%, rgb(200 162 74 / 0.22), transparent 58%),
-      radial-gradient(60% 40% at 100% 0%, rgb(22 35 63 / 0.06), transparent 50%),
-      radial-gradient(50% 30% at 0% 10%, rgb(200 162 74 / 0.08), transparent 45%);
+      radial-gradient(90% 55% at 50% -10%, rgb(197 160 89 / 0.18), transparent 58%),
+      radial-gradient(60% 40% at 100% 0%, rgb(26 26 26 / 0.04), transparent 50%),
+      radial-gradient(50% 30% at 0% 10%, rgb(197 160 89 / 0.08), transparent 45%);
     background-attachment: fixed;
     color: var(--foreground);
     font-family: var(--font-sans);
@@ -262,20 +262,27 @@
   }
 
   h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h2 {
+    font-weight: 700;
     line-height: 1.5;
     text-wrap: balance;
   }
 
-  /* اعداد و شناسه‌های لاتین داخل متن فارسی همیشه LTR رندر شوند */
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: 600;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+
+  /* شناسه‌های لاتین با پینار غیر‌FD تا رقم‌ها فارسی نشوند */
   .ltr-nums {
     direction: ltr;
     unicode-bidi: isolate;
     display: inline-block;
+    font-family: var(--font-pinar-latin), Tahoma, ui-sans-serif, sans-serif;
   }
 
   :focus-visible {
@@ -348,10 +355,29 @@
     box-shadow: var(--shadow-glow-gold);
   }
 
+  .shadow-product {
+    box-shadow: var(--shadow-product);
+  }
+
   .gold-glow {
     background:
       radial-gradient(ellipse 70% 45% at 50% 18%, rgb(255 255 255 / 0.95) 0%, transparent 42%),
-      radial-gradient(ellipse 90% 70% at 50% 8%, rgb(200 162 74 / 0.42) 0%, transparent 58%);
+      radial-gradient(ellipse 90% 70% at 50% 8%, rgb(197 160 89 / 0.36) 0%, transparent 58%);
+  }
+
+  /* گرادیان شامپاین فقط برای دکمهٔ طلایی؛ پر کردن سکشن ممنوع */
+  .btn-gold-fill {
+    background-image: linear-gradient(
+      180deg,
+      var(--gold-bright) 0%,
+      var(--gold) 55%,
+      var(--gold-deep) 100%
+    );
+    color: var(--accent-foreground);
+  }
+
+  .btn-gold-fill:hover {
+    filter: brightness(1.06);
   }
 
   .hero-card-in {
@@ -359,17 +385,41 @@
   }
 
   .product-card-wash {
-    background-image: var(--product-card-wash);
+    background-color: var(--product-card-wash);
     box-shadow: var(--shadow-product);
+    transition:
+      box-shadow 0.35s ease,
+      transform 0.35s ease;
   }
 
-  /* ویترین خانه: سفید با هالهٔ طلایی نرم */
+  .product-card-wash:hover {
+    box-shadow: var(--shadow-product-hover);
+  }
+
+  /* ویترین خانه: سفید با هالهٔ طلایی نرم، بدون لکهٔ آبی */
   .product-vitrine {
     background-color: var(--card);
     background-image:
-      radial-gradient(ellipse 60% 45% at 100% -5%, rgb(200 162 74 / 0.22), transparent 58%),
-      radial-gradient(ellipse 50% 40% at -8% 105%, rgb(22 35 63 / 0.06), transparent 52%),
-      radial-gradient(ellipse 55% 28% at 50% 0%, rgb(240 227 198 / 0.45), transparent 62%);
+      radial-gradient(ellipse 60% 45% at 100% -5%, rgb(197 160 89 / 0.18), transparent 58%),
+      radial-gradient(ellipse 50% 40% at -8% 105%, rgb(197 160 89 / 0.08), transparent 52%),
+      radial-gradient(ellipse 55% 28% at 50% 0%, rgb(243 235 216 / 0.55), transparent 62%);
+  }
+
+  .site-nav-bar {
+    background-color: var(--nav-frost);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* پردهٔ کرم نرم روی عکس هیرو تا کارت شیشه جدا بایستد */
+  .hero-veil {
+    background:
+      radial-gradient(
+        ellipse 58% 52% at 50% 42%,
+        color-mix(in srgb, var(--background) 12%, transparent) 0%,
+        color-mix(in srgb, var(--background) 62%, transparent) 72%,
+        color-mix(in srgb, var(--background) 82%, transparent) 100%
+      );
   }
 }
 
@@ -418,11 +468,30 @@
     border-color: color-mix(in srgb, var(--gold) 25%, var(--border));
     box-shadow: var(--shadow-glow-gold);
   }
+
+  .site-nav-bar {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: var(--card);
+  }
+
+  .hero-veil {
+    background: color-mix(in srgb, var(--background) 55%, transparent);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .gold-glow,
   .hero-card-in {
     animation: none;
+  }
+
+  .product-card-wash,
+  .btn-gold-fill {
+    transition: none;
+  }
+
+  .product-card-wash:hover {
+    box-shadow: var(--shadow-product);
   }
 }

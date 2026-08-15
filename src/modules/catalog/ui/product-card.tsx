@@ -10,7 +10,7 @@ import { Money } from "@/shared/ui/money";
 
 import type { ProductListItem } from "../domain/types";
 
-/** کارت محصول در فهرست. */
+/** کارت محصول در فهرست؛ سفید با سایهٔ نرم، بدون بردر سنگین. */
 export function ProductCard({
   product,
   className,
@@ -28,7 +28,7 @@ export function ProductCard({
   return (
     <div
       className={cn(
-        "product-card-wash group overflow-hidden rounded-lg border border-gold-deep/70 text-card-foreground transition-transform hover:-translate-y-0.5",
+        "product-card-wash group overflow-hidden rounded-lg text-card-foreground motion-safe:hover:-translate-y-1",
         className,
       )}
     >
@@ -40,7 +40,7 @@ export function ProductCard({
               alt={product.title}
               fill
               sizes="(max-width: 640px) 50vw, 25vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
+              className="object-contain p-4 transition-transform duration-500 motion-safe:group-hover:scale-105"
             />
           ) : (
             <div className="flex size-full items-center justify-center text-xs text-muted-foreground">
@@ -48,7 +48,7 @@ export function ProductCard({
             </div>
           )}
 
-          <div className="absolute end-2 top-2 flex flex-col items-end gap-1">
+          <div className="absolute end-3 top-3 flex flex-col items-end gap-1">
             {product.brandLine === "signature" ? (
               <Badge variant="gold">
                 <SparklesIcon />
@@ -61,29 +61,22 @@ export function ProductCard({
           </div>
         </div>
 
-        <div className="grid gap-2 p-4">
-          <div className="flex h-5 items-center justify-between gap-3">
-            <p className="text-xs leading-5 text-muted-foreground">
-              {PRODUCT_KIND_LABELS[product.kind]}
+        <div className="grid gap-1.5 px-5 py-4">
+          <p className="text-xs text-muted-foreground">{PRODUCT_KIND_LABELS[product.kind]}</p>
+          <h3 className="truncate text-sm font-semibold leading-snug">{product.title}</h3>
+          {weightLabel ? (
+            <p className="text-xs text-muted-foreground">وزن: {weightLabel}</p>
+          ) : null}
+          {product.fromPriceRial === null ? (
+            <p className="text-sm text-muted-foreground">قیمت به‌زودی</p>
+          ) : (
+            <p className="pt-1">
+              <span className="text-xs text-muted-foreground">از </span>
+              <span className="font-semibold text-gold-deep">
+                <Money rial={product.fromPriceRial} />
+              </span>
             </p>
-            {product.fromPriceRial === null ? (
-              <p className="shrink-0 text-sm leading-5 text-muted-foreground">قیمت به‌زودی</p>
-            ) : (
-              <p className="shrink-0 text-sm leading-5">
-                <span className="text-muted-foreground">از </span>
-                <span className="font-semibold text-gold-deep">
-                  <Money rial={product.fromPriceRial} />
-                </span>
-              </p>
-            )}
-          </div>
-
-          <div className="flex h-5 items-center justify-between gap-3">
-            <h3 className="min-w-0 truncate text-sm font-medium leading-5">{product.title}</h3>
-            {weightLabel ? (
-              <p className="shrink-0 text-xs leading-5 text-muted-foreground">وزن: {weightLabel}</p>
-            ) : null}
-          </div>
+          )}
         </div>
       </Link>
     </div>

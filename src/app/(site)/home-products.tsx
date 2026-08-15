@@ -23,7 +23,7 @@ function FeaturedProduct({ product }: { product: ProductListItem }) {
   const weight = weightLabel(product);
 
   return (
-    <article className="glass-strong grid overflow-hidden rounded-xl text-card-foreground md:grid-cols-2">
+    <article className="product-card-wash grid overflow-hidden rounded-lg text-card-foreground md:grid-cols-2">
       <Link
         href={`/products/${product.slug}`}
         className="relative block aspect-square overflow-hidden bg-muted md:aspect-auto md:min-h-96"
@@ -34,7 +34,7 @@ function FeaturedProduct({ product }: { product: ProductListItem }) {
             alt={product.title}
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-cover transition-transform duration-700 hover:scale-105"
+            className="object-contain p-6 transition-transform duration-700 motion-safe:hover:scale-105"
           />
         ) : (
           <div className="flex size-full items-center justify-center text-sm text-muted-foreground">
@@ -89,7 +89,7 @@ export function HomeProductsSection({ products }: { products: ProductListItem[] 
   const [featured, ...rest] = products;
 
   return (
-    <section className="product-vitrine relative overflow-hidden px-4 py-16 text-foreground sm:px-6 sm:py-24">
+    <section className="product-vitrine relative overflow-hidden px-4 py-20 text-foreground sm:px-6 sm:py-28">
       <GoldGlow className="z-0 h-[min(28rem,70vh)]" />
 
       <div className="relative z-10 mx-auto grid w-full max-w-6xl gap-12">

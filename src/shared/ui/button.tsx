@@ -5,22 +5,22 @@ import type * as React from "react";
 import { cn } from "@/shared/lib/cn";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50 motion-safe:hover:-translate-y-px [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
         default:
-          "rounded-2xl bg-primary text-primary-foreground shadow-glow hover:bg-primary/90",
-        gold: "rounded-2xl bg-gold text-accent-foreground shadow-glow hover:bg-gold-deep hover:text-primary-foreground",
+          "rounded-lg bg-primary text-primary-foreground shadow-glow hover:bg-primary/90",
+        gold: "btn-gold-fill rounded-lg shadow-glow",
         secondary:
-          "glass rounded-2xl text-secondary-foreground hover:bg-gold-soft/40",
+          "glass rounded-lg text-secondary-foreground hover:bg-gold-soft/40",
         outline:
-          "glass rounded-2xl text-foreground hover:bg-gold-soft/30",
-        ghost: "rounded-2xl hover:bg-gold-soft/40 hover:text-foreground",
+          "glass rounded-lg text-foreground hover:bg-gold-soft/30",
+        ghost: "rounded-lg hover:bg-gold-soft/40 hover:text-foreground",
         destructive:
-          "rounded-2xl bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        success: "rounded-2xl bg-success text-success-foreground hover:bg-success/90",
-        link: "text-primary underline-offset-4 hover:underline",
+          "rounded-lg bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        success: "rounded-lg bg-success text-success-foreground hover:bg-success/90",
+        link: "text-primary underline-offset-4 hover:translate-y-0 hover:underline",
       },
       size: {
         sm: "h-9 px-3 text-xs",

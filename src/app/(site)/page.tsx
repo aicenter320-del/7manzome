@@ -21,8 +21,8 @@ export default async function HomePage() {
     <main className="relative">
       <HomeHero goldPrice={goldPrice} />
 
-      <section className="bg-background px-4 py-12 sm:px-6 sm:py-16">
-        <div className="glass-strong mx-auto w-full max-w-6xl rounded-[2rem] p-5 sm:p-8">
+      <section className="bg-background px-4 py-16 sm:px-6 sm:py-20">
+        <div className="glass-strong mx-auto w-full max-w-6xl rounded-lg p-6 sm:p-10">
           <OccasionSlider
             occasions={occasions}
             heading="مناسبت‌های زندگی او"

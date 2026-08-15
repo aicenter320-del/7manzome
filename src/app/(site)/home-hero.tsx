@@ -20,17 +20,18 @@ export function HomeHero({ goldPrice }: { goldPrice: GoldPriceView | null }) {
           unoptimized
           quality={100}
           sizes="100vw"
-          className="object-cover object-center"
+          className="object-cover object-center opacity-70"
           aria-hidden
         />
+        <div className="hero-veil absolute inset-0" />
       </div>
 
-      <div className="relative z-10 mx-auto flex w-full max-w-3xl items-center px-8 pb-12 pt-[5.25rem] sm:px-12 lg:min-h-svh lg:px-6 lg:pb-16 lg:pt-32">
+      <div className="relative z-10 mx-auto flex w-full max-w-3xl items-center px-6 pb-16 pt-[6.75rem] sm:px-16 sm:pb-20 lg:min-h-svh lg:px-10 lg:pb-28 lg:pt-40">
         <GlassSurface
-          radius={32}
+          radius={16}
           tint={0.48}
           className="w-full"
-          contentClassName="hero-card-in flex flex-col items-center gap-4 px-5 py-6 text-center sm:gap-5 sm:px-10 sm:py-12"
+          contentClassName="hero-card-in flex flex-col items-center gap-5 px-6 py-8 text-center sm:gap-6 sm:px-12 sm:py-14"
         >
           <p className="rounded-full border border-gold/30 bg-gold-soft/50 px-4 py-1 text-xs font-medium text-gold-deep sm:text-sm">
             {site.name}

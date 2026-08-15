@@ -18,7 +18,7 @@ globs: src/app/**,src/shared/ui/**,src/modules/**/ui/**,*.css
 ```
 
 توکن‌های موجود: `background` `foreground` `card` `popover` `primary` `secondary`
-`muted` `accent` `gold` `gold-soft` `gold-deep` `treasure` `treasure-soft`
+`muted` `accent` `gold` `gold-bright` `gold-soft` `gold-deep` `treasure` `treasure-soft`
 `success` `warning` `destructive` `info` `border` `input` `ring` `glass`
 
 تم **فقط روشن** است. کلاس `light` روی `html` بماند؛ سوئیچ دارک‌مود نساز.

@@ -15,7 +15,7 @@ function Step({
   body: string;
 }) {
   return (
-    <li className="grid gap-3 rounded-3xl bg-card/70 p-5">
+    <li className="grid gap-3 rounded-lg bg-card p-6 shadow-product">
       <span className="flex size-12 items-center justify-center rounded-full bg-gold-soft text-gold-deep">
         {icon}
       </span>
@@ -35,8 +35,8 @@ function TrustCard({
   body: string;
 }) {
   return (
-    <article className="grid gap-3 rounded-3xl bg-card p-6">
-      <span className="flex size-12 items-center justify-center rounded-full bg-treasure-soft text-treasure">
+    <article className="grid gap-3 rounded-lg bg-card p-6 shadow-product">
+      <span className="flex size-12 items-center justify-center rounded-full bg-gold-soft text-gold-deep">
         {icon}
       </span>
       <h3 className="font-semibold">{title}</h3>
@@ -48,8 +48,8 @@ function TrustCard({
 /** مسیر ساخت گنجینه؛ همان کارهایی که در پنل والد انجام می‌شود. */
 export function HomeHowItWorks() {
   return (
-    <section className="bg-secondary px-4 py-16 sm:px-6 sm:py-20">
-      <div className="mx-auto grid w-full max-w-6xl gap-10">
+    <section className="bg-secondary px-4 py-20 sm:px-6 sm:py-24">
+      <div className="mx-auto grid w-full max-w-6xl gap-12">
         <div className="max-w-2xl grid gap-3">
           <h2 className="text-xl font-semibold sm:text-2xl">از پروفایل کودک تا گنجینه</h2>
           <p className="text-muted-foreground">
@@ -57,7 +57,7 @@ export function HomeHowItWorks() {
             به اشتراک می‌گذارید.
           </p>
         </div>
-        <ol className="grid gap-4 sm:grid-cols-3">
+        <ol className="grid gap-6 sm:grid-cols-3">
           <Step
             icon={<BabyIcon className="size-5" aria-hidden />}
             title="کودک را بشناسید"
@@ -87,13 +87,13 @@ export function HomeHowItWorks() {
 /** دعوت به هدیه مهمان؛ مسیر واقعی /gift و لینک گنجینه. */
 export function HomeGiftBand() {
   return (
-    <section className="bg-treasure px-4 py-16 text-primary-foreground sm:px-6 sm:py-20">
-      <div className="mx-auto grid w-full max-w-6xl gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-        <div className="grid gap-4">
+    <section className="bg-background px-4 py-20 sm:px-6 sm:py-24">
+      <div className="glass-strong mx-auto grid w-full max-w-6xl gap-10 rounded-lg px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
+        <div className="grid gap-5">
           <h2 className="text-2xl font-semibold text-balance sm:text-3xl">
             فامیل بدون ورود، طلا هدیه می‌دهد
           </h2>
-          <p className="max-w-xl text-primary-foreground/80 leading-relaxed">
+          <p className="max-w-xl leading-relaxed text-muted-foreground">
             لینک گنجینه را بفرستید. مهمان مبلغ را انتخاب می‌کند، یادگاری می‌نویسد و پس از تایید
             پرداخت، طلا با قیمت همان لحظه به گنجینه کودک اضافه می‌شود. کارت هدیه فیزیکی با کد
             هم قابل استفاده است.
@@ -102,20 +102,21 @@ export function HomeGiftBand() {
             <Button asChild variant="gold" size="lg">
               <Link href="/gift">هدیه بده</Link>
             </Button>
-            <Button
-              asChild
-              variant="ghost"
-              size="lg"
-              className="text-primary-foreground hover:bg-gold-soft/20 hover:text-primary-foreground"
-            >
+            <Button asChild variant="outline" size="lg">
               <Link href="/treasures">گنجینه‌های در حال ساخت</Link>
             </Button>
           </div>
         </div>
         <ul className="grid gap-3 text-sm">
-          <li className="rounded-2xl bg-primary-foreground/10 px-5 py-4">بدون ساخت حساب برای مهمان</li>
-          <li className="rounded-2xl bg-primary-foreground/10 px-5 py-4">پیام یادگاری کنار هر هدیه</li>
-          <li className="rounded-2xl bg-primary-foreground/10 px-5 py-4">طلا فقط پس از تایید پرداخت</li>
+          <li className="rounded-lg bg-card px-5 py-4 shadow-product">
+            بدون ساخت حساب برای مهمان
+          </li>
+          <li className="rounded-lg bg-card px-5 py-4 shadow-product">
+            پیام یادگاری کنار هر هدیه
+          </li>
+          <li className="rounded-lg bg-card px-5 py-4 shadow-product">
+            طلا فقط پس از تایید پرداخت
+          </li>
         </ul>
       </div>
     </section>
@@ -125,15 +126,15 @@ export function HomeGiftBand() {
 /** اعتماد: شفافیت قیمت و شخصی‌سازی واقعی صفحه محصول. */
 export function HomeTrustBand() {
   return (
-    <section className="bg-background px-4 py-16 sm:px-6 sm:py-20">
-      <div className="mx-auto grid w-full max-w-6xl gap-10">
+    <section className="bg-background px-4 py-20 sm:px-6 sm:py-24">
+      <div className="mx-auto grid w-full max-w-6xl gap-12">
         <div className="max-w-2xl grid gap-3">
           <h2 className="text-xl font-semibold sm:text-2xl">شفاف، ماندگار، به نام او</h2>
           <p className="text-muted-foreground">
             همان چیزهایی که در فروشگاه و پنل می‌بینید: ریزقیمت، حکاکی، و لینک دعوت خانواده.
           </p>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-6 sm:grid-cols-3">
           <TrustCard
             icon={<ScaleIcon className="size-5" aria-hidden />}
             title="قیمت کاملاً باز"
@@ -155,12 +156,12 @@ export function HomeTrustBand() {
   );
 }
 
-/** شعار برند؛ سکشن پایانی هم‌وزن بقیه نوارها. */
+/** شعار برند؛ سکشن پایانی روی کاغذ کرم، طلا فقط لهجه. */
 export function HomeSloganBand() {
   return (
-    <section className="bg-gold-soft px-4 py-20 sm:px-6 sm:py-24">
-      <div className="mx-auto grid w-full max-w-3xl justify-items-center gap-6 text-center">
-        <p className="text-2xl font-semibold text-treasure text-balance sm:text-4xl">
+    <section className="bg-background px-4 py-24 sm:px-6 sm:py-28">
+      <div className="mx-auto grid w-full max-w-3xl justify-items-center gap-8 text-center">
+        <p className="text-2xl font-semibold text-balance text-treasure sm:text-4xl">
           {site.slogan}
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">

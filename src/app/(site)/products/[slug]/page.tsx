@@ -36,14 +36,14 @@ export default async function ProductDetailPage({
   return (
     <main className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10 lg:grid-cols-2 sm:px-6">
       <div className="grid gap-4">
-        <div className="relative aspect-square overflow-hidden rounded-xl bg-muted">
+        <div className="relative aspect-square overflow-hidden rounded-lg bg-muted shadow-product">
           {product.heroFileId ? (
             <Image
               src={`/api/files/${product.heroFileId}`}
               alt={product.title}
               fill
               sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-cover"
+              className="object-contain p-6"
               priority
             />
           ) : (

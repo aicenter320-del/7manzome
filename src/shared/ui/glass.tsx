@@ -30,7 +30,7 @@ import { cn } from "@/shared/lib/cn";
 /** RGB سفید گرم برای ته‌رنگ شیشه در تم روشن. */
 export const GLASS_WHITE_RGB = "255,252,247";
 /** RGB طلایی برند برای ته‌رنگ دیسک آیکون و لهجه. */
-export const GLASS_GOLD_RGB = "200,162,74";
+export const GLASS_GOLD_RGB = "197,160,89";
 
 // تم سایت فقط روشن است؛ موتور شیشه هرگز به دارک‌مود سیستم اعتماد نمی‌کند.
 export function useGlassDark(): boolean {

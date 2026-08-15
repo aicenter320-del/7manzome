@@ -3,7 +3,7 @@ import { Toaster } from "sonner";
 
 import { site } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
-import { iranSansX } from "@/shared/ui/fonts";
+import { pinar, pinarLatin } from "@/shared/ui/fonts";
 import { AppProviders } from "@/shared/ui/providers";
 
 import "./globals.css";
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f7f4ee",
+  themeColor: "#fdfbf7",
   width: "device-width",
   initialScale: 1,
 };
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fa" dir="rtl" className="light" suppressHydrationWarning>
       <body
-        className={cn(iranSansX.variable, iranSansX.className, "min-h-dvh antialiased")}
+        className={cn(pinar.variable, pinarLatin.variable, pinar.className, "min-h-dvh antialiased")}
         suppressHydrationWarning
       >
         <AppProviders>{children}</AppProviders>
@@ -53,7 +53,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dir="rtl"
           closeButton
           toastOptions={{
-            className: iranSansX.className,
+            className: pinar.className,
             classNames: {
               toast: "glass-strong !border-transparent",
             },

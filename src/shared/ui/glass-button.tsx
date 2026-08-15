@@ -48,7 +48,7 @@ export function GlassButton({
       type={type}
       className={cn(
         "relative inline-flex select-none outline-none transition-[filter] focus-visible:brightness-110",
-        isIcon ? "rounded-full" : "rounded-2xl",
+        isIcon ? "rounded-full" : "rounded-lg",
         className,
       )}
       onPointerDown={(event) => {
@@ -74,7 +74,7 @@ export function GlassButton({
           handleRef={surface}
           tint={tint}
           tintColor={isIcon ? GLASS_GOLD_RGB : undefined}
-          radius={isIcon ? 999 : 18}
+          radius={isIcon ? 999 : 16}
           className={cn("text-foreground", isIcon ? "size-12" : "h-12 min-h-11 px-6")}
           contentClassName="flex items-center justify-center"
         >

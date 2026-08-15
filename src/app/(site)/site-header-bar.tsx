@@ -89,7 +89,8 @@ export function SiteHeaderBar({
       <GlassSurface
         radius={999}
         tint={0.48}
-        className="mx-auto w-full max-w-6xl"
+        blur={12}
+        className="site-nav-bar mx-auto w-full max-w-6xl"
         contentClassName="flex items-center gap-2 px-3 py-2 sm:px-5"
       >
         <Link href="/" className="shrink-0 font-bold text-treasure">

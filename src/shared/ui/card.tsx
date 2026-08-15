@@ -7,7 +7,7 @@ export function Card({ className, ...props }: React.ComponentProps<"div">) {
     <div
       data-slot="card"
       className={cn(
-        "glass rounded-2xl text-card-foreground",
+        "glass rounded-lg text-card-foreground",
         className,
       )}
       {...props}
