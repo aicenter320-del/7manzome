@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import {
   CalendarHeartIcon,
   GemIcon,
@@ -19,7 +18,6 @@ import {
 import { type ReactNode, useState } from "react";
 
 import { mainNav, site } from "@/shared/config/site";
-import { cn } from "@/shared/lib/cn";
 import { toPersianDigits } from "@/shared/lib/persian";
 import { Button } from "@/shared/ui/button";
 import { GlassIconButton } from "@/shared/ui/glass-icon-button";
@@ -77,15 +75,9 @@ export function SiteHeaderBar({
   cartCount: number;
 }) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const overlayHero = usePathname() === "/";
 
   return (
-    <header
-      className={cn(
-        "z-40 px-3 pt-3 sm:px-6",
-        overlayHero ? "fixed inset-x-0 top-0" : "sticky top-0",
-      )}
-    >
+    <header className="sticky top-0 z-40 px-3 pt-3 sm:px-6">
       <GlassSurface
         radius={999}
         tint={0.48}
