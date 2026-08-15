@@ -1,7 +1,13 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getProductForAdmin, ProductGalleryManager } from "@/modules/catalog";
+import {
+  getProductForAdmin,
+  listOccasions,
+  ProductGalleryManager,
+  ProductOccasionsManager,
+  ProductVariantsManager,
+} from "@/modules/catalog";
 import { requirePermission } from "@/server/auth/guards";
 import { hasPermission } from "@/server/auth/rbac";
 import { PRODUCT_KIND_LABELS, PRODUCT_STATUS_LABELS } from "@/shared/types/enums";
@@ -21,6 +27,7 @@ export default async function AdminProductEditPage({
   if (!product) notFound();
 
   const canWrite = hasPermission(user.roles, "catalog:write");
+  const occasions = await listOccasions();
 
   return (
     <div className="grid gap-8">
@@ -42,6 +49,19 @@ export default async function AdminProductEditPage({
       />
 
       {canWrite ? <EditProductForm product={product} /> : null}
+
+      <ProductOccasionsManager
+        productId={product.id}
+        attached={product.occasions}
+        allOccasions={occasions}
+        canWrite={canWrite}
+      />
+
+      <ProductVariantsManager
+        productId={product.id}
+        variants={product.variants}
+        canWrite={canWrite}
+      />
 
       <ProductGalleryManager
         productId={product.id}

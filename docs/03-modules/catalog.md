@@ -12,7 +12,7 @@
 
 ```ts
 export { listProducts, getProductBySlug, getProductForAdmin, listCategories, listOccasions } from "./service/catalog.service";
-export { createProduct, updateProduct, setProductStatus, uploadProductImage, deleteProductMedia, setProductHero, reorderProductMedia } from "./actions/...";
+export { createProduct, updateProduct, setProductStatus, createVariant, updateVariant, attachProductOccasion, detachProductOccasion, uploadProductImage, deleteProductMedia, setProductHero, reorderProductMedia } from "./actions/...";
 export { hoverFileId, orderedGallery, MAX_PRODUCT_IMAGES } from "./domain/product-gallery";
 export { ProductCard, ProductGrid, ProductGallery, ProductGalleryManager } from "./ui/...";
 export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from "./domain/types";
@@ -48,7 +48,7 @@ export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from ".
 - `app/(site)/products/[slug]` — جزئیات با گالری و ریزمحاسبات شفاف قیمت
 - `app/(site)/occasions` و `app/(site)/occasions/[slug]`
 - `app/admin/products` — فهرست همه وضعیت‌ها
-- `app/admin/products/[productId]` — ویرایش مشخصات و گالری
+- `app/admin/products/[productId]` — ویرایش مشخصات، مناسبت، گونه، گالری
 
 ## نقاط باز
 

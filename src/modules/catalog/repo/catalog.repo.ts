@@ -474,6 +474,17 @@ export async function linkProductOccasion(
   await db.insert(productOccasions).values({ productId, occasionId }).onConflictDoNothing();
 }
 
+export async function unlinkProductOccasion(
+  productId: string,
+  occasionId: string,
+): Promise<void> {
+  await db
+    .delete(productOccasions)
+    .where(
+      and(eq(productOccasions.productId, productId), eq(productOccasions.occasionId, occasionId)),
+    );
+}
+
 export async function insertProductMedia(input: {
   productId: string;
   fileId: string;

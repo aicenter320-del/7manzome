@@ -21,10 +21,12 @@ import {
   insertOccasion,
   insertProduct,
   insertProductMedia,
+  findVariantById,
   insertVariant,
   linkProductOccasion,
   nextMediaSortOrder,
   setMediaSortOrders,
+  unlinkProductOccasion,
   updateProductRow,
   updateVariantRow,
 } from "../repo/catalog.repo";
@@ -208,7 +210,7 @@ export const createVariant = createAction({
       summary: `افزودن گونه ${variant.sku}`,
     });
 
-    revalidatePath("/admin/products");
+    await revalidateCatalogProduct(input.productId);
 
     return { variantId: variant.id };
   },
@@ -225,6 +227,9 @@ export const updateVariant = createAction({
   handler: async ({ input, user }) => {
     const { variantId, ...rest } = input;
 
+    const variant = await findVariantById(variantId);
+    if (!variant) throw new NotFoundError("گونه محصول پیدا نشد.");
+
     await updateVariantRow(variantId, rest);
 
     await recordAudit({
@@ -235,8 +240,7 @@ export const updateVariant = createAction({
       summary: "به‌روزرسانی گونه محصول",
     });
 
-    revalidatePath("/admin/products");
-    revalidatePath("/products");
+    await revalidateCatalogProduct(variant.productId);
 
     return { ok: true };
   },
@@ -307,7 +311,21 @@ export const attachProductOccasion = createAction({
   permissions: ["catalog:write"],
   handler: async ({ input }) => {
     await linkProductOccasion(input.productId, input.occasionId);
-    revalidatePath("/admin/products");
+    await revalidateCatalogProduct(input.productId);
+    revalidatePath("/occasions");
+    return { ok: true };
+  },
+});
+
+export const detachProductOccasion = createAction({
+  name: "catalog.detachOccasion",
+  schema: z.object({ productId: idSchema, occasionId: idSchema }),
+  auth: "required",
+  permissions: ["catalog:write"],
+  handler: async ({ input }) => {
+    await unlinkProductOccasion(input.productId, input.occasionId);
+    await revalidateCatalogProduct(input.productId);
+    revalidatePath("/occasions");
     return { ok: true };
   },
 });

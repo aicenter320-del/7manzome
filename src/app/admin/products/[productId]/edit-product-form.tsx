@@ -15,6 +15,7 @@ import {
 } from "@/shared/types/enums";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
+import { Checkbox } from "@/shared/ui/checkbox";
 import { FormField } from "@/shared/ui/form-field";
 import { Input } from "@/shared/ui/input";
 import {
@@ -30,6 +31,10 @@ export function EditProductForm({ product }: { product: ProductDetail }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [status, setStatus] = useState<ProductStatus>(product.status);
+  const [isPersonalizable, setIsPersonalizable] = useState(product.isPersonalizable);
+  const [highlights, setHighlights] = useState<string[]>(
+    product.highlights.length > 0 ? product.highlights : [""],
+  );
   const [error, setError] = useState<string | null>(null);
 
   return (
@@ -44,6 +49,7 @@ export function EditProductForm({ product }: { product: ProductDetail }) {
         const description = String(form.get("description") ?? "").trim();
         const sortRaw = Number(toEnglishDigits(String(form.get("sortOrder") ?? "0")));
         const sortOrder = Number.isFinite(sortRaw) ? sortRaw : 0;
+        const cleanedHighlights = highlights.map((item) => item.trim()).filter((item) => item.length >= 2);
 
         startTransition(async () => {
           const updated = await updateProduct({
@@ -52,6 +58,8 @@ export function EditProductForm({ product }: { product: ProductDetail }) {
             ...(subtitle ? { subtitle } : { subtitle: "" }),
             ...(description ? { description } : { description: "" }),
             sortOrder,
+            isPersonalizable,
+            highlights: cleanedHighlights,
           });
           if (!updated.ok) {
             setError(updated.error);
@@ -94,6 +102,51 @@ export function EditProductForm({ product }: { product: ProductDetail }) {
           defaultValue={product.description ?? ""}
         />
       </FormField>
+
+      <div className="grid gap-3">
+        <p className="text-sm font-medium">نکات محصول</p>
+        <p className="text-xs text-muted-foreground">
+          همین موارد در صفحهٔ محصول زیر توضیح دیده می‌شوند. حداکثر شش مورد.
+        </p>
+        {highlights.map((item, index) => (
+          <div key={index} className="flex gap-2">
+            <Input
+              aria-label={`نکته ${index + 1}`}
+              value={item}
+              onChange={(event) => {
+                const next = [...highlights];
+                next[index] = event.target.value;
+                setHighlights(next);
+              }}
+              placeholder="قابل حکاکی نام"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                const next = highlights.filter((_, current) => current !== index);
+                setHighlights(next.length > 0 ? next : [""]);
+              }}
+            >
+              حذف
+            </Button>
+          </div>
+        ))}
+        {highlights.length < 6 ? (
+          <Button type="button" variant="outline" onClick={() => setHighlights([...highlights, ""])}>
+            افزودن نکته
+          </Button>
+        ) : null}
+      </div>
+
+      <div className="flex items-center gap-2 text-sm">
+        <Checkbox
+          checked={isPersonalizable}
+          onCheckedChange={(value) => setIsPersonalizable(value === true)}
+          aria-label="قابل شخصی‌سازی"
+        />
+        <span>قابل شخصی‌سازی</span>
+      </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <FormField

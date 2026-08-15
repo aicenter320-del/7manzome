@@ -218,9 +218,12 @@ export async function listProducts(filters: ProductFilters = {}): Promise<Produc
     : items;
 }
 
-async function buildDetail(product: ProductRow): Promise<ProductDetail> {
+async function buildDetail(
+  product: ProductRow,
+  options: { includeInactiveVariants?: boolean } = {},
+): Promise<ProductDetail> {
   const [variantRows, media, occasionRows] = await Promise.all([
-    findVariantsForProduct(product.id),
+    findVariantsForProduct(product.id, options.includeInactiveVariants !== true),
     findMediaForProduct(product.id),
     findOccasionsForProduct(product.id),
   ]);
@@ -268,7 +271,7 @@ export async function getProductBySlug(slug: string): Promise<ProductDetail | nu
 /** جزئیات محصول بدون فیلتر وضعیت؛ برای پنل ادمین. */
 export async function getProductForAdmin(productId: string): Promise<ProductDetail | null> {
   const product = await findProductById(productId);
-  return product ? buildDetail(product) : null;
+  return product ? buildDetail(product, { includeInactiveVariants: true }) : null;
 }
 
 export async function getVariantWithProduct(variantId: string): Promise<{

@@ -59,6 +59,7 @@ export {
   createCategory,
   createOccasion,
   attachProductOccasion,
+  detachProductOccasion,
   uploadProductImage,
   deleteProductMedia,
   setProductHero,
@@ -69,6 +70,8 @@ export { ProductCard } from "./ui/product-card";
 export { ProductGrid } from "./ui/product-grid";
 export { ProductGallery } from "./ui/product-gallery";
 export { ProductGalleryManager } from "./ui/product-gallery-manager";
+export { ProductOccasionsManager } from "./ui/product-occasions-manager";
+export { ProductVariantsManager } from "./ui/product-variants-manager";
 export { ProductHoverImage } from "./ui/product-hover-image";
 export { VariantSelector } from "./ui/variant-selector";
 export { OccasionIcon, OccasionLabel } from "./ui/occasion-icon";
