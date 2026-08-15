@@ -57,6 +57,8 @@ export function HomeHero({ goldPrice }: { goldPrice: GoldPriceView | null }) {
           alt=""
           fill
           priority
+          unoptimized
+          quality={100}
           sizes="100vw"
           className="object-cover object-[78%_center]"
         />
@@ -71,6 +73,8 @@ export function HomeHero({ goldPrice }: { goldPrice: GoldPriceView | null }) {
           width={1024}
           height={571}
           priority
+          unoptimized
+          quality={100}
           sizes="70vw"
           className="hero-photo-mask h-full w-auto max-w-none object-contain object-right"
         />

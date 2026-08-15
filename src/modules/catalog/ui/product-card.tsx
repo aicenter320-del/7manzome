@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { SparklesIcon } from "lucide-react";
 
@@ -9,6 +8,7 @@ import { Badge } from "@/shared/ui/badge";
 import { Money } from "@/shared/ui/money";
 
 import type { ProductListItem } from "../domain/types";
+import { ProductHoverImage } from "./product-hover-image";
 
 /** کارت محصول در فهرست؛ سفید با سایهٔ نرم، بدون بردر سنگین. */
 export function ProductCard({
@@ -28,27 +28,23 @@ export function ProductCard({
   return (
     <div
       className={cn(
-        "product-card-wash group overflow-hidden rounded-lg text-card-foreground motion-safe:hover:-translate-y-1",
+        "product-card-wash group flex h-full flex-col overflow-hidden rounded-lg text-card-foreground motion-safe:hover:-translate-y-1",
         className,
       )}
     >
-      <Link href={`/products/${product.slug}`} className="block focus-visible:outline-none">
-        <div className="relative aspect-square overflow-hidden bg-muted">
-          {product.heroFileId ? (
-            <Image
-              src={`/api/files/${product.heroFileId}`}
-              alt={product.title}
-              fill
-              sizes="(max-width: 640px) 50vw, 25vw"
-              className="object-contain p-4 transition-transform duration-500 motion-safe:group-hover:scale-105"
-            />
-          ) : (
-            <div className="flex size-full items-center justify-center text-xs text-muted-foreground">
-              بدون تصویر
-            </div>
-          )}
+      <Link
+        href={`/products/${product.slug}`}
+        className="flex h-full flex-col focus-visible:outline-none"
+      >
+        <div className="relative aspect-square shrink-0 overflow-hidden bg-muted">
+          <ProductHoverImage
+            heroFileId={product.heroFileId}
+            hoverFileId={product.hoverFileId}
+            alt={product.title}
+            sizes="(max-width: 640px) 50vw, 25vw"
+          />
 
-          <div className="absolute end-3 top-3 flex flex-col items-end gap-1">
+          <div className="absolute end-3 top-3 z-10 flex flex-col items-end gap-1">
             {product.brandLine === "signature" ? (
               <Badge variant="gold">
                 <SparklesIcon />
@@ -61,16 +57,16 @@ export function ProductCard({
           </div>
         </div>
 
-        <div className="grid gap-1.5 px-5 py-4">
+        <div className="grid flex-1 gap-1.5 px-5 py-4">
           <p className="text-xs text-muted-foreground">{PRODUCT_KIND_LABELS[product.kind]}</p>
-          <h3 className="truncate text-sm font-semibold leading-snug">{product.title}</h3>
+          <h3 className="text-sm font-semibold leading-snug">{product.title}</h3>
           {weightLabel ? (
             <p className="text-xs text-muted-foreground">وزن: {weightLabel}</p>
           ) : null}
           {product.fromPriceRial === null ? (
-            <p className="text-sm text-muted-foreground">قیمت به‌زودی</p>
+            <p className="mt-auto pt-1 text-sm text-muted-foreground">قیمت به‌زودی</p>
           ) : (
-            <p className="pt-1">
+            <p className="mt-auto pt-1">
               <span className="text-xs text-muted-foreground">از </span>
               <span className="font-semibold text-gold-deep">
                 <Money rial={product.fromPriceRial} />

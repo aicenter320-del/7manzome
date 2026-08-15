@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { getProductBySlug } from "@/modules/catalog";
+import { getProductBySlug, ProductGallery } from "@/modules/catalog";
 import { AddToCartPanel } from "@/modules/orders";
 import { Badge } from "@/shared/ui/badge";
 import { PRODUCT_KIND_LABELS } from "@/shared/types/enums";
@@ -36,22 +35,7 @@ export default async function ProductDetailPage({
   return (
     <main className="mx-auto grid w-full max-w-6xl gap-10 px-4 py-10 lg:grid-cols-2 sm:px-6">
       <div className="grid gap-4">
-        <div className="relative aspect-square overflow-hidden rounded-lg bg-muted shadow-product">
-          {product.heroFileId ? (
-            <Image
-              src={`/api/files/${product.heroFileId}`}
-              alt={product.title}
-              fill
-              sizes="(max-width: 1024px) 100vw, 50vw"
-              className="object-contain p-6"
-              priority
-            />
-          ) : (
-            <div className="flex size-full items-center justify-center text-sm text-muted-foreground">
-              بدون تصویر
-            </div>
-          )}
-        </div>
+        <ProductGallery title={product.title} heroFileId={product.heroFileId} media={product.media} />
       </div>
 
       <div className="grid gap-5">

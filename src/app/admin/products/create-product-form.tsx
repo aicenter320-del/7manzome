@@ -81,8 +81,8 @@ export function CreateProductForm() {
             return;
           }
 
-          toast.success("محصول و گونه اول ساخته شد.");
-          router.refresh();
+          toast.success("محصول و گونه اول ساخته شد. تصویر را در همین صفحه اضافه کنید.");
+          router.push(`/admin/products/${created.data.productId}`);
         });
       }}
     >

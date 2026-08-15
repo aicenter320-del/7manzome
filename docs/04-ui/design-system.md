@@ -144,6 +144,7 @@
 | `PriceBreakdownTable` | `modules/pricing/ui/` | جدول شفاف اجزای قیمت |
 | `TreasureProgress` | `modules/treasury/ui/` | نوار پیشرفت گنجینه |
 | `OccasionIcon` / `OccasionLabel` / `OccasionCard` | `modules/catalog/ui/` | آیکون مناسبت؛ کارت سفید بدون شیشه؛ در خانه پنج مورد با نشانگر اسلاید |
+| `ProductCard` / `ProductGallery` / `ProductHoverImage` | `modules/catalog/ui/` | کارت ویترین با تعویض عکس دوم هنگام hover؛ گالری بندانگشتی صفحهٔ محصول |
 
 ## اصل مهم رابط کاربری
 

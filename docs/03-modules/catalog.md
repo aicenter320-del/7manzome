@@ -11,12 +11,10 @@
 ## API عمومی
 
 ```ts
-export { listProducts, getProductBySlug, listCategories, listOccasions } from "./service/catalog.service";
-export { upsertProduct, upsertVariant, setProductStatus } from "./actions/...";
-export { filterVariantsForAge, buildProductFilters } from "./domain/product-filter";
-export { OccasionIcon, OccasionLabel } from "./ui/occasion-icon";
-export { OccasionCard } from "./ui/occasion-card";
-export { OccasionSlider } from "./ui/occasion-slider";
+export { listProducts, getProductBySlug, getProductForAdmin, listCategories, listOccasions } from "./service/catalog.service";
+export { createProduct, updateProduct, setProductStatus, uploadProductImage, deleteProductMedia, setProductHero, reorderProductMedia } from "./actions/...";
+export { hoverFileId, orderedGallery, MAX_PRODUCT_IMAGES } from "./domain/product-gallery";
+export { ProductCard, ProductGrid, ProductGallery, ProductGalleryManager } from "./ui/...";
 export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from "./domain/types";
 ```
 
@@ -36,6 +34,8 @@ export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from ".
 - موجودی و قیمت روی **گونه** است نه محصول. محصول بدون گونه فعال، در سایت نمایش داده نمی‌شود.
 - قیمت هرگز در جدول محصول ذخیره نمی‌شود؛ همیشه در زمان اجرا از موتور قیمت‌گذاری می‌آید.
 - هر محصول باید حداقل یک تصویر داشته باشد تا وضعیتش `active` شود.
+- گالری در `product_media` است (حداکثر ۸ تصویر). `hero_file_id` تصویر اصلی کارت است؛
+  اولین تصویر متفاوت گالری هنگام hover روی کارت ویترین نشان داده می‌شود.
 - محصول `archived` هرگز حذف نمی‌شود چون به سفارش‌های قدیمی وصل است.
 - بخش «چرا این محصول؟» بخشی از داده محصول است، نه متن ثابت قالب.
 - مناسبت در رابط کاربری با آیکون Lucide (`OccasionIcon`) نشان داده می‌شود، نه ایموجی.
@@ -45,9 +45,10 @@ export type { ProductListItem, ProductDetail, ProductVariant, Occasion } from ".
 ## مسیرها
 
 - `app/(site)/products` — فهرست با فیلتر
-- `app/(site)/products/[slug]` — جزئیات با ریزمحاسبات شفاف قیمت
+- `app/(site)/products/[slug]` — جزئیات با گالری و ریزمحاسبات شفاف قیمت
 - `app/(site)/occasions` و `app/(site)/occasions/[slug]`
-- `app/admin/products`
+- `app/admin/products` — فهرست همه وضعیت‌ها
+- `app/admin/products/[productId]` — ویرایش مشخصات و گالری
 
 ## نقاط باز
 

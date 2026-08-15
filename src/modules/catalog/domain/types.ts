@@ -53,6 +53,7 @@ export interface ProductMediaItem {
   id: string;
   fileId: string;
   alt: string | null;
+  sortOrder: number;
 }
 
 export interface ProductListItem {
@@ -62,8 +63,12 @@ export interface ProductListItem {
   subtitle: string | null;
   kind: ProductKind;
   brandLine: BrandLine;
+  status: ProductStatus;
   isPersonalizable: boolean;
   heroFileId: string | null;
+  /** تصویر دوم گالری؛ برای تعویض هنگام بردن موس روی کارت. */
+  hoverFileId: string | null;
+  sortOrder: number;
   /** ارزان‌ترین گونه فعال؛ مبنای نمایش «از ... تومان». */
   fromPriceRial: number | null;
   minWeightMg: number | null;
@@ -87,6 +92,7 @@ export interface ProductDetail {
   seoTitle: string | null;
   seoDescription: string | null;
   categoryId: string | null;
+  sortOrder: number;
   variants: PricedVariant[];
   media: ProductMediaItem[];
   occasions: Occasion[];
@@ -97,6 +103,8 @@ export interface ProductFilters {
   occasionSlug?: string;
   kind?: ProductKind;
   brandLine?: BrandLine;
+  /** پیش‌فرض ویترین `active` است؛ ادمین با `any` همه وضعیت‌ها را می‌بیند. */
+  status?: ProductStatus | "any";
   search?: string;
   /** سن کودک به ماه؛ برای پیشنهاد محصول مناسب. */
   ageMonths?: number;

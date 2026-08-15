@@ -4,6 +4,7 @@ import { priceVariants, type PricingParams } from "@/modules/pricing";
 import type { OccasionRow, ProductRow, ProductVariantRow } from "@/server/db/types";
 
 import { cheapestVariant, productMatchesAge, weightRange } from "../domain/product-filter";
+import { hoverFileId as pickHoverFileId } from "../domain/product-gallery";
 import type {
   Category,
   Occasion,
@@ -17,6 +18,7 @@ import {
   findCategories,
   findCategoryBySlug,
   findMediaForProduct,
+  findMediaForProducts,
   findOccasionBySlug,
   findOccasions,
   findOccasionsForProduct,
@@ -136,6 +138,7 @@ export async function listProducts(filters: ProductFilters = {}): Promise<Produc
     ...(filters.kind ? { kind: filters.kind } : {}),
     ...(filters.brandLine ? { brandLine: filters.brandLine } : {}),
     ...(filters.search ? { search: filters.search } : {}),
+    ...(filters.status ? { status: filters.status } : {}),
     ...(filters.limit ? { limit: filters.limit } : {}),
     ...(filters.offset ? { offset: filters.offset } : {}),
   });
@@ -147,8 +150,19 @@ export async function listProducts(filters: ProductFilters = {}): Promise<Produc
 
   if (ageFiltered.length === 0) return [];
 
-  const variantRows = await findVariantsForProducts(ageFiltered.map((row) => row.id));
+  const productIds = ageFiltered.map((row) => row.id);
+  const [variantRows, mediaRows] = await Promise.all([
+    findVariantsForProducts(productIds),
+    findMediaForProducts(productIds),
+  ]);
   const productById = new Map(ageFiltered.map((row) => [row.id, row]));
+  const mediaByProduct = new Map<string, typeof mediaRows>();
+
+  for (const row of mediaRows) {
+    const list = mediaByProduct.get(row.productId) ?? [];
+    list.push(row);
+    mediaByProduct.set(row.productId, list);
+  }
 
   const pricingInputs = variantRows.flatMap((row) => {
     const product = productById.get(row.productId);
@@ -178,8 +192,11 @@ export async function listProducts(filters: ProductFilters = {}): Promise<Produc
       subtitle: product.subtitle,
       kind: product.kind,
       brandLine: product.brandLine,
+      status: product.status,
       isPersonalizable: product.isPersonalizable,
       heroFileId: product.heroFileId,
+      hoverFileId: pickHoverFileId(product.heroFileId, mediaByProduct.get(product.id) ?? []),
+      sortOrder: product.sortOrder,
       fromPriceRial: cheapest?.price?.unitPriceRial ?? null,
       minWeightMg: range?.minMg ?? null,
       maxWeightMg: range?.maxMg ?? null,
@@ -231,11 +248,12 @@ async function buildDetail(product: ProductRow): Promise<ProductDetail> {
     seoTitle: product.seoTitle,
     seoDescription: product.seoDescription,
     categoryId: product.categoryId,
+    sortOrder: product.sortOrder,
     variants: variants.map((variant) => ({
       ...variant,
       price: prices.get(variant.id) ?? null,
     })),
-    media,
+    media: media.map(({ id, fileId, alt, sortOrder }) => ({ id, fileId, alt, sortOrder })),
     occasions: occasionRows.map(toOccasion),
   };
 }

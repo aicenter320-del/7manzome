@@ -30,6 +30,12 @@ export {
 } from "./domain/product-filter";
 
 export {
+  MAX_PRODUCT_IMAGES,
+  hoverFileId,
+  orderedGallery,
+} from "./domain/product-gallery";
+
+export {
   listProducts,
   listCategories,
   listOccasions,
@@ -54,10 +60,16 @@ export {
   createOccasion,
   attachProductOccasion,
   uploadProductImage,
+  deleteProductMedia,
+  setProductHero,
+  reorderProductMedia,
 } from "./actions/catalog.actions";
 
 export { ProductCard } from "./ui/product-card";
 export { ProductGrid } from "./ui/product-grid";
+export { ProductGallery } from "./ui/product-gallery";
+export { ProductGalleryManager } from "./ui/product-gallery-manager";
+export { ProductHoverImage } from "./ui/product-hover-image";
 export { VariantSelector } from "./ui/variant-selector";
 export { OccasionIcon, OccasionLabel } from "./ui/occasion-icon";
 export { OccasionCard } from "./ui/occasion-card";

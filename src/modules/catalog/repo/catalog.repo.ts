@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, asc, count, desc, eq, inArray, like, or } from "drizzle-orm";
+import { and, asc, count, desc, eq, inArray, like, or, type SQL } from "drizzle-orm";
 
 import { db } from "@/server/db";
 import {
@@ -81,14 +81,17 @@ export interface ProductQueryFilters {
   kind?: ProductKind;
   brandLine?: BrandLine;
   search?: string;
-  status?: ProductStatus;
+  status?: ProductStatus | "any";
   limit?: number;
   offset?: number;
   sort?: "newest" | "weight_asc";
 }
 
 export async function findProducts(filters: ProductQueryFilters = {}): Promise<ProductRow[]> {
-  const conditions = [eq(products.status, filters.status ?? "active")];
+  const conditions: SQL[] = [];
+  if (filters.status !== "any") {
+    conditions.push(eq(products.status, filters.status ?? "active"));
+  }
 
   if (filters.categoryId) conditions.push(eq(products.categoryId, filters.categoryId));
   if (filters.kind) conditions.push(eq(products.kind, filters.kind));
@@ -117,10 +120,10 @@ export async function findProducts(filters: ProductQueryFilters = {}): Promise<P
     conditions.push(inArray(products.id, ids));
   }
 
-  return db
-    .select()
-    .from(products)
-    .where(and(...conditions))
+  const query = db.select().from(products);
+  const filtered = conditions.length > 0 ? query.where(and(...conditions)) : query;
+
+  return filtered
     .orderBy(asc(products.sortOrder), desc(products.createdAt))
     .limit(filters.limit ?? 48)
     .offset(filters.offset ?? 0);
@@ -221,14 +224,89 @@ export async function incrementStock(
 // تصاویر
 // ------------------------------------------------------------------
 
-export async function findMediaForProduct(
-  productId: string,
-): Promise<Array<{ id: string; fileId: string; alt: string | null }>> {
+export interface ProductMediaRowView {
+  id: string;
+  productId: string;
+  fileId: string;
+  alt: string | null;
+  sortOrder: number;
+}
+
+export async function findMediaForProduct(productId: string): Promise<ProductMediaRowView[]> {
   return db
-    .select({ id: productMedia.id, fileId: productMedia.fileId, alt: productMedia.alt })
+    .select({
+      id: productMedia.id,
+      productId: productMedia.productId,
+      fileId: productMedia.fileId,
+      alt: productMedia.alt,
+      sortOrder: productMedia.sortOrder,
+    })
     .from(productMedia)
     .where(eq(productMedia.productId, productId))
-    .orderBy(asc(productMedia.sortOrder));
+    .orderBy(asc(productMedia.sortOrder), asc(productMedia.createdAt));
+}
+
+export async function findMediaForProducts(
+  productIds: readonly string[],
+): Promise<ProductMediaRowView[]> {
+  if (productIds.length === 0) return [];
+
+  return db
+    .select({
+      id: productMedia.id,
+      productId: productMedia.productId,
+      fileId: productMedia.fileId,
+      alt: productMedia.alt,
+      sortOrder: productMedia.sortOrder,
+    })
+    .from(productMedia)
+    .where(inArray(productMedia.productId, [...productIds]))
+    .orderBy(asc(productMedia.sortOrder), asc(productMedia.createdAt));
+}
+
+export async function findProductMediaById(mediaId: string): Promise<ProductMediaRowView | null> {
+  const rows = await db
+    .select({
+      id: productMedia.id,
+      productId: productMedia.productId,
+      fileId: productMedia.fileId,
+      alt: productMedia.alt,
+      sortOrder: productMedia.sortOrder,
+    })
+    .from(productMedia)
+    .where(eq(productMedia.id, mediaId))
+    .limit(1);
+
+  return rows[0] ?? null;
+}
+
+export async function countMediaForProduct(productId: string): Promise<number> {
+  const rows = await db
+    .select({ value: count() })
+    .from(productMedia)
+    .where(eq(productMedia.productId, productId));
+
+  return rows[0]?.value ?? 0;
+}
+
+export async function countMediaByFileId(fileId: string): Promise<number> {
+  const rows = await db
+    .select({ value: count() })
+    .from(productMedia)
+    .where(eq(productMedia.fileId, fileId));
+
+  return rows[0]?.value ?? 0;
+}
+
+export async function nextMediaSortOrder(productId: string): Promise<number> {
+  const rows = await db
+    .select({ sortOrder: productMedia.sortOrder })
+    .from(productMedia)
+    .where(eq(productMedia.productId, productId))
+    .orderBy(desc(productMedia.sortOrder))
+    .limit(1);
+
+  return (rows[0]?.sortOrder ?? -1) + 1;
 }
 
 // ------------------------------------------------------------------
@@ -291,6 +369,7 @@ export async function updateProductRow(
     heroFileId: string | null;
     seoTitle: string | null;
     seoDescription: string | null;
+    sortOrder: number;
   }>,
 ): Promise<void> {
   await db.update(products).set(input).where(eq(products.id, productId));
@@ -400,13 +479,35 @@ export async function insertProductMedia(input: {
   fileId: string;
   alt?: string | null;
   sortOrder?: number;
-}): Promise<void> {
-  await db.insert(productMedia).values({
-    productId: input.productId,
-    fileId: input.fileId,
-    alt: input.alt ?? null,
-    sortOrder: input.sortOrder ?? 0,
-  });
+}): Promise<{ id: string }> {
+  const [row] = await db
+    .insert(productMedia)
+    .values({
+      productId: input.productId,
+      fileId: input.fileId,
+      alt: input.alt ?? null,
+      sortOrder: input.sortOrder ?? 0,
+    })
+    .returning({ id: productMedia.id });
+
+  if (!row) throw new Error("ثبت تصویر محصول شکست خورد.");
+
+  return row;
+}
+
+export async function deleteProductMediaRow(mediaId: string): Promise<void> {
+  await db.delete(productMedia).where(eq(productMedia.id, mediaId));
+}
+
+export async function setMediaSortOrders(
+  items: readonly { id: string; sortOrder: number }[],
+): Promise<void> {
+  for (const item of items) {
+    await db
+      .update(productMedia)
+      .set({ sortOrder: item.sortOrder })
+      .where(eq(productMedia.id, item.id));
+  }
 }
 
 export interface InventoryVariantRow {

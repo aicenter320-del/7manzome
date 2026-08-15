@@ -396,6 +396,17 @@
     box-shadow: var(--shadow-product-hover);
   }
 
+  .product-hover-swap {
+    opacity: 0;
+    transition: opacity 0.45s ease;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .group:hover .product-hover-swap {
+      opacity: 1;
+    }
+  }
+
   /* ویترین خانه: سفید با هالهٔ طلایی نرم، بدون لکهٔ آبی */
   .product-vitrine {
     background-color: var(--card);
@@ -483,7 +494,8 @@
   }
 
   .product-card-wash,
-  .btn-gold-fill {
+  .btn-gold-fill,
+  .product-hover-swap {
     transition: none;
   }
 

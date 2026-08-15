@@ -3,19 +3,28 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
-import { ActionError, createAction } from "@/server/actions/action-kit";
+import { ActionError, createAction, NotFoundError } from "@/server/actions/action-kit";
 import { recordAudit } from "@/server/audit";
-import { FileValidationError, saveUploadedFile } from "@/server/storage/file-storage";
+import { FileValidationError, saveUploadedFile, softDeleteFile } from "@/server/storage/file-storage";
 import { idSchema, slugSchema } from "@/shared/lib/validators";
 import { BRAND_LINES, PRODUCT_KINDS, PRODUCT_STATUSES } from "@/shared/types/enums";
 
+import { canAddProductImage, MAX_PRODUCT_IMAGES, nextHeroFileId } from "../domain/product-gallery";
 import {
+  countMediaByFileId,
+  countMediaForProduct,
+  deleteProductMediaRow,
+  findMediaForProduct,
+  findProductById,
+  findProductMediaById,
   insertCategory,
   insertOccasion,
   insertProduct,
   insertProductMedia,
   insertVariant,
   linkProductOccasion,
+  nextMediaSortOrder,
+  setMediaSortOrders,
   updateProductRow,
   updateVariantRow,
 } from "../repo/catalog.repo";
@@ -34,7 +43,19 @@ const productSchema = z.object({
   highlights: z.array(z.string().trim().min(2).max(120)).max(6).optional(),
   seoTitle: z.string().trim().max(120).optional(),
   seoDescription: z.string().trim().max(300).optional(),
+  sortOrder: z.number().int().min(0).max(10_000).optional(),
 });
+
+async function revalidateCatalogProduct(productId: string): Promise<void> {
+  const product = await findProductById(productId);
+  revalidatePath("/");
+  revalidatePath("/admin/products");
+  revalidatePath(`/admin/products/${productId}`);
+  revalidatePath("/products");
+  if (product) {
+    revalidatePath(`/products/${product.slug}`);
+  }
+}
 
 export const createProduct = createAction({
   name: "catalog.createProduct",
@@ -83,8 +104,12 @@ export const updateProduct = createAction({
 
     await updateProductRow(productId, {
       ...(rest.title !== undefined ? { title: rest.title } : {}),
-      ...(rest.subtitle !== undefined ? { subtitle: rest.subtitle ?? null } : {}),
-      ...(rest.description !== undefined ? { description: rest.description ?? null } : {}),
+      ...(rest.subtitle !== undefined
+        ? { subtitle: rest.subtitle.trim() === "" ? null : rest.subtitle }
+        : {}),
+      ...(rest.description !== undefined
+        ? { description: rest.description.trim() === "" ? null : rest.description }
+        : {}),
       ...(rest.categoryId !== undefined ? { categoryId: rest.categoryId ?? null } : {}),
       ...(rest.kind !== undefined ? { kind: rest.kind } : {}),
       ...(rest.brandLine !== undefined ? { brandLine: rest.brandLine } : {}),
@@ -98,6 +123,7 @@ export const updateProduct = createAction({
       ...(rest.seoDescription !== undefined
         ? { seoDescription: rest.seoDescription ?? null }
         : {}),
+      ...(rest.sortOrder !== undefined ? { sortOrder: rest.sortOrder } : {}),
     });
 
     await recordAudit({
@@ -108,8 +134,7 @@ export const updateProduct = createAction({
       summary: "به‌روزرسانی محصول",
     });
 
-    revalidatePath("/admin/products");
-    revalidatePath("/products");
+    await revalidateCatalogProduct(productId);
 
     return { ok: true };
   },
@@ -121,6 +146,16 @@ export const setProductStatus = createAction({
   auth: "required",
   permissions: ["catalog:write"],
   handler: async ({ input, user }) => {
+    const product = await findProductById(input.productId);
+    if (!product) throw new NotFoundError("محصول پیدا نشد.");
+
+    if (input.status === "active") {
+      const mediaCount = await countMediaForProduct(input.productId);
+      if (mediaCount === 0 && !product.heroFileId) {
+        throw new ActionError("برای انتشار محصول حداقل یک تصویر لازم است.");
+      }
+    }
+
     await updateProductRow(input.productId, { status: input.status });
 
     await recordAudit({
@@ -131,8 +166,7 @@ export const setProductStatus = createAction({
       summary: `تغییر وضعیت محصول به ${input.status}`,
     });
 
-    revalidatePath("/admin/products");
-    revalidatePath("/products");
+    await revalidateCatalogProduct(input.productId);
 
     return { ok: true };
   },
@@ -289,6 +323,14 @@ export const uploadProductImage = createAction({
   auth: "required",
   permissions: ["catalog:write"],
   handler: async ({ input, user }) => {
+    const product = await findProductById(input.productId);
+    if (!product) throw new NotFoundError("محصول پیدا نشد.");
+
+    const currentCount = await countMediaForProduct(input.productId);
+    if (!canAddProductImage(currentCount)) {
+      throw new ActionError(`حداکثر ${MAX_PRODUCT_IMAGES} تصویر برای هر محصول مجاز است.`);
+    }
+
     try {
       const saved = await saveUploadedFile({
         file: input.file,
@@ -298,18 +340,19 @@ export const uploadProductImage = createAction({
         uploadedByUserId: user.id,
       });
 
+      const sortOrder = await nextMediaSortOrder(input.productId);
       await insertProductMedia({
         productId: input.productId,
         fileId: saved.id,
         alt: input.alt ?? null,
+        sortOrder,
       });
 
-      if (input.setAsHero) {
+      if (input.setAsHero || !product.heroFileId) {
         await updateProductRow(input.productId, { heroFileId: saved.id });
       }
 
-      revalidatePath("/admin/products");
-      revalidatePath("/products");
+      await revalidateCatalogProduct(input.productId);
 
       return { fileId: saved.id };
     } catch (error) {
@@ -318,5 +361,93 @@ export const uploadProductImage = createAction({
       }
       throw error;
     }
+  },
+});
+
+export const deleteProductMedia = createAction({
+  name: "catalog.deleteProductMedia",
+  schema: z.object({ mediaId: idSchema }),
+  auth: "required",
+  permissions: ["catalog:write"],
+  handler: async ({ input, user }) => {
+    const media = await findProductMediaById(input.mediaId);
+    if (!media) throw new NotFoundError("تصویر پیدا نشد.");
+
+    const product = await findProductById(media.productId);
+    if (!product) throw new NotFoundError("محصول پیدا نشد.");
+
+    await deleteProductMediaRow(media.id);
+
+    if (product.heroFileId === media.fileId) {
+      const remaining = await findMediaForProduct(media.productId);
+      await updateProductRow(media.productId, { heroFileId: nextHeroFileId(remaining) });
+    }
+
+    const stillUsed = await countMediaByFileId(media.fileId);
+    if (stillUsed === 0) {
+      await softDeleteFile(media.fileId);
+    }
+
+    await recordAudit({
+      actorUserId: user.id,
+      action: "product.media_deleted",
+      entityType: "product",
+      entityId: media.productId,
+      summary: "حذف تصویر محصول",
+    });
+
+    await revalidateCatalogProduct(media.productId);
+    return { ok: true };
+  },
+});
+
+export const setProductHero = createAction({
+  name: "catalog.setProductHero",
+  schema: z.object({ productId: idSchema, mediaId: idSchema }),
+  auth: "required",
+  permissions: ["catalog:write"],
+  handler: async ({ input, user }) => {
+    const media = await findProductMediaById(input.mediaId);
+    if (!media || media.productId !== input.productId) {
+      throw new NotFoundError("تصویر متعلق به این محصول نیست.");
+    }
+
+    await updateProductRow(input.productId, { heroFileId: media.fileId });
+
+    await recordAudit({
+      actorUserId: user.id,
+      action: "product.hero_set",
+      entityType: "product",
+      entityId: input.productId,
+      summary: "تعیین تصویر اصلی محصول",
+    });
+
+    await revalidateCatalogProduct(input.productId);
+    return { ok: true };
+  },
+});
+
+export const reorderProductMedia = createAction({
+  name: "catalog.reorderProductMedia",
+  schema: z.object({
+    productId: idSchema,
+    mediaIds: z.array(idSchema).min(1).max(MAX_PRODUCT_IMAGES),
+  }),
+  auth: "required",
+  permissions: ["catalog:write"],
+  handler: async ({ input }) => {
+    const existing = await findMediaForProduct(input.productId);
+    const existingIds = new Set(existing.map((item) => item.id));
+
+    if (
+      existing.length !== input.mediaIds.length ||
+      input.mediaIds.some((id) => !existingIds.has(id))
+    ) {
+      throw new ActionError("فهرست تصاویر با گالری این محصول هم‌خوانی ندارد.");
+    }
+
+    await setMediaSortOrders(input.mediaIds.map((id, index) => ({ id, sortOrder: index })));
+    await revalidateCatalogProduct(input.productId);
+    return { ok: true };
   },
 });

@@ -1,8 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { SparklesIcon } from "lucide-react";
 
-import { ProductGrid, type ProductListItem } from "@/modules/catalog";
+import { ProductGrid, ProductHoverImage, type ProductListItem } from "@/modules/catalog";
 import { formatMg } from "@/shared/lib/gold";
 import { PRODUCT_KIND_LABELS } from "@/shared/types/enums";
 import { Badge } from "@/shared/ui/badge";
@@ -23,24 +22,18 @@ function FeaturedProduct({ product }: { product: ProductListItem }) {
   const weight = weightLabel(product);
 
   return (
-    <article className="product-card-wash grid overflow-hidden rounded-lg text-card-foreground md:grid-cols-2">
+    <article className="product-card-wash group grid overflow-hidden rounded-lg text-card-foreground md:grid-cols-2">
       <Link
         href={`/products/${product.slug}`}
         className="relative block aspect-square overflow-hidden bg-muted md:aspect-auto md:min-h-96"
       >
-        {product.heroFileId ? (
-          <Image
-            src={`/api/files/${product.heroFileId}`}
-            alt={product.title}
-            fill
-            sizes="(max-width: 768px) 100vw, 50vw"
-            className="object-contain p-6 transition-transform duration-700 motion-safe:hover:scale-105"
-          />
-        ) : (
-          <div className="flex size-full items-center justify-center text-sm text-muted-foreground">
-            بدون تصویر
-          </div>
-        )}
+        <ProductHoverImage
+          heroFileId={product.heroFileId}
+          hoverFileId={product.hoverFileId}
+          alt={product.title}
+          sizes="(max-width: 768px) 100vw, 50vw"
+          imageClassName="p-6"
+        />
       </Link>
 
       <div className="flex flex-col justify-center gap-4 p-6 md:p-10">
@@ -113,7 +106,6 @@ export function HomeProductsSection({ products }: { products: ProductListItem[] 
         {rest.length > 0 || !featured ? (
           <ProductGrid
             products={rest}
-            className="grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
             emptyTitle="هنوز محصولی در فروشگاه نیست"
             emptyDescription="پس از افزودن محصول از پنل مدیریت، اینجا نمایش داده می‌شود."
           />
