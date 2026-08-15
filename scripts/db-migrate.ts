@@ -13,15 +13,16 @@ import { config as loadEnv } from "dotenv";
 import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
 
+import { resolveFileDatabaseUrl } from "@/shared/config/database-url";
+
 loadEnv({ path: ".env.local", quiet: true });
 loadEnv({ path: ".env", quiet: true });
 
-const databaseUrl = process.env.DATABASE_URL ?? "file:./data/haft.db";
+const databaseUrl = resolveFileDatabaseUrl(process.env.DATABASE_URL ?? "file:./data/haft.db");
 
 // اگر پوشه data وجود نداشته باشد، libsql خطای مبهم می‌دهد.
 if (databaseUrl.startsWith("file:")) {
-  const filePath = databaseUrl.slice("file:".length);
-  mkdirSync(dirname(filePath), { recursive: true });
+  mkdirSync(dirname(databaseUrl.slice("file:".length)), { recursive: true });
 }
 
 const client = createClient({

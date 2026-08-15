@@ -74,8 +74,26 @@ WantedBy=multi-user.target
 ## استقرار با Docker
 
 `Dockerfile` و `docker-compose.yml` در ریشه پروژه هستند.
-پوشه‌های `data` و `storage` باید به‌صورت volume ماندگار mount شوند، وگرنه با هر
-بازسازی کانتینر دیتابیس و فایل‌های کاربران از دست می‌روند.
+
+دیتابیس SQLite یک فایل است. اگر این فایل داخل لایهٔ ایمیج بماند، با هر
+بازسازی کانتینر از بین می‌رود و `db:seed` دوباره دیتابیس خالی می‌بیند.
+
+`docker-compose.yml` پوشه‌های `./data`، `./storage` و `./backups` را از روی
+سرور به داخل کانتینر وصل می‌کند و `DATABASE_URL` را مسیر مطلق
+`file:/app/data/haft.db` می‌گذارد. بعد از اولین اجرا باید فایل
+`data/haft.db` روی خود سرور دیده شود.
+
+```bash
+docker compose up -d --build
+ls -l data/haft.db
+```
+
+- `docker compose down` کانتینر را می‌بندد و داده را نگه می‌دارد.
+- `docker compose down -v` برای bind mount بی‌اثر است؛ خود پوشهٔ `data/` را حذف نکنید.
+- `docker run` بدون `-v ...:/app/data` هر بار دیتابیس تازه می‌سازد. از compose استفاده کنید.
+
+در production سید والدین نمونه نمی‌سازد مگر `ALLOW_DEMO_SEED=true`.
+اگر جدول `users` خالی باشد فقط سوپرادمین، کاتالوگ و صفحات محتوا ساخته می‌شود.
 
 بیلد Docker یک `SESSION_SECRET` ساختگی دارد چون `.env*` وارد ایمیج نمی‌شود.
 مقدار واقعی باید در runtime از `env_file` یا secrets برسد؛ بدون آن سشن production بالا نمی‌آید.
@@ -85,13 +103,20 @@ WantedBy=multi-user.target
 
 قبل از `next build` پوشهٔ `data` ساخته می‌شود. این پوشه در `.dockerignore` است و
 بدون آن `@libsql/client` هنگام جمع‌آوری صفحات با `SQLITE_CANTOPEN` می‌شکند.
-این دیتابیس ساختگی وارد ایمیج نهایی نمی‌شود؛ دیتابیس واقعی از volume در runtime می‌آید.
+این دیتابیس ساختگی وارد ایمیج نهایی نمی‌شود؛ دیتابیس واقعی از `./data` در runtime می‌آید.
 
-قبل از `start`، مایگریشن و سپس `db:seed` اجرا می‌شود. Seed فقط وقتی جدول `users`
-خالی است دموی کامل (کاتالوگ با عکس، کاربران، سفارش و گنجینه) می‌ریزد؛ استقرار بعدی
-روی volume پر، داده واقعی را بازنویسی نمی‌کند.
-روی سروری که الان دیتابیس قدیمی و کم‌حجم دارد، seed خودکار گسترش پیدا نمی‌کند؛
-در توسعه از `npm run db:reset` استفاده کنید. در production هرگز reset نزنید.
+قبل از `start`، مایگریشن و سپس `db:seed` اجرا می‌شود. Seed وقتی جدول `users`
+خالی نیست داده را بازنویسی نمی‌کند. در production هرگز `db:reset` نزنید.
+
+اگر قبلاً از named volume داکر استفاده می‌کردید و داده آنجا مانده، قبل از سوییچ
+به bind mount یک‌بار کپی کنید:
+
+```bash
+docker run --rm \
+  -v haftmanzoome_haft-data:/from \
+  -v "$(pwd)/data:/to" \
+  alpine sh -c "cp -a /from/. /to/"
+```
 
 ## یکپارچه‌سازی مداوم
 

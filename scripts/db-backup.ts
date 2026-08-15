@@ -14,10 +14,12 @@ import { join, resolve } from "node:path";
 import { createClient } from "@libsql/client";
 import { config as loadEnv } from "dotenv";
 
+import { resolveFileDatabaseUrl } from "@/shared/config/database-url";
+
 loadEnv({ path: ".env.local", quiet: true });
 loadEnv({ path: ".env", quiet: true });
 
-const databaseUrl = process.env.DATABASE_URL ?? "file:./data/haft.db";
+const databaseUrl = resolveFileDatabaseUrl(process.env.DATABASE_URL ?? "file:./data/haft.db");
 const backupDir = resolve("backups");
 
 /** تعداد نسخه‌هایی که نگه داشته می‌شود؛ قدیمی‌ترها حذف می‌شوند. */

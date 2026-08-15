@@ -3,11 +3,7 @@ import * as schema from "@/server/db/schema";
 
 import type { SeedContext, SeedPeople, SeedTreasury } from "./types";
 
-export async function seedContent(
-  ctx: SeedContext,
-  people: SeedPeople,
-  treasury: SeedTreasury,
-): Promise<void> {
+export async function seedPublicContent(ctx: SeedContext): Promise<void> {
   await ctx.db.insert(schema.contentPages).values([
     {
       slug: "about",
@@ -129,6 +125,14 @@ export async function seedContent(
       sortOrder: 10,
     },
   ]);
+}
+
+export async function seedContent(
+  ctx: SeedContext,
+  people: SeedPeople,
+  treasury: SeedTreasury,
+): Promise<void> {
+  await seedPublicContent(ctx);
 
   const giftCardSpecs: Array<{
     code: string;

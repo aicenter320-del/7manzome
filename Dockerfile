@@ -34,9 +34,12 @@ COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
 COPY --from=builder /app/next.config.ts ./next.config.ts
 
 RUN mkdir -p data storage backups && chown -R haft:haft /app
+RUN chmod +x scripts/docker-entrypoint.sh
 
-USER haft
+# entrypoint با root شروع می‌کند تا bind mount قابل نوشتن باشد، بعد به haft برمی‌گردد.
+USER root
 EXPOSE 3000
 
 # مایگریشن و در صورت خالی بودن دیتابیس، seed بار اول؛ سپس سرو.
+ENTRYPOINT ["scripts/docker-entrypoint.sh"]
 CMD ["sh", "-c", "npm run db:migrate && npm run db:seed && npm run start"]

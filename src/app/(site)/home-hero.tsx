@@ -50,7 +50,7 @@ function HeroCopy({
 /** هیرو: عکس تمام‌عرض زیر کارت مات در موبایل؛ شیشه و ماسک در دسکتاپ. */
 export function HomeHero({ goldPrice }: { goldPrice: GoldPriceView | null }) {
   return (
-    <section className="relative flex min-h-[32rem] items-center justify-center overflow-hidden bg-background px-4 py-8 sm:min-h-[36rem] lg:min-h-[32rem] lg:justify-end lg:px-6 lg:py-24">
+    <section className="home-hero relative flex items-center justify-center overflow-hidden bg-background px-4 pb-8 lg:justify-end lg:px-6 lg:pb-24">
       <div className="pointer-events-none absolute inset-0 lg:hidden" aria-hidden>
         <Image
           src={babyGoldHeroNatural}
@@ -81,7 +81,7 @@ export function HomeHero({ goldPrice }: { goldPrice: GoldPriceView | null }) {
       </div>
 
       <div className="relative z-10 w-full max-w-lg lg:hidden">
-        <div className="hero-card-in rounded-lg bg-background px-6 py-8 text-center shadow-xl">
+        <div className="hero-card-in hero-card-frost rounded-lg px-6 py-8 text-center shadow-xl">
           <HeroCopy goldPrice={goldPrice} align="center" />
         </div>
       </div>

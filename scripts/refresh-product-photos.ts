@@ -14,13 +14,14 @@ import { eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/libsql";
 
 import * as schema from "@/server/db/schema";
+import { resolveFileDatabaseUrl } from "@/shared/config/database-url";
 
 import { renderProductPhotoBytes } from "./seed/media";
 
 loadEnv({ path: ".env.local", quiet: true });
 loadEnv({ path: ".env", quiet: true });
 
-const databaseUrl = process.env.DATABASE_URL ?? "file:./data/haft.db";
+const databaseUrl = resolveFileDatabaseUrl(process.env.DATABASE_URL ?? "file:./data/haft.db");
 const storageDir = resolve(process.env.STORAGE_DIR ?? "./storage");
 
 async function main(): Promise<void> {

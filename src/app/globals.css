@@ -92,6 +92,8 @@
 
   /* نوار شناور ویترین: سفید نیمه‌شفاف تا محتوا از زیر نرم دیده شود */
   --nav-frost: rgb(255 255 255 / 0.8);
+  /* ارتفاع نوار چسبان سایت؛ هیرو خانه به همین اندازه بالا می‌آید تا عکس زیر هدر بچسبد */
+  --site-header-height: 4.75rem;
 }
 
 .dark {
@@ -384,6 +386,33 @@
     animation: var(--animate-hero-card-in);
   }
 
+  /* کارت هیرو موبایل/تبلت: کاغذ کرم ۷۰٪ تا متن خوانا بماند و عکس از پشت شیشه دیده شود */
+  .hero-card-frost {
+    background-color: color-mix(in srgb, var(--background) 70%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* عکس هیرو تا بالای ویوپورت می‌رود و از زیر نوار چسبان شروع می‌شود */
+  .home-hero {
+    margin-top: calc(-1 * var(--site-header-height));
+    min-height: calc(32rem + var(--site-header-height));
+    padding-top: calc(var(--site-header-height) + 2rem);
+  }
+
+  @media (width >= 40rem) {
+    .home-hero {
+      min-height: calc(36rem + var(--site-header-height));
+    }
+  }
+
+  @media (width >= 64rem) {
+    .home-hero {
+      min-height: calc(32rem + var(--site-header-height));
+      padding-top: calc(var(--site-header-height) + 5rem);
+    }
+  }
+
   .product-card-wash {
     background-color: var(--product-card-wash);
     box-shadow: var(--shadow-product);
@@ -484,6 +513,12 @@
   .hero-photo-mask {
     mask-image: none;
     -webkit-mask-image: none;
+  }
+
+  .hero-card-frost {
+    background-color: var(--background);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
   }
 }
 

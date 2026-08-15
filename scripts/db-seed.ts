@@ -4,6 +4,10 @@
  * این اسکریپت مستقل از Next است تا به `server-only` وابسته نشود.
  * اگر جدول users خالی نباشد، از نو نمی‌نویسد تا داده production بازنویسی نشود.
  *
+ * در production دموی والدین و سفارش نمونه ریخته نمی‌شود مگر اینکه
+ * ALLOW_DEMO_SEED=true باشد. دلیل: اگر volume دیتابیس ماندگار نباشد،
+ * هر استارت دیتابیس خالی دیده می‌شود و کاربران واقعی با نمونه جایگزین می‌شوند.
+ *
  * اجرا: npm run db:seed
  * برای دیدن دموی کامل روی دیتابیس از قبل seedشده: npm run db:reset
  */
@@ -17,10 +21,11 @@ import { drizzle } from "drizzle-orm/libsql";
 
 import { settingsDefaults, settingsLabels } from "@/modules/content/domain/settings-keys";
 import * as schema from "@/server/db/schema";
+import { resolveFileDatabaseUrl } from "@/shared/config/database-url";
 
 import { seedCatalog } from "./seed/catalog";
 import { seedCommerce } from "./seed/commerce";
-import { seedContent } from "./seed/content";
+import { seedContent, seedPublicContent } from "./seed/content";
 import { seedPeople } from "./seed/people";
 import { ensureStaffRoles } from "./seed/staff-roles";
 import { seedTreasury } from "./seed/treasury";
@@ -29,12 +34,15 @@ import type { SeedContext } from "./seed/types";
 loadEnv({ path: ".env.local", quiet: true });
 loadEnv({ path: ".env", quiet: true });
 
-const databaseUrl = process.env.DATABASE_URL ?? "file:./data/haft.db";
+const databaseUrl = resolveFileDatabaseUrl(process.env.DATABASE_URL ?? "file:./data/haft.db");
 const adminPhone = process.env.ADMIN_BOOTSTRAP_PHONE ?? "09120000000";
 const storageDir = resolve(process.env.STORAGE_DIR ?? "./storage");
+const allowDemoSeed =
+  process.env.ALLOW_DEMO_SEED === "true" ||
+  (process.env.ALLOW_DEMO_SEED !== "false" && process.env.NODE_ENV !== "production");
 
 if (databaseUrl.startsWith("file:")) {
-  mkdirSync(dirname(resolve(databaseUrl.slice("file:".length))), { recursive: true });
+  mkdirSync(dirname(databaseUrl.slice("file:".length)), { recursive: true });
 }
 
 mkdirSync(storageDir, { recursive: true });
@@ -49,27 +57,7 @@ const db = drizzle(client, { schema, casing: "snake_case" });
 const GOLD_PRICE_18 = 65_000_000;
 const GOLD_PRICE_24 = 86_670_000;
 
-async function main(): Promise<void> {
-  await client.executeMultiple(
-    ["PRAGMA journal_mode = WAL;", "PRAGMA foreign_keys = ON;"].join("\n"),
-  );
-
-  await ensureStaffRoles(db);
-
-  const existingUser = await db
-    .select({ id: schema.users.id })
-    .from(schema.users)
-    .limit(1);
-
-  if (existingUser[0]) {
-    console.log("Seed skipped: users table is not empty.");
-    console.log("نقش‌های سیستمی در صورت نبودن ساخته شدند.");
-    console.log("برای ریختن دموی کامل روی محیط توسعه: npm run db:reset");
-    return;
-  }
-
-  console.log("در حال ریختن داده نمونه کامل...");
-
+async function bootstrapStore(): Promise<SeedContext> {
   const now = Date.now();
 
   const [admin] = await db
@@ -148,7 +136,7 @@ async function main(): Promise<void> {
     });
   }
 
-  const ctx: SeedContext = {
+  return {
     db,
     now,
     adminId: admin.id,
@@ -160,8 +148,46 @@ async function main(): Promise<void> {
     freeThresholdRial: settingsDefaults["shipping.free_threshold_rial"],
     milestoneThresholdsMg: settingsDefaults["treasury.milestones_mg"],
   };
+}
 
+async function main(): Promise<void> {
+  await client.executeMultiple(
+    ["PRAGMA journal_mode = WAL;", "PRAGMA foreign_keys = ON;"].join("\n"),
+  );
+
+  await ensureStaffRoles(db);
+
+  const existingUser = await db
+    .select({ id: schema.users.id })
+    .from(schema.users)
+    .limit(1);
+
+  console.log(`دیتابیس: ${databaseUrl}`);
+
+  if (existingUser[0]) {
+    console.log("Seed skipped: users table is not empty.");
+    console.log("نقش‌های سیستمی در صورت نبودن ساخته شدند.");
+    console.log("برای ریختن دموی کامل روی محیط توسعه: npm run db:reset");
+    return;
+  }
+
+  console.warn(
+    "جدول کاربران خالی است. اگر قبلاً ثبت‌نام وجود داشته، فایل دیتابیس ماندگار نبوده است.",
+  );
+
+  const ctx = await bootstrapStore();
   const catalog = await seedCatalog(ctx);
+
+  if (!allowDemoSeed) {
+    await seedPublicContent(ctx);
+    console.log("راه‌اندازی production بدون کاربران نمونه انجام شد.");
+    console.log(`  سوپرادمین: ${adminPhone}`);
+    console.log("  برای دموی کامل روی استیجینگ: ALLOW_DEMO_SEED=true");
+    return;
+  }
+
+  console.log("در حال ریختن داده نمونه کامل...");
+
   const people = await seedPeople(ctx);
   const treasury = await seedTreasury(ctx, people);
   await seedCommerce(ctx, catalog, people, treasury);

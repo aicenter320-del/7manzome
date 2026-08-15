@@ -1,6 +1,10 @@
 import "server-only";
 
+import { resolve } from "node:path";
+
 import { z } from "zod";
+
+import { resolveFileDatabaseUrl } from "./database-url";
 
 /**
  * اعتبارسنجی متغیرهای محیطی.
@@ -91,7 +95,11 @@ function loadEnv(): Env {
     throw new Error("وقتی SMS_PROVIDER=kavenegar است، KAVENEGAR_API_KEY الزامی است.");
   }
 
-  return parsed.data;
+  return {
+    ...parsed.data,
+    DATABASE_URL: resolveFileDatabaseUrl(parsed.data.DATABASE_URL),
+    STORAGE_DIR: resolve(parsed.data.STORAGE_DIR),
+  };
 }
 
 export const env: Env = loadEnv();

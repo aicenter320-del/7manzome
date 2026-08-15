@@ -1,3 +1,5 @@
+name: haftmanzoome
+
 services:
   web:
     build: .
@@ -7,15 +9,11 @@ services:
       - .env.local
     environment:
       NODE_ENV: production
-      DATABASE_URL: file:./data/haft.db
-      STORAGE_DIR: ./storage
+      DATABASE_URL: file:/app/data/haft.db
+      STORAGE_DIR: /app/storage
     volumes:
-      - haft-data:/app/data
-      - haft-storage:/app/storage
-      - haft-backups:/app/backups
+      # پوشه کنار پروژه روی سرور؛ با بازسازی کانتینر پاک نمی‌شود.
+      - ./data:/app/data
+      - ./storage:/app/storage
+      - ./backups:/app/backups
     restart: unless-stopped
-
-volumes:
-  haft-data:
-  haft-storage:
-  haft-backups:
