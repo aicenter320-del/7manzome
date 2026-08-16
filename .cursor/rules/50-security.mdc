@@ -46,8 +46,9 @@ export const approvePayment = createAction({
 - نوع فایل از **محتوا** بررسی شود، نه فقط پسوند یا هدر کلاینت.
 - حداکثر ۸ مگابایت.
 - نام فایل ذخیره‌شده را سرور تولید می‌کند، هرگز نام ارسالی کاربر.
-- ذخیره بیرون از `public/`؛ سرو از `app/api/files/[...path]` پس از بررسی دسترسی.
+- ذخیره بیرون از `public/`؛ سرو از `app/api/files/[fileId]` پس از بررسی دسترسی.
 - مسیر ورودی برای جلوگیری از path traversal پاک‌سازی شود.
+- هدر HTTP فقط ASCII. نام فارسی فایل را در `Content-Disposition` خام نگذار؛ از `contentDispositionHeader` استفاده کن.
 
 ## صفحه عمومی هدیه
 
