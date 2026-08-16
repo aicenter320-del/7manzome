@@ -22,13 +22,10 @@ cp .env.example .env.production
 # ۴. ساخت پوشه‌های داده با دسترسی نوشتن
 mkdir -p data storage backups
 
-# ۵. اعمال مایگریشن‌ها
-npm run db:migrate
+# ۵. مایگریشن و داده اولیه (seed فقط اگر users خالی باشد)
+npm run db:bootstrap
 
-# ۶. داده اولیه (فقط بار اول)
-npm run db:seed
-
-# ۷. بیلد و اجرا
+# ۶. بیلد و اجرا
 npm run build
 npm run start
 ```
@@ -57,6 +54,7 @@ Type=simple
 User=haft
 WorkingDirectory=/srv/haftmanzoome
 EnvironmentFile=/srv/haftmanzoome/.env.production
+ExecStartPre=/usr/bin/npm run db:bootstrap
 ExecStart=/usr/bin/npm run start
 Restart=always
 RestartSec=5
@@ -92,8 +90,8 @@ ls -l data/haft.db
 - `docker compose down -v` برای bind mount بی‌اثر است؛ خود پوشهٔ `data/` را حذف نکنید.
 - `docker run` بدون `-v ...:/app/data` هر بار دیتابیس تازه می‌سازد. از compose استفاده کنید.
 
-در production سید والدین نمونه نمی‌سازد مگر `ALLOW_DEMO_SEED=true`.
-اگر جدول `users` خالی باشد فقط سوپرادمین، کاتالوگ و صفحات محتوا ساخته می‌شود.
+اگر جدول `users` خالی باشد دموی کامل (مدیران، مشتریان، کاتالوگ، گنجینه، سفارش) ساخته می‌شود.
+اگر کاربری از قبل باشد seed هیچ ردیفی نمی‌نویسد. جزئیات: [`seed-catalog.md`](seed-catalog.md).
 
 بیلد Docker یک `SESSION_SECRET` ساختگی دارد چون `.env*` وارد ایمیج نمی‌شود.
 مقدار واقعی باید در runtime از `env_file` یا secrets برسد؛ بدون آن سشن production بالا نمی‌آید.
@@ -105,7 +103,7 @@ ls -l data/haft.db
 بدون آن `@libsql/client` هنگام جمع‌آوری صفحات با `SQLITE_CANTOPEN` می‌شکند.
 این دیتابیس ساختگی وارد ایمیج نهایی نمی‌شود؛ دیتابیس واقعی از `./data` در runtime می‌آید.
 
-قبل از `start`، مایگریشن و سپس `db:seed` اجرا می‌شود. Seed وقتی جدول `users`
+قبل از `start`، `db:bootstrap` (مایگریشن + seed) اجرا می‌شود. Seed وقتی جدول `users`
 خالی نیست داده را بازنویسی نمی‌کند. در production هرگز `db:reset` نزنید.
 
 اگر قبلاً از named volume داکر استفاده می‌کردید و داده آنجا مانده، قبل از سوییچ

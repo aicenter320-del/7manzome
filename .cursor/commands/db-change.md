@@ -42,13 +42,14 @@ npm run typecheck
 
 1. تایپ‌های استنتاج‌شده در `src/server/db/types.ts`
 2. توابع `repo/` مربوطه
-3. `scripts/db-seed.ts` اگر داده اولیه لازم دارد
+3. `scripts/db-seed.ts` و `scripts/seed/registry.ts` — جدول جدید باید در رجیستری باشد و اگر `seeded` است ردیف ماک داشته باشد
 4. تست‌های تحت‌تاثیر
 
 ## گام ۵ — مستندات
 
 - `docs/02-domain/data-model.md` — توضیح جدول یا ستون جدید
 - `docs/02-domain/erd.md` — نمودار
+- `docs/05-ops/seed-catalog.md` — ردیف ماک یا `runtime_empty`
 - `docs/CONTEXT.md`
 
 ## گام ۶ — گزارش

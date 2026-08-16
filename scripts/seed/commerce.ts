@@ -473,6 +473,31 @@ export async function seedCommerce(
       createdAt: occurredAt,
     });
   }
+
+  const demoParent = people.parents[0];
+  const cartVariant = catalog.variants.find((item) => item.sku === "STR-18-0900") ?? catalog.variants[0];
+  if (demoParent && cartVariant) {
+    const [cart] = await ctx.db
+      .insert(schema.carts)
+      .values({
+        userId: demoParent.id,
+        status: "open",
+        createdAt: ctx.now - DAY,
+        updatedAt: ctx.now - DAY,
+      })
+      .returning({ id: schema.carts.id });
+
+    if (!cart) throw new Error("ساخت سبد نمونه شکست خورد.");
+
+    await ctx.db.insert(schema.cartItems).values({
+      cartId: cart.id,
+      variantId: cartVariant.id,
+      quantity: 1,
+      treasureId: treasury.treasures[0]?.id ?? null,
+      createdAt: ctx.now - DAY,
+      updatedAt: ctx.now - DAY,
+    });
+  }
 }
 
 function historyFor(

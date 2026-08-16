@@ -3,13 +3,16 @@
  *
  * ESLint مرزهای import را قفل می‌کند، اما چیزهایی هست که لینتر نمی‌بیند:
  * ماژولی که کارت مستندات ندارد، متغیر محیطی که در .env.example نیامده،
- * جدولی که در مدل داده توضیح داده نشده، یا دور در گراف وابستگی ماژول‌ها.
+ * جدولی که در مدل داده توضیح داده نشده، جدولی که در رجیستری seed نیست،
+ * یا دور در گراف وابستگی ماژول‌ها.
  *
  * این اسکریپت همان‌ها را می‌گیرد. اجرا: npm run check:arch
  */
 
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { join, relative, sep } from "node:path";
+
+import { SEED_TABLE_REGISTRY } from "./seed/registry";
 
 const ROOT = process.cwd();
 
@@ -200,10 +203,7 @@ function checkEnvVars(): void {
 // ۴. هر جدول دیتابیس باید در مدل داده توضیح داده شده باشد
 // ------------------------------------------------------------------
 
-function checkDatabaseDocs(): void {
-  const dataModel = readIfExists("docs/02-domain/data-model.md");
-  if (!dataModel) return;
-
+function listSchemaTables(): Set<string> {
   const tables = new Set<string>();
   for (const file of walkFiles("src/server/db/schema", [".ts"])) {
     const content = readFileSync(join(ROOT, file), "utf8");
@@ -211,14 +211,69 @@ function checkDatabaseDocs(): void {
       if (match[1]) tables.add(match[1]);
     }
   }
+  return tables;
+}
 
-  for (const table of tables) {
+function checkDatabaseDocs(): void {
+  const dataModel = readIfExists("docs/02-domain/data-model.md");
+  if (!dataModel) return;
+
+  for (const table of listSchemaTables()) {
     if (!dataModel.includes(table)) {
       report(
         "error",
         "table-docs",
         `جدول «${table}» در docs/02-domain/data-model.md مستند نشده است.`,
         "docs/02-domain/data-model.md",
+      );
+    }
+  }
+}
+
+function checkSeedRegistry(): void {
+  const tables = listSchemaTables();
+  const registry = new Map(SEED_TABLE_REGISTRY.map((entry) => [entry.table, entry]));
+
+  for (const table of tables) {
+    if (!registry.has(table)) {
+      report(
+        "error",
+        "seed-registry",
+        `جدول «${table}» در scripts/seed/registry.ts نیست. یا ردیف ماک اضافه کنید یا policy=runtime_empty بگذارید.`,
+        "scripts/seed/registry.ts",
+      );
+    }
+  }
+
+  for (const entry of SEED_TABLE_REGISTRY) {
+    if (!tables.has(entry.table)) {
+      report(
+        "error",
+        "seed-registry",
+        `رجیستری seed جدول «${entry.table}» را دارد که در اسکیما نیست.`,
+        "scripts/seed/registry.ts",
+      );
+    }
+  }
+
+  const catalogDoc = readIfExists("docs/05-ops/seed-catalog.md") ?? "";
+  if (!catalogDoc) {
+    report(
+      "error",
+      "seed-catalog-doc",
+      "فایل docs/05-ops/seed-catalog.md وجود ندارد. قرارداد ماک دیتا باید مستند باشد.",
+      "docs/05-ops/seed-catalog.md",
+    );
+    return;
+  }
+
+  for (const table of tables) {
+    if (!catalogDoc.includes(`\`${table}\``)) {
+      report(
+        "error",
+        "seed-catalog-doc",
+        `جدول «${table}» در docs/05-ops/seed-catalog.md نیامده است.`,
+        "docs/05-ops/seed-catalog.md",
       );
     }
   }
@@ -342,6 +397,7 @@ function checkContextFreshness(): void {
     "docs/01-architecture/module-registry.md",
     "docs/02-domain/domain-rules.md",
     "docs/02-domain/data-model.md",
+    "docs/05-ops/seed-catalog.md",
     "AGENTS.md",
   ];
 
@@ -360,6 +416,7 @@ const modules = checkModules();
 checkModuleCycles(modules);
 checkEnvVars();
 checkDatabaseDocs();
+checkSeedRegistry();
 checkAppendOnlyTables();
 checkMoneyColumnNaming();
 checkUiRules();

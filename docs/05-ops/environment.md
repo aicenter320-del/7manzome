@@ -22,7 +22,6 @@
 | `GOLD_PRICE_API_URL` | خیر | `https://www.tala.ir/ajax/price` | نشانی JSON قیمت زنده |
 | `GOLD_PRICE_API_KEY` | خیر | — | کلید اختیاری سرویس قیمت |
 | `ADMIN_BOOTSTRAP_PHONE` | خیر | `09120000000` | شماره اولین سوپرادمین در seed |
-| `ALLOW_DEMO_SEED` | خیر | در توسعه `true`، در production `false` | اگر `true` باشد والدین و سفارش نمونه ریخته می‌شود. در سرور واقعی خاموش بماند |
 | `DEV_EXPOSE_OTP` | خیر | `false` | نمایش کد یک‌بارمصرف در پاسخ؛ **هرگز در production** |
 
 ## تولید کلید سشن

@@ -34,7 +34,7 @@
 | کاری که کردید | چه چیزی باید به‌روز شود |
 | --- | --- |
 | ماژول جدید ساختید | `01-architecture/module-registry.md` + یک فایل در `03-modules/` |
-| جدول یا ستون دیتابیس اضافه کردید | `02-domain/data-model.md` + `02-domain/erd.md` |
+| جدول یا ستون دیتابیس اضافه کردید | `02-domain/data-model.md` + `02-domain/erd.md` + `05-ops/seed-catalog.md` + `scripts/seed/registry.ts` |
 | قانون مالی یا محاسباتی تغییر کرد | `02-domain/domain-rules.md` |
 | تصمیم معماری گرفتید | یک ADR جدید در `06-decisions/` |
 | فیچری از رودمپ تمام شد | `07-roadmap/mvp-checklist.md` + `CONTEXT.md` |

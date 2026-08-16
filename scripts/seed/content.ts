@@ -137,7 +137,7 @@ export async function seedContent(
     design: string;
     treasureIndex: number | null;
     contributionIndex: number | null;
-    status: "unassigned" | "assigned" | "printed" | "redeemed";
+    status: "unassigned" | "assigned" | "printed" | "redeemed" | "void";
     note: string;
   }> = [
     { code: "HMGC0001", design: "classic", treasureIndex: null, contributionIndex: null, status: "unassigned", note: "کارت خام انبار" },
@@ -150,13 +150,17 @@ export async function seedContent(
     { code: "HMGC0008", design: "star", treasureIndex: 4, contributionIndex: 5, status: "redeemed", note: "عیدی پرهام" },
     { code: "HMGC0009", design: "moon", treasureIndex: null, contributionIndex: null, status: "unassigned", note: "رزرو فروشگاه" },
     { code: "HMGC0010", design: "classic", treasureIndex: 5, contributionIndex: 6, status: "assigned", note: "یلدا باران" },
+    { code: "HMGC0011", design: "classic", treasureIndex: null, contributionIndex: null, status: "void", note: "کارت باطل‌شده نمونه" },
   ];
 
   for (const card of giftCardSpecs) {
     const treasure = card.treasureIndex === null ? null : treasury.treasures[card.treasureIndex];
     const contribution =
       card.contributionIndex === null ? null : treasury.contributions[card.contributionIndex];
-    const assignedAt = card.status === "unassigned" ? null : ctx.now - 10 * 86_400_000;
+    const assignedAt =
+      card.status === "unassigned" || card.status === "void"
+        ? null
+        : ctx.now - 10 * 86_400_000;
     await ctx.db.insert(schema.giftCards).values({
       code: card.code,
       design: card.design,

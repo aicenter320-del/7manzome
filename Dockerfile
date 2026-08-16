@@ -40,6 +40,6 @@ RUN chmod +x scripts/docker-entrypoint.sh
 USER root
 EXPOSE 3000
 
-# مایگریشن و در صورت خالی بودن دیتابیس، seed بار اول؛ سپس سرو.
+# مایگریشن و در صورت خالی بودن دیتابیس، دموی کامل بار اول؛ سپس سرو.
 ENTRYPOINT ["scripts/docker-entrypoint.sh"]
-CMD ["sh", "-c", "npm run db:migrate && npm run db:seed && npm run start"]
+CMD ["sh", "-c", "npm run db:bootstrap && npm run start"]

@@ -12,7 +12,7 @@ alwaysApply: true
 | کاری که کردی | چه چیزی به‌روز شود |
 | --- | --- |
 | ماژول جدید ساختی | `docs/01-architecture/module-registry.md` + یک فایل در `docs/03-modules/` |
-| جدول یا ستون اضافه کردی | `docs/02-domain/data-model.md` + `docs/02-domain/erd.md` |
+| جدول یا ستون اضافه کردی | `docs/02-domain/data-model.md` + `docs/02-domain/erd.md` + `docs/05-ops/seed-catalog.md` + `scripts/seed/registry.ts` |
 | قانون مالی یا محاسباتی عوض شد | `docs/02-domain/domain-rules.md` |
 | ماشین حالت جدید یا تغییر گذارها | `docs/02-domain/state-machines.md` |
 | تصمیم معماری گرفتی | ADR جدید در `docs/06-decisions/` + ردیف در `docs/06-decisions/README.md` |

@@ -1,14 +1,12 @@
 /**
- * داده اولیه محیط توسعه و اولین راه‌اندازی.
+ * داده اولیه محیط توسعه و اولین راه‌اندازی سرور.
  *
  * این اسکریپت مستقل از Next است تا به `server-only` وابسته نشود.
- * اگر جدول users خالی نباشد، از نو نمی‌نویسد تا داده production بازنویسی نشود.
- *
- * در production دموی والدین و سفارش نمونه ریخته نمی‌شود مگر اینکه
- * ALLOW_DEMO_SEED=true باشد. دلیل: اگر volume دیتابیس ماندگار نباشد،
- * هر استارت دیتابیس خالی دیده می‌شود و کاربران واقعی با نمونه جایگزین می‌شوند.
+ * اگر جدول users خالی نباشد، از نو نمی‌نویسد تا داده موجود بازنویسی نشود.
+ * پایگاه خالی همیشه دموی کامل می‌گیرد (مدیران، مشتریان، کاتالوگ، گنجینه، سفارش).
  *
  * اجرا: npm run db:seed
+ * مایگریشن + seed: npm run db:bootstrap
  * برای دیدن دموی کامل روی دیتابیس از قبل seedشده: npm run db:reset
  */
 
@@ -25,7 +23,8 @@ import { resolveFileDatabaseUrl } from "@/shared/config/database-url";
 
 import { seedCatalog } from "./seed/catalog";
 import { seedCommerce } from "./seed/commerce";
-import { seedContent, seedPublicContent } from "./seed/content";
+import { seedContent } from "./seed/content";
+import { seedOps } from "./seed/ops";
 import { seedPeople } from "./seed/people";
 import { ensureStaffRoles } from "./seed/staff-roles";
 import { seedTreasury } from "./seed/treasury";
@@ -37,9 +36,6 @@ loadEnv({ path: ".env", quiet: true });
 const databaseUrl = resolveFileDatabaseUrl(process.env.DATABASE_URL ?? "file:./data/haft.db");
 const adminPhone = process.env.ADMIN_BOOTSTRAP_PHONE ?? "09120000000";
 const storageDir = resolve(process.env.STORAGE_DIR ?? "./storage");
-const allowDemoSeed =
-  process.env.ALLOW_DEMO_SEED === "true" ||
-  (process.env.ALLOW_DEMO_SEED !== "false" && process.env.NODE_ENV !== "production");
 
 if (databaseUrl.startsWith("file:")) {
   mkdirSync(dirname(databaseUrl.slice("file:".length)), { recursive: true });
@@ -174,24 +170,15 @@ async function main(): Promise<void> {
   console.warn(
     "جدول کاربران خالی است. اگر قبلاً ثبت‌نام وجود داشته، فایل دیتابیس ماندگار نبوده است.",
   );
+  console.log("در حال ریختن داده نمونه کامل...");
 
   const ctx = await bootstrapStore();
   const catalog = await seedCatalog(ctx);
-
-  if (!allowDemoSeed) {
-    await seedPublicContent(ctx);
-    console.log("راه‌اندازی production بدون کاربران نمونه انجام شد.");
-    console.log(`  سوپرادمین: ${adminPhone}`);
-    console.log("  برای دموی کامل روی استیجینگ: ALLOW_DEMO_SEED=true");
-    return;
-  }
-
-  console.log("در حال ریختن داده نمونه کامل...");
-
   const people = await seedPeople(ctx);
   const treasury = await seedTreasury(ctx, people);
   await seedCommerce(ctx, catalog, people, treasury);
   await seedContent(ctx, people, treasury);
+  await seedOps(ctx, people);
 
   const demoParent = people.parents[0];
   const demoLink = treasury.giftLinks[0];

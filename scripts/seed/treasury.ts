@@ -1,5 +1,6 @@
 import { randomBytes } from "node:crypto";
 
+import { prepareCoverEntry } from "@/modules/treasury/domain/gold-cover";
 import {
   detectMilestones,
   milestoneTitle,
@@ -439,6 +440,47 @@ export async function seedTreasury(
         actorUserId: ctx.adminId,
       });
     }
+  }
+
+  const coverPurchases = [
+    {
+      amountMg: 8_000,
+      karat: 18 as const,
+      paidRial: 520_000_000,
+      purchasedDaysAgo: 12,
+      note: "خرید پوشش بازار — شمش ۱۸ عیار",
+    },
+    {
+      amountMg: 3_000,
+      karat: 24 as const,
+      paidRial: 260_000_000,
+      purchasedDaysAgo: 5,
+      note: "خرید پوشش بازار — طلای ۲۴ عیار",
+    },
+  ];
+
+  for (const purchase of coverPurchases) {
+    const purchasedAt = ctx.now - purchase.purchasedDaysAgo * 86_400_000;
+    const prepared = prepareCoverEntry({
+      amountMg: purchase.amountMg,
+      karat: purchase.karat,
+      paidRial: purchase.paidRial,
+      source: "purchase",
+      note: purchase.note,
+      purchasedAt,
+    });
+
+    await ctx.db.insert(schema.goldCoverEntries).values({
+      amountMg: prepared.amountMg,
+      karat: prepared.karat,
+      pureMg: prepared.pureMg,
+      paidRial: prepared.paidRial,
+      source: prepared.source,
+      note: prepared.note,
+      purchasedAt: prepared.purchasedAt,
+      createdByUserId: ctx.adminId,
+      createdAt: purchasedAt,
+    });
   }
 
   return { treasures, giftLinks, contributions };

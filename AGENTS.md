@@ -111,7 +111,8 @@ npm run dev          # محیط توسعه
 npm run verify       # تایپ‌چک + لینت + بررسی ساختار + تست
 npm run db:generate  # ساخت مایگریشن
 npm run db:migrate   # اعمال مایگریشن
-npm run db:seed      # داده اولیه
+npm run db:seed      # داده اولیه اگر users خالی باشد
+npm run db:bootstrap # مایگریشن + seed
 npm run db:studio    # مرورگر دیتابیس
 npm run check:arch   # بررسی سلامت معماری و مستندات
 ```

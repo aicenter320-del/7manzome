@@ -1,6 +1,6 @@
 ---
 description: قوانین کار با دیتابیس، اسکیمای Drizzle و مایگریشن‌ها
-globs: src/server/db/**,src/modules/**/repo/**,drizzle/**,scripts/db-*.ts,drizzle.config.ts
+globs: src/server/db/**,src/modules/**/repo/**,drizzle/**,scripts/db-*.ts,scripts/seed/**,drizzle.config.ts
 ---
 
 # قوانین دیتابیس
@@ -46,3 +46,5 @@ npm run db:migrate    # اعمال روی دیتابیس
 ## پس از هر تغییر اسکیما
 
 `docs/02-domain/data-model.md` و `docs/02-domain/erd.md` را به‌روز کن.
+جدول جدید باید در `scripts/seed/registry.ts` و `docs/05-ops/seed-catalog.md` هم بیاید؛
+اگر `seeded` است ردیف ماک در seeder مربوطه اضافه کن.
