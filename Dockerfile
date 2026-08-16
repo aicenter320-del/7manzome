@@ -20,7 +20,8 @@ ENV NEXT_CPU_COUNT=1
 ENV NODE_OPTIONS=--max-old-space-size=2048
 # پوشه data در .dockerignore است؛ بدون آن libsql هنگام جمع‌آوری صفحات بیلد باز نمی‌شود (SQLITE_CANTOPEN).
 RUN mkdir -p data storage backups
-RUN npm run build
+# Next 16 پیش‌فرض Turbopack است؛ هوک webpack (سقف ترد) فقط با --webpack اعمال می‌شود.
+RUN npm run build -- --webpack
 
 FROM node:20-bookworm-slim AS runner
 WORKDIR /app

@@ -7,6 +7,7 @@
 
 - لایهٔ builder با `TOKIO_WORKER_THREADS=1` و `NEXT_CPU_COUNT=1` است تا Next و libsql همزمان ده‌ها ترد نسازند
 - خطای `OS can't spawn worker thread` / SIGABRT در HamDocker از سقف nproc بود، نه از کد اپ
+- Next.js 16 پیش‌فرض Turbopack است و هوک webpack را خطا می‌گیرد؛ بیلد Docker با `--webpack` است تا سقف ترد اعمال شود
 
 ## سرو فایل با نام فارسی
 

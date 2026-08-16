@@ -106,6 +106,8 @@ ls -l data/haft.db
 لایهٔ builder تعداد ترد را محدود می‌کند (`TOKIO_WORKER_THREADS=1`، `NEXT_CPU_COUNT=1`).
 بیلدرهای اشتراکی اغلب سقف nproc پایین‌تری از تعداد CPU گزارش‌شده دارند؛ بدون این حد،
 tokio داخل libsql با `OS error 11` و SIGABRT می‌ترکد.
+Next.js 16 بیلد را با Turbopack اجرا می‌کند و هوک `webpack` (سقف `parallelism`) را رد می‌کند؛
+برای همین لایهٔ builder با `next build --webpack` بیلد می‌شود تا همان محدودیت اعمال شود.
 
 قبل از `start`، `db:bootstrap` (مایگریشن + seed) اجرا می‌شود. Seed وقتی جدول `users`
 خالی نیست داده را بازنویسی نمی‌کند. در production هرگز `db:reset` نزنید.
