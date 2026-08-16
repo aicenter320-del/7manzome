@@ -103,6 +103,10 @@ ls -l data/haft.db
 بدون آن `@libsql/client` هنگام جمع‌آوری صفحات با `SQLITE_CANTOPEN` می‌شکند.
 این دیتابیس ساختگی وارد ایمیج نهایی نمی‌شود؛ دیتابیس واقعی از `./data` در runtime می‌آید.
 
+لایهٔ builder تعداد ترد را محدود می‌کند (`TOKIO_WORKER_THREADS=1`، `NEXT_CPU_COUNT=1`).
+بیلدرهای اشتراکی اغلب سقف nproc پایین‌تری از تعداد CPU گزارش‌شده دارند؛ بدون این حد،
+tokio داخل libsql با `OS error 11` و SIGABRT می‌ترکد.
+
 قبل از `start`، `db:bootstrap` (مایگریشن + seed) اجرا می‌شود. Seed وقتی جدول `users`
 خالی نیست داده را بازنویسی نمی‌کند. در production هرگز `db:reset` نزنید.
 

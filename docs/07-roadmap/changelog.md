@@ -3,6 +3,11 @@
 هر تغییر معنادار در ساختار یا قابلیت‌ها اینجا ثبت می‌شود.
 تغییرات جزئی (اصلاح تایپ، تغییر استایل) لازم نیست ثبت شوند.
 
+## بیلد Docker روی بیلدر محدود
+
+- لایهٔ builder با `TOKIO_WORKER_THREADS=1` و `NEXT_CPU_COUNT=1` است تا Next و libsql همزمان ده‌ها ترد نسازند
+- خطای `OS can't spawn worker thread` / SIGABRT در HamDocker از سقف nproc بود، نه از کد اپ
+
 ## سرو فایل با نام فارسی
 
 - هدر `Content-Disposition` دیگر نام خام فارسی نمی‌گذارد (خطای ByteString در undici و تصویر خالی در `/api/files`)

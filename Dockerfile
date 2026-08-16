@@ -11,6 +11,13 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 # بیلد Next در NODE_ENV=production به SESSION_SECRET نیاز دارد؛ مقدار واقعی در runtime می‌آید.
 ENV SESSION_SECRET=docker-build-placeholder-session-secret-32ch
+# بیلدرهای محدود (مثل HamDocker) سقف ترد پایینی دارند. Next و tokio داخل libsql
+# هر کدام به تعداد CPU ترد می‌سازند و با OS error 11 می‌ترکند.
+ENV TOKIO_WORKER_THREADS=1
+ENV RAYON_NUM_THREADS=1
+ENV UV_THREADPOOL_SIZE=4
+ENV NEXT_CPU_COUNT=1
+ENV NODE_OPTIONS=--max-old-space-size=2048
 # پوشه data در .dockerignore است؛ بدون آن libsql هنگام جمع‌آوری صفحات بیلد باز نمی‌شود (SQLITE_CANTOPEN).
 RUN mkdir -p data storage backups
 RUN npm run build
