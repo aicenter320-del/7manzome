@@ -23,7 +23,7 @@ export function CartSheet({ cart, signedIn }: { cart: Cart; signedIn: boolean })
 
   return (
     <GlassSheet open={open} onOpenChange={setOpen}>
-      <GlassSheetContent side="end" className="w-[min(28rem,92vw)]">
+      <GlassSheetContent side="bottom" className="app-column-sheet">
         <div className="flex items-start justify-between gap-3">
           <div>
             <GlassSheetTitle>{copy.cart.title}</GlassSheetTitle>

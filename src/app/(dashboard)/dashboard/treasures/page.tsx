@@ -17,7 +17,7 @@ export default async function TreasuresListPage() {
         title={copy.dashboard.treasures}
         description={copy.dashboard.treasuresPageDescription}
         actions={
-          <Button asChild>
+          <Button asChild className="rounded-full">
             <Link href="/dashboard/treasures/new">{cta.createTreasure}</Link>
           </Button>
         }
@@ -28,13 +28,13 @@ export default async function TreasuresListPage() {
           title={copy.dashboard.emptyTreasureTitle}
           description={copy.dashboard.emptyTreasureDescription}
           action={
-            <Button asChild>
+            <Button asChild className="rounded-full">
               <Link href="/dashboard/treasures/new">{cta.createTreasure}</Link>
             </Button>
           }
         />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4">
           {treasures.map((summary) => (
             <TreasureCard key={summary.treasure.id} summary={summary} />
           ))}

@@ -23,10 +23,10 @@ export default async function GiftThanksPage({
       <PageHeader title={copy.gift.thanksTitle} description={copy.gift.thanksDescription} />
       <p className="text-muted-foreground">{site.slogan}</p>
       <div className="flex flex-wrap justify-center gap-3">
-        <Button asChild>
+        <Button asChild className="rounded-full">
           <Link href={`/g/${token}`}>{copy.gift.backToTreasure}</Link>
         </Button>
-        <Button asChild variant="outline">
+        <Button asChild variant="outline" className="rounded-full">
           <Link href="/">{cta.backHome}</Link>
         </Button>
       </div>

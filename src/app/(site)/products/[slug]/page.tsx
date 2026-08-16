@@ -65,7 +65,7 @@ export default async function ProductDetailPage({
 
   return (
     <ProductEditProvider canEdit={canEdit} initialEditing={initialEditing}>
-      <main className="mx-auto grid w-full max-w-6xl gap-14 px-4 py-10 sm:px-6 sm:py-14">
+      <main className="grid gap-10 px-4 py-6">
         {canEdit ? <ProductEditBar product={product} /> : null}
 
         {canEdit && product.status !== "active" ? (

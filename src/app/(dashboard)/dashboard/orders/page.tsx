@@ -7,7 +7,6 @@ import { EmptyState } from "@/shared/ui/empty-state";
 import { GoldWeight } from "@/shared/ui/gold-weight";
 import { Money } from "@/shared/ui/money";
 import { PageHeader } from "@/shared/ui/page-header";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/shared/ui/table";
 
 export default async function OrdersListPage() {
   const user = await requireUser("/dashboard/orders");
@@ -23,38 +22,28 @@ export default async function OrdersListPage() {
           description="از فروشگاه طلای کودک شروع کنید."
         />
       ) : (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>شماره</TableHead>
-              <TableHead>وضعیت</TableHead>
-              <TableHead>مبلغ</TableHead>
-              <TableHead>طلا</TableHead>
-              <TableHead>تاریخ</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {orders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>
-                  <Link href={`/dashboard/orders/${order.id}`} className="ltr-nums underline-offset-4 hover:underline">
-                    {order.orderNumber}
-                  </Link>
-                </TableCell>
-                <TableCell>
+        <ul className="grid gap-3">
+          {orders.map((order) => (
+            <li key={order.id}>
+              <Link
+                href={`/dashboard/orders/${order.id}`}
+                className="glass grid gap-2 rounded-3xl p-4"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className="ltr-nums font-medium">{order.orderNumber}</span>
                   <OrderStatusBadge status={order.status} />
-                </TableCell>
-                <TableCell>
+                </div>
+                <div className="flex items-baseline justify-between gap-3 text-sm">
                   <Money rial={order.totalRial} />
-                </TableCell>
-                <TableCell>
                   <GoldWeight mg={order.goldTotalMg} size="sm" />
-                </TableCell>
-                <TableCell>{formatJalaliDate(order.placedAt ?? order.createdAt)}</TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  {formatJalaliDate(order.placedAt ?? order.createdAt)}
+                </p>
+              </Link>
+            </li>
+          ))}
+        </ul>
       )}
     </div>
   );

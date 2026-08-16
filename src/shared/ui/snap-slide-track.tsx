@@ -3,24 +3,28 @@
 import { Children, isValidElement, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/shared/lib/cn";
+import { toPersianDigits } from "@/shared/lib/persian";
 
 /** نوار افقی با اسنپ و نقطه‌های طلایی؛ بدون دانش دامنه. */
 export function SnapSlideTrack({
   labelledBy,
   slideClassName,
-  slideLabel,
+  slideKind,
   gapClassName = "gap-3",
+  align = "start",
   children,
 }: {
   labelledBy?: string;
   slideClassName: string;
-  slideLabel: (index: number, total: number) => string;
+  slideKind: string;
   gapClassName?: string;
+  align?: "start" | "center";
   children: ReactNode;
 }) {
   const slides = Children.toArray(children);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const isCenter = align === "center";
 
   const syncActive = useCallback(() => {
     const root = scrollerRef.current;
@@ -31,20 +35,22 @@ export function SnapSlideTrack({
     const rootRect = root.getBoundingClientRect();
     const isRtl = getComputedStyle(root).direction === "rtl";
     const edge = isRtl ? rootRect.right : rootRect.left;
+    const mid = (rootRect.left + rootRect.right) / 2;
 
     let best = 0;
     let bestDist = Number.POSITIVE_INFINITY;
     nodes.forEach((slide, index) => {
       const rect = slide.getBoundingClientRect();
-      const start = isRtl ? rect.right : rect.left;
-      const dist = Math.abs(start - edge);
+      const dist = isCenter
+        ? Math.abs((rect.left + rect.right) / 2 - mid)
+        : Math.abs((isRtl ? rect.right : rect.left) - edge);
       if (dist < bestDist) {
         bestDist = dist;
         best = index;
       }
     });
     setActiveIndex(best);
-  }, []);
+  }, [isCenter]);
 
   useEffect(() => {
     const root = scrollerRef.current;
@@ -62,7 +68,11 @@ export function SnapSlideTrack({
   const scrollToIndex = (index: number) => {
     const root = scrollerRef.current;
     const slide = root?.querySelectorAll<HTMLElement>("[data-snap-slide]")[index];
-    slide?.scrollIntoView({ inline: "start", block: "nearest", behavior: "smooth" });
+    slide?.scrollIntoView({
+      inline: isCenter ? "center" : "start",
+      block: "nearest",
+      behavior: "smooth",
+    });
   };
 
   if (slides.length === 0) return null;
@@ -73,18 +83,27 @@ export function SnapSlideTrack({
         ref={scrollerRef}
         role="region"
         {...(labelledBy ? { "aria-labelledby": labelledBy } : {})}
-        className="@container -mx-1 snap-x snap-mandatory overflow-x-auto overscroll-x-contain pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="@container -mx-1 snap-x snap-mandatory overflow-x-auto overscroll-x-contain py-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
-        <ul className={cn("flex px-1", gapClassName)}>
-          {slides.map((child, index) => (
-            <li
-              key={isValidElement(child) && child.key != null ? String(child.key) : index}
-              data-snap-slide
-              className={slideClassName}
-            >
-              {child}
-            </li>
-          ))}
+        <ul className={cn("flex", isCenter ? "items-stretch px-[14cqi]" : "px-1", gapClassName)}>
+          {slides.map((child, index) => {
+            const isActive = index === activeIndex;
+            return (
+              <li
+                key={isValidElement(child) && child.key != null ? String(child.key) : index}
+                data-snap-slide
+                className={cn(
+                  slideClassName,
+                  isCenter &&
+                    "origin-center snap-center snap-always transition-[transform,opacity] duration-300",
+                  isCenter &&
+                    (isActive ? "z-10 scale-100" : "scale-[0.88] opacity-70 shadow-glow"),
+                )}
+              >
+                {child}
+              </li>
+            );
+          })}
         </ul>
       </div>
 
@@ -96,7 +115,7 @@ export function SnapSlideTrack({
               <li key={index}>
                 <button
                   type="button"
-                  aria-label={slideLabel(index, slides.length)}
+                  aria-label={`${slideKind} ${toPersianDigits(index + 1)} از ${toPersianDigits(slides.length)}`}
                   aria-current={isActive ? "true" : undefined}
                   onClick={() => scrollToIndex(index)}
                   className="flex size-5 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"

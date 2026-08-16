@@ -80,6 +80,8 @@ flowchart TD
 | ذخیره و خواندن فایل آپلودی | `server/storage/file-storage.ts` |
 | لاگ ساخت‌یافته | `server/logger.ts` |
 | اسلایدر افقی با نقطه | `shared/ui/snap-slide-track.tsx` |
+| سربرگ بخش با «مشاهده همه» | `shared/ui/section-head.tsx` |
+| نوار پایین اپ مشتری | `shared/ui/app-tab-bar.tsx` |
 | استان و شهر ایران | `shared/data/iran-places.ts` |
 | فهرست بانک‌های ایران | `shared/data/iran-banks.ts` |
 

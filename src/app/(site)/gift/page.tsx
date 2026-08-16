@@ -10,22 +10,22 @@ import { RedeemGiftCardForm } from "./redeem-form";
 
 export default function GiftPage() {
   return (
-    <main className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-10 sm:px-6">
+    <main className="grid gap-8 px-4 py-6">
       <PageHeader title={copy.gift.title} description={copy.gift.description} />
 
       <p className="leading-relaxed text-muted-foreground">{copy.gift.body}</p>
       <p className="text-sm text-muted-foreground">{copy.gift.hasLinkHint}</p>
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-        <Button asChild variant="gold" size="lg">
+      <div className="flex flex-col gap-3">
+        <Button asChild variant="gold" size="lg" className="rounded-full">
           <Link href="/products">{copy.gift.shopInstead}</Link>
         </Button>
-        <Button asChild variant="outline" size="lg">
+        <Button asChild variant="outline" size="lg" className="rounded-full">
           <Link href="/login?returnTo=/dashboard/treasures/new">{copy.gift.startAsParent}</Link>
         </Button>
       </div>
 
-      <Card>
+      <Card className="rounded-3xl">
         <CardHeader>
           <CardTitle>{copy.gift.cardTitle}</CardTitle>
         </CardHeader>

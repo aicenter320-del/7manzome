@@ -27,9 +27,10 @@ haftmanzoome/
 ```
 app/
 ├── layout.tsx                 لایوت ریشه: RTL، فونت، پرووایدرها
+├── customer-shell.tsx         کروم اپ مشتری (نوار بالا و پایین)
 ├── globals.css                توکن‌های دیزاین + پایه Tailwind
-├── (site)/                    صفحات عمومی
-│   ├── layout.tsx             هدر و فوتر سایت
+├── (site)/                    صفحات عمومی با CustomerShell
+│   ├── layout.tsx
 │   ├── page.tsx               صفحه اصلی
 │   ├── products/
 │   ├── occasions/
@@ -41,7 +42,7 @@ app/
 ├── (auth)/
 │   └── login/                 ورود دو مرحله‌ای با کد یک‌بارمصرف
 ├── (dashboard)/
-│   ├── layout.tsx             محافظت‌شده؛ نیازمند سشن
+│   ├── layout.tsx             محافظت‌شده؛ کروم مشتری + زیرناو
 │   └── dashboard/
 │       ├── page.tsx           خلاصه
 │       ├── children/

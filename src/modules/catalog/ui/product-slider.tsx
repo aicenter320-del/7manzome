@@ -3,7 +3,6 @@
 import { PackageSearchIcon } from "lucide-react";
 
 import { copy } from "@/shared/config/copy";
-import { toPersianDigits } from "@/shared/lib/persian";
 import { EmptyState } from "@/shared/ui/empty-state";
 import { SnapSlideTrack } from "@/shared/ui/snap-slide-track";
 
@@ -30,8 +29,8 @@ export function ProductSlider({
     <SnapSlideTrack
       labelledBy={labelledBy}
       gapClassName="gap-6"
-      slideClassName="flex w-[78cqi] shrink-0 snap-start sm:w-[calc((100cqi-1.5rem)/2)] lg:w-[calc((100cqi-4.5rem)/4)]"
-      slideLabel={(index, total) => `قطعه ${toPersianDigits(index + 1)} از ${toPersianDigits(total)}`}
+      slideClassName="flex w-[78cqi] shrink-0 snap-start"
+      slideKind="قطعه"
     >
       {products.map((product) => (
         <ProductCard key={product.id} product={product} className="w-full" />

@@ -32,7 +32,7 @@ export function ProductEditBar({ product }: { product: ProductDetail }) {
   };
 
   return (
-    <div className="sticky top-[calc(var(--site-header-height)+0.5rem)] z-30 flex flex-wrap items-center justify-between gap-3 rounded-lg bg-card px-4 py-3 shadow-product">
+    <div className="sticky top-[calc(var(--site-header-height)+0.5rem)] z-30 flex flex-wrap items-center justify-between gap-3 rounded-3xl bg-card px-4 py-3 shadow-product">
       <div className="flex flex-wrap items-center gap-2">
         <Badge variant={product.status === "active" ? "success" : "warning"}>
           {PRODUCT_STATUS_LABELS[product.status]}

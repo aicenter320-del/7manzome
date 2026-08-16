@@ -28,7 +28,7 @@ export default async function OccasionDetailPage({
   const products = await listProducts({ occasionSlug: occasion.slug });
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+    <main className="px-4 py-6">
       <PageHeader
         title={
           <OccasionLabel

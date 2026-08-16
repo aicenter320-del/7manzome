@@ -1,6 +1,7 @@
 import { listOccasions, listProducts, OccasionSlider } from "@/modules/catalog";
 import { tryGetCurrentGoldPrice } from "@/modules/pricing";
-import { copy } from "@/shared/config/copy";
+import { copy, cta } from "@/shared/config/copy";
+import { SectionHead } from "@/shared/ui/section-head";
 
 import { HomeHero } from "./home-hero";
 import { HomeProductsSection } from "./home-products";
@@ -26,13 +27,15 @@ export default async function HomePage() {
       <HomeProductsSection products={products} />
       <HomeTrustBand />
 
-      <section className="bg-background px-4 py-16 sm:px-6 sm:py-20">
-        <div className="mx-auto w-full max-w-6xl">
-          <OccasionSlider
-            occasions={occasions}
-            heading={copy.homeOccasions.heading}
+      <section className="bg-background px-4 py-10">
+        <div className="grid gap-6">
+          <SectionHead
             headingId="home-occasions-heading"
+            title={copy.homeOccasions.heading}
+            actionHref="/occasions"
+            actionLabel={cta.viewAll}
           />
+          <OccasionSlider occasions={occasions} labelledBy="home-occasions-heading" />
         </div>
       </section>
 

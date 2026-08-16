@@ -151,7 +151,7 @@ export function CheckoutForm({
         <AccordionItem value="more">
           <AccordionTrigger>{copy.checkout.moreDetails}</AccordionTrigger>
           <AccordionContent className="grid gap-5 text-foreground">
-            <div className="grid gap-5 sm:grid-cols-3">
+            <div className="grid gap-5">
               <FormField
                 id="postalCode"
                 label="کد پستی"

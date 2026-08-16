@@ -19,7 +19,7 @@ export default async function AboutPage() {
       : FALLBACK_STORY;
 
   return (
-    <main className="mx-auto grid w-full max-w-3xl gap-10 px-4 py-10 sm:px-6">
+    <main className="grid gap-10 px-4 py-6">
       <PageHeader title={page?.title ?? copy.about.fallbackTitle} description={site.description} />
 
       <article className="whitespace-pre-wrap leading-relaxed text-muted-foreground">{body}</article>

@@ -9,7 +9,7 @@ export default async function OccasionsPage() {
   const occasions = await listOccasions();
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+    <main className="px-4 py-6">
       <PageHeader title={copy.occasions.title} description={copy.occasions.description} />
 
       {occasions.length === 0 ? (
@@ -20,7 +20,7 @@ export default async function OccasionsPage() {
           description={copy.occasions.emptyDescription}
         />
       ) : (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4">
           {occasions.map((occasion) => (
             <OccasionCard key={occasion.id} occasion={occasion} />
           ))}

@@ -21,10 +21,16 @@ export type SiteNavItem = {
   description: string;
 };
 
+/** چهار تب نوار پایین اپ مشتری. حساب بسته به ورود به /dashboard یا /login می‌رود. */
+export const customerTabs = [
+  { id: "home", title: "خانه", href: "/" },
+  { id: "shop", title: "قطعه‌ها", href: "/products" },
+  { id: "gift", title: "هدیه", href: "/gift" },
+  { id: "account", title: "حساب", href: "/dashboard" },
+] as const;
+
 /**
- * سه کار اصلی بازدیدکننده در هدر.
- * خانه همان لوگو است؛ گنجینه و درباره در فوتر و منوی موبایل می‌آیند
- * تا مسیر خرید با مسیر هدیه قاطی نشود.
+ * مسیرهای اصلی خرید؛ در شیت «بیشتر» هم هستند.
  */
 export const mainNav = [
   {
@@ -44,12 +50,12 @@ export const mainNav = [
   },
 ] as const satisfies readonly SiteNavItem[];
 
-/** لینک‌های کمکی: فوتر و منوی موبایل، نه نوار اصلی دسکتاپ. */
+/** مسیرهای فرعی شیت «بیشتر»؛ خانه و حساب در نوار پایین‌اند. */
 export const moreNav = [
   {
-    title: "خانه",
-    href: "/",
-    description: "بازگشت به صفحهٔ اول",
+    title: "مناسبت‌ها",
+    href: "/occasions",
+    description: "تولد، اولین دندان، نوروز — قطعه را از روی مناسبت ببینید",
   },
   {
     title: "گنجینه‌ها",
@@ -62,11 +68,6 @@ export const moreNav = [
     description: "شفافیت قیمت و داستان برند",
   },
 ] as const satisfies readonly SiteNavItem[];
-
-export const footerNav = [
-  { heading: "خرید و هدیه", items: mainNav },
-  { heading: "هفت منظومه", items: moreNav },
-] as const;
 
 export function isActiveHref(pathname: string, href: string): boolean {
   if (href === "/") return pathname === "/";

@@ -1,52 +1,7 @@
 import type { ReactNode } from "react";
-import Link from "next/link";
 
-import { CartSheetProvider } from "@/modules/orders/ui/cart-sheet-provider";
-import { footerNav, site } from "@/shared/config/site";
-import { currentJalaliYear } from "@/shared/lib/jalali";
-import { toPersianDigits } from "@/shared/lib/persian";
-
-import { SiteHeader } from "./site-header";
+import { CustomerShell } from "../customer-shell";
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
-  const year = toPersianDigits(currentJalaliYear());
-
-  return (
-    <div className="flex min-h-dvh flex-col">
-      <CartSheetProvider>
-        <SiteHeader />
-        <div className="flex-1">{children}</div>
-      </CartSheetProvider>
-      <footer className="mt-8 px-3 pb-8 sm:px-6">
-        <div className="glass mx-auto grid w-full max-w-6xl gap-10 rounded-3xl px-6 py-10">
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3">
-            <div className="grid gap-2">
-              <p className="font-semibold text-treasure">{site.name}</p>
-              <p className="text-sm text-muted-foreground">{site.tagline}</p>
-              <p className="text-sm text-muted-foreground">سوال دارید؟ {site.supportPhone}</p>
-            </div>
-
-            {footerNav.map((group) => (
-              <nav key={group.heading} className="grid gap-2 text-sm" aria-label={group.heading}>
-                <p className="font-medium text-foreground">{group.heading}</p>
-                {group.items.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className="text-muted-foreground hover:text-gold-deep"
-                  >
-                    {item.title}
-                  </Link>
-                ))}
-              </nav>
-            ))}
-          </div>
-
-          <p className="text-sm text-muted-foreground">
-            © {year} {site.name}. همه حقوق محفوظ است.
-          </p>
-        </div>
-      </footer>
-    </div>
-  );
+  return <CustomerShell>{children}</CustomerShell>;
 }

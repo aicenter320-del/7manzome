@@ -10,7 +10,7 @@ import { useProductEdit } from "@/modules/catalog/ui/product-edit-context";
 import { AddToCartPanel, firstSellableVariantId } from "./add-to-cart-panel";
 import { EngravingBlock } from "./engraving-block";
 
-/** دو ستون خرید: گالری و حکاکی چپ، قیمت و سبد راست. */
+/** یک ستون خرید: گالری، بعد عنوان و سبد، بعد حکاکی. */
 export function ProductBuySection({
   product,
   heading,
@@ -27,26 +27,13 @@ export function ProductBuySection({
   const showEngraving = product.isPersonalizable && !editing;
 
   return (
-    <div className="grid items-start gap-10 lg:grid-cols-2 lg:gap-16">
-      <div className="grid gap-6 lg:sticky lg:top-[calc(var(--site-header-height)+0.75rem)]">
-        <ProductGallery
-          title={product.title}
-          heroFileId={product.heroFileId}
-          media={product.media}
-          productId={product.id}
-        />
-        {showEngraving ? (
-          <EngravingBlock
-            nameFa={nameFa}
-            nameEn={nameEn}
-            message={message}
-            maxChars={selected?.engravingMaxChars ?? 0}
-            onNameFaChange={setNameFa}
-            onNameEnChange={setNameEn}
-            onMessageChange={setMessage}
-          />
-        ) : null}
-      </div>
+    <div className="grid gap-8">
+      <ProductGallery
+        title={product.title}
+        heroFileId={product.heroFileId}
+        media={product.media}
+        productId={product.id}
+      />
 
       <div className="grid gap-8">
         {heading}
@@ -60,6 +47,18 @@ export function ProductBuySection({
           />
         )}
       </div>
+
+      {showEngraving ? (
+        <EngravingBlock
+          nameFa={nameFa}
+          nameEn={nameEn}
+          message={message}
+          maxChars={selected?.engravingMaxChars ?? 0}
+          onNameFaChange={setNameFa}
+          onNameEnChange={setNameEn}
+          onMessageChange={setMessage}
+        />
+      ) : null}
     </div>
   );
 }

@@ -15,7 +15,7 @@ export default async function CheckoutPage() {
 
   if (cart.items.length === 0) {
     return (
-      <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
+      <main className="px-4 py-6">
         <PageHeader title={copy.checkout.title} />
         <EmptyState
           className="mt-8"
@@ -34,7 +34,7 @@ export default async function CheckoutPage() {
   const recipientName = [user.firstName, user.lastName].filter(Boolean).join(" ").trim();
 
   return (
-    <main className="mx-auto grid w-full max-w-3xl gap-8 px-4 py-10 sm:px-6">
+    <main className="grid gap-8 px-4 py-6">
       <PageHeader title={copy.checkout.title} description={copy.checkout.description} />
 
       <div className="glass rounded-3xl p-5 text-sm">

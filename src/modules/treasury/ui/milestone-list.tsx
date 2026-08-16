@@ -37,7 +37,7 @@ export function MilestoneList({
           <li
             key={thresholdMg}
             className={cn(
-              "flex items-center gap-3 rounded-lg border p-3 text-sm",
+              "flex items-center gap-3 rounded-3xl border p-3 text-sm",
               isAchieved
                 ? "border-gold/35 bg-gold-soft/40"
                 : "border-border bg-muted/20 opacity-70",

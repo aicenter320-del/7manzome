@@ -41,7 +41,7 @@ export default async function ProductsPage({
   const canWrite = user ? hasPermission(user.roles, "catalog:write") : false;
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+    <main className="px-4 py-6">
       <PageHeader title={copy.products.title} description={copy.products.description} />
       {canWrite ? (
         <div className="mt-6">

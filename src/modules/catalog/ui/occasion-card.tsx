@@ -16,7 +16,7 @@ export function OccasionCard({
 }) {
   return (
     <Link href={`/occasions/${occasion.slug}`} className={cn("block h-full", className)}>
-      <div className="relative h-full min-h-40 overflow-hidden rounded-lg bg-card text-card-foreground shadow-product transition-transform motion-safe:hover:-translate-y-1">
+      <div className="relative h-full min-h-40 overflow-hidden rounded-3xl bg-card text-card-foreground shadow-product transition-transform motion-safe:hover:-translate-y-1">
         <OccasionIcon slug={occasion.slug} emoji={occasion.emoji} variant="watermark" />
         <CardHeader className="relative z-10">
           <CardTitle className="text-base font-bold text-foreground">{occasion.title}</CardTitle>

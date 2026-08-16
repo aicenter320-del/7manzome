@@ -19,7 +19,7 @@ export default async function PayPage({
   if (!payment) notFound();
 
   return (
-    <main className="mx-auto grid w-full max-w-xl gap-8 px-4 py-10 sm:px-6">
+    <main className="grid gap-8 px-4 py-6">
       <PageHeader
         title="پرداخت کارت‌به‌کارت"
         description="مبلغ را به کارت مقصد واریز کنید و رسید را ثبت کنید تا بررسی شود."

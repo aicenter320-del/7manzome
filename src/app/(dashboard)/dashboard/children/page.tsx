@@ -17,7 +17,7 @@ export default async function ChildrenListPage() {
         title={copy.dashboard.children}
         description={copy.dashboard.childrenPageDescription}
         actions={
-          <Button asChild>
+          <Button asChild className="rounded-full">
             <Link href="/dashboard/children/new">{cta.addChild}</Link>
           </Button>
         }
@@ -28,7 +28,7 @@ export default async function ChildrenListPage() {
           title={copy.dashboard.emptyChildTitle}
           description={copy.dashboard.emptyChildDescription}
           action={
-            <Button asChild>
+            <Button asChild className="rounded-full">
               <Link href="/dashboard/children/new">{cta.addChild}</Link>
             </Button>
           }

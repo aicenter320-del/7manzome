@@ -14,7 +14,7 @@ export default async function PublicTreasuresPage() {
   const treasures = await getPublicTreasures(12);
 
   return (
-    <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
+    <main className="px-4 py-6">
       <PageHeader
         title={copy.treasuresPublic.title}
         description={copy.treasuresPublic.description}
@@ -32,7 +32,7 @@ export default async function PublicTreasuresPage() {
           }
         />
       ) : (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-4">
           {treasures.map((summary) => (
             <Card key={summary.treasure.id}>
               <CardContent className="grid gap-3 p-5">

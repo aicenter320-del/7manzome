@@ -57,7 +57,7 @@ export { ContributionForm, GiftProgress, KeepsakeList, GiftShareBar } from "./ui
 
 ## مسیرها
 
-- `app/(gift)/g/[token]` — صفحه عمومی هدیه (بدون ورود)
+- `app/(gift)/g/[token]` — صفحه عمومی هدیه (بدون ورود؛ ستون اپ بدون تب فروشگاه)
 - `app/(gift)/g/[token]/pay` — ثبت رسید کارت‌به‌کارت
 - `app/(gift)/g/[token]/thanks` — تشکر و ثبت پیام یادگاری
 - `app/api/qr/[token]` — تولید تصویر QR برای کارت هدیه

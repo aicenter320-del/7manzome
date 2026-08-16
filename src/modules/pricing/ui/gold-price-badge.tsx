@@ -15,9 +15,11 @@ import type { GoldPriceView } from "../domain/types";
  */
 export function GoldPriceBadge({
   price,
+  variant = "soft",
   className,
 }: {
   price: GoldPriceView | null;
+  variant?: "soft" | "gold";
   className?: string;
 }) {
   if (!price) {
@@ -40,7 +42,9 @@ export function GoldPriceBadge({
         "inline-flex flex-wrap items-center gap-x-2 gap-y-1 rounded-lg border px-3 py-1.5 text-xs",
         price.isStale
           ? "border-warning/30 bg-warning/10 text-warning"
-          : "border-gold/30 bg-gold-soft/40 text-gold-deep",
+          : variant === "gold"
+            ? "rounded-full border-0 hero-gold-band"
+            : "border-gold/30 bg-gold-soft/40 text-gold-deep",
         className,
       )}
     >

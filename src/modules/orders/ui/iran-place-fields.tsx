@@ -22,7 +22,7 @@ export function IranPlaceFields({
   const cities = useMemo(() => (province ? citiesOfProvince(province) : []), [province]);
 
   return (
-    <div className="grid gap-5 sm:grid-cols-2">
+    <div className="grid gap-5">
       <FormField id="province" label="استان" required {...(provinceError ? { error: provinceError } : {})}>
         <input type="hidden" name="province" value={province} />
         <SearchSelect

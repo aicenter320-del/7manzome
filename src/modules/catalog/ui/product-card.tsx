@@ -28,7 +28,7 @@ export function ProductCard({
   return (
     <div
       className={cn(
-        "product-card-wash group flex h-full flex-col overflow-hidden rounded-lg text-card-foreground motion-safe:hover:-translate-y-1",
+        "product-card-wash group flex h-full flex-col overflow-hidden rounded-3xl text-card-foreground motion-safe:hover:-translate-y-1",
         className,
       )}
     >
@@ -41,7 +41,7 @@ export function ProductCard({
             heroFileId={product.heroFileId}
             hoverFileId={product.hoverFileId}
             alt={product.title}
-            sizes="(max-width: 640px) 50vw, 25vw"
+            sizes="50vw"
           />
 
           <div className="absolute end-3 top-3 z-10 flex flex-col items-end gap-1">
@@ -57,7 +57,7 @@ export function ProductCard({
           </div>
         </div>
 
-        <div className="grid flex-1 gap-1.5 px-5 py-4">
+        <div className="grid flex-1 gap-1 px-3 py-3">
           <p className="text-xs text-muted-foreground">{PRODUCT_KIND_LABELS[product.kind]}</p>
           <h3 className="text-sm font-semibold leading-snug">{product.title}</h3>
           {weightLabel ? (

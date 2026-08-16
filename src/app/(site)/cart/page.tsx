@@ -11,7 +11,7 @@ export default async function CartPage() {
   const checkoutLabel = user ? cta.continueOrder : cta.loginToBuy;
 
   return (
-    <main className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6">
+    <main className="px-4 py-6">
       <OpenCartOnMount />
       <PageHeader title={copy.cart.title} description={copy.cart.description} />
       <div className="mt-8">

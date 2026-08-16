@@ -6,6 +6,8 @@ test.describe("مسیرهای عمومی", () => {
     await expect(page.getByRole("heading", { name: /طلای کودک، هدیه‌ای که می‌ماند/ })).toBeVisible();
     await expect(page.getByRole("link", { name: "دیدن طلای کودک" })).toBeVisible();
     await expect(page.getByRole("main").getByRole("link", { name: "هدیه طلا بده" }).first()).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "مسیرهای اصلی" })).toBeVisible();
+    await expect(page.getByRole("navigation", { name: "مسیرهای اصلی" }).getByRole("link", { name: "خانه" })).toBeVisible();
   });
 
   test("صفحه محصولات قابل مشاهده است", async ({ page }) => {

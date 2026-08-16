@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isActiveHref, mainNav } from "./site";
+import { customerTabs, isActiveHref, mainNav } from "./site";
 
 describe("isActiveHref", () => {
   it("خانه فقط روی ریشه فعال است", () => {
@@ -16,8 +16,14 @@ describe("isActiveHref", () => {
 });
 
 describe("mainNav", () => {
-  it("سه مسیر اصلی دارد و خانه در آن نیست", () => {
+  it("سه مسیر خرید دارد و خانه در آن نیست", () => {
     expect(mainNav).toHaveLength(3);
     expect(mainNav.map((item) => item.href)).toEqual(["/products", "/occasions", "/gift"]);
+  });
+});
+
+describe("customerTabs", () => {
+  it("چهار تب نوار پایین دارد", () => {
+    expect(customerTabs.map((item) => item.id)).toEqual(["home", "shop", "gift", "account"]);
   });
 });

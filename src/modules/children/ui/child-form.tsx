@@ -96,7 +96,7 @@ export function ChildForm({
         </Alert>
       ) : null}
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5">
         <FormField
           id="firstName"
           label="نام کودک"
@@ -149,7 +149,7 @@ export function ChildForm({
         <JalaliDateInput id="birthDateAt" value={birthDateAt} onChange={setBirthDateAt} />
       </FormField>
 
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5">
         <FormField id="gender" label="جنسیت">
           <SearchSelect
             id="gender"

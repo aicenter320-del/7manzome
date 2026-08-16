@@ -46,7 +46,7 @@ export function ProductStory({
   };
 
   return (
-    <section className="grid gap-10 border-t border-gold/15 pt-12 lg:grid-cols-2 lg:gap-16">
+    <section className="grid gap-8 border-t border-gold/15 pt-10">
       {editing || description ? (
         <div className="grid gap-3">
           <p className="flex items-center gap-3 text-xs font-medium tracking-wide text-gold-deep">

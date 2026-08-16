@@ -6,6 +6,8 @@ import { GoldPriceBadge, type GoldPriceView } from "@/modules/pricing";
 import { copy, cta } from "@/shared/config/copy";
 import { site } from "@/shared/config/site";
 import { Button } from "@/shared/ui/button";
+import { SectionHead } from "@/shared/ui/section-head";
+import { SnapSlideTrack } from "@/shared/ui/snap-slide-track";
 
 function Step({
   icon,
@@ -17,12 +19,14 @@ function Step({
   body: string;
 }) {
   return (
-    <li className="grid gap-3 rounded-lg bg-card p-6 shadow-product">
-      <span className="flex size-12 items-center justify-center rounded-full bg-gold-soft text-gold-deep">
+    <li className="flex gap-3">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gold-soft text-gold-deep">
         {icon}
       </span>
-      <h3 className="font-semibold">{title}</h3>
-      <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
+      <div className="grid min-w-0 gap-1">
+        <h3 className="font-semibold">{title}</h3>
+        <p className="text-sm leading-relaxed text-muted-foreground">{body}</p>
+      </div>
     </li>
   );
 }
@@ -37,7 +41,7 @@ function TrustCard({
   body: string;
 }) {
   return (
-    <article className="grid gap-3 rounded-lg bg-card p-6 shadow-product">
+    <article className="grid h-full gap-3 rounded-3xl bg-card p-5 shadow-product">
       <span className="flex size-12 items-center justify-center rounded-full bg-gold-soft text-gold-deep">
         {icon}
       </span>
@@ -47,20 +51,12 @@ function TrustCard({
   );
 }
 
-/** نوار اعتماد زیر هیرو: قیمت زنده و سه وعده کوتاه، قبل از ویترین. */
+/** نوار اعتماد زیر هیرو: فقط قیمت زنده. */
 export function HomeProofBar({ goldPrice }: { goldPrice: GoldPriceView | null }) {
   return (
-    <section className="border-y border-gold/20 bg-card px-4 py-3 sm:px-6 sm:py-4">
-      <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 sm:flex-row sm:gap-6">
-        <GoldPriceBadge price={goldPrice} />
-        <ul className="flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
-          {copy.proof.chips.map((chip) => (
-            <li key={chip} className="flex items-center gap-2">
-              <span className="size-1 shrink-0 rounded-full bg-gold" aria-hidden />
-              {chip}
-            </li>
-          ))}
-        </ul>
+    <section className="px-4 pt-4">
+      <div className="flex justify-center">
+        <GoldPriceBadge price={goldPrice} variant="gold" className="w-full justify-center" />
       </div>
     </section>
   );
@@ -69,118 +65,120 @@ export function HomeProofBar({ goldPrice }: { goldPrice: GoldPriceView | null })
 /** مسیر ساخت گنجینه؛ همان کارهایی که در پنل والد انجام می‌شود. */
 export function HomeHowItWorks() {
   return (
-    <section className="bg-background px-4 py-16 sm:px-6 sm:py-20">
-      <div className="mx-auto grid w-full max-w-6xl gap-12">
-        <div className="max-w-2xl grid gap-3">
-          <p className="flex items-center gap-3 text-xs font-medium tracking-wide text-gold-deep">
-            <span className="h-px w-8 shrink-0 bg-gold" aria-hidden />
-            {copy.how.kicker}
-          </p>
-          <h2 className="text-xl font-semibold sm:text-2xl">{copy.how.title}</h2>
-          <p className="text-muted-foreground">{copy.how.body}</p>
-        </div>
-        <ol className="grid gap-6 sm:grid-cols-3">
-          <Step
-            icon={<BabyIcon className="size-5" aria-hidden />}
-            title={copy.how.steps[0].title}
-            body={copy.how.steps[0].body}
-          />
-          <Step
-            icon={<SparklesIcon className="size-5" aria-hidden />}
-            title={copy.how.steps[1].title}
-            body={copy.how.steps[1].body}
-          />
-          <Step
-            icon={<GiftIcon className="size-5" aria-hidden />}
-            title={copy.how.steps[2].title}
-            body={copy.how.steps[2].body}
-          />
-        </ol>
-        <div>
-          <Button asChild variant="gold" size="lg">
-            <Link href="/login?returnTo=/dashboard/treasures/new">{cta.startTreasure}</Link>
-          </Button>
-        </div>
+    <section className="bg-background px-4 py-10">
+      <div className="grid gap-6">
+        <SectionHead
+          kicker={copy.how.kicker}
+          title={copy.how.title}
+          description={copy.how.body}
+        />
+        <article className="rounded-3xl bg-card p-5 shadow-product">
+          <ol className="grid gap-5">
+            <Step
+              icon={<BabyIcon className="size-5" aria-hidden />}
+              title={copy.how.steps[0].title}
+              body={copy.how.steps[0].body}
+            />
+            <Step
+              icon={<SparklesIcon className="size-5" aria-hidden />}
+              title={copy.how.steps[1].title}
+              body={copy.how.steps[1].body}
+            />
+            <Step
+              icon={<GiftIcon className="size-5" aria-hidden />}
+              title={copy.how.steps[2].title}
+              body={copy.how.steps[2].body}
+            />
+          </ol>
+        </article>
+        <Button asChild variant="gold" size="lg" className="w-full rounded-full">
+          <Link href="/login?returnTo=/dashboard/treasures/new">{cta.startTreasure}</Link>
+        </Button>
       </div>
     </section>
   );
 }
 
-/** دعوت به هدیه مهمان؛ مسیر واقعی /gift و لینک گنجینه. */
+/** دعوت به هدیه مهمان؛ کارت طلایی با دکمهٔ سفید کپسولی. */
 export function HomeGiftBand() {
   return (
-    <section className="bg-background px-4 py-16 sm:px-6 sm:py-20">
-      <div className="glass-strong mx-auto grid w-full max-w-6xl gap-10 rounded-lg px-6 py-10 sm:px-10 sm:py-14 lg:grid-cols-[1.2fr_0.8fr] lg:items-center">
-        <div className="grid gap-5">
-          <h2 className="text-2xl font-semibold text-balance sm:text-3xl">
-            {copy.giftBand.title}
-          </h2>
-          <p className="max-w-xl leading-relaxed text-muted-foreground">{copy.giftBand.body}</p>
-          <div className="flex flex-wrap gap-3">
-            <Button asChild variant="gold" size="lg">
-              <Link href="/gift">{cta.gift}</Link>
-            </Button>
-            <Button asChild variant="outline" size="lg">
-              <Link href="/treasures">{copy.giftBand.browseTreasures}</Link>
-            </Button>
-          </div>
-        </div>
-        <ul className="grid gap-3 text-sm">
+    <section className="bg-background px-4 py-10">
+      <div className="hero-gold-band grid gap-5 rounded-3xl px-5 py-8">
+        <h2 className="text-xl font-semibold text-balance">{copy.giftBand.title}</h2>
+        <p className="text-sm leading-relaxed">{copy.giftBand.body}</p>
+        <ul className="grid gap-2 text-sm">
           {copy.giftBand.bullets.map((item) => (
-            <li key={item} className="rounded-lg bg-card px-5 py-4 shadow-product">
-              {item}
-            </li>
+            <li key={item}>{item}</li>
           ))}
         </ul>
+        <div className="grid gap-3">
+          <Button
+            asChild
+            size="lg"
+            className="w-full rounded-full bg-card text-foreground shadow-none hover:bg-card/90"
+          >
+            <Link href="/gift">{cta.gift}</Link>
+          </Button>
+          <Button
+            asChild
+            variant="outline"
+            size="lg"
+            className="w-full rounded-full border-card bg-transparent text-inherit hover:bg-card/15"
+          >
+            <Link href="/treasures">{copy.giftBand.browseTreasures}</Link>
+          </Button>
+        </div>
       </div>
     </section>
   );
 }
 
-/** اعتماد: شفافیت قیمت و شخصی‌سازی واقعی صفحه محصول. */
+const TRUST_ICONS = [ScaleIcon, PenLineIcon, Link2Icon] as const;
+
+/** اعتماد: کارت‌ها با کشیدن افقی دیده می‌شوند. */
 export function HomeTrustBand() {
   return (
-    <section className="bg-background px-4 py-12 sm:px-6 sm:py-16">
-      <div className="mx-auto grid w-full max-w-6xl gap-12">
-        <div className="max-w-2xl grid gap-3">
-          <h2 className="text-xl font-semibold sm:text-2xl">{copy.trust.title}</h2>
-          <p className="text-muted-foreground">{copy.trust.body}</p>
-        </div>
-        <div className="grid gap-6 sm:grid-cols-3">
-          <TrustCard
-            icon={<ScaleIcon className="size-5" aria-hidden />}
-            title={copy.trust.cards[0].title}
-            body={copy.trust.cards[0].body}
-          />
-          <TrustCard
-            icon={<PenLineIcon className="size-5" aria-hidden />}
-            title={copy.trust.cards[1].title}
-            body={copy.trust.cards[1].body}
-          />
-          <TrustCard
-            icon={<Link2Icon className="size-5" aria-hidden />}
-            title={copy.trust.cards[2].title}
-            body={copy.trust.cards[2].body}
-          />
-        </div>
+    <section className="bg-background px-4 py-10">
+      <div className="grid gap-6">
+        <SectionHead
+          headingId="home-trust-heading"
+          title={copy.trust.title}
+          description={copy.trust.body}
+        />
+        <SnapSlideTrack
+          labelledBy="home-trust-heading"
+          slideClassName="w-[78cqi] shrink-0 snap-start"
+          slideKind="نکته اعتماد"
+        >
+          {copy.trust.cards.map((card, index) => {
+            const Icon = TRUST_ICONS[index] ?? ScaleIcon;
+            return (
+              <TrustCard
+                key={card.title}
+                icon={<Icon className="size-5" aria-hidden />}
+                title={card.title}
+                body={card.body}
+              />
+            );
+          })}
+        </SnapSlideTrack>
       </div>
     </section>
   );
 }
 
-/** شعار برند؛ سکشن پایانی روی کاغذ کرم، طلا فقط لهجه. */
+/** شعار برند؛ وسط‌چین با kicker کوتاه. */
 export function HomeSloganBand() {
   return (
-    <section className="bg-background px-4 py-16 sm:px-6 sm:py-20">
-      <div className="mx-auto grid w-full max-w-3xl justify-items-center gap-8 text-center">
-        <p className="text-2xl font-semibold text-balance text-treasure sm:text-4xl">
-          {site.slogan}
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-3">
-          <Button asChild variant="gold" size="lg">
+    <section className="bg-background px-4 py-12">
+      <div className="grid justify-items-center gap-5 text-center">
+        <p className="text-xs font-medium tracking-wide text-gold-deep">{copy.slogan.kicker}</p>
+        <p className="text-xl font-semibold text-balance text-treasure">{site.slogan}</p>
+        <div className="grid w-full gap-3">
+          <Button asChild variant="gold" size="lg" className="w-full rounded-full">
             <Link href="/products">{cta.shop}</Link>
           </Button>
-          <Button asChild variant="outline" size="lg">
+          <Button asChild variant="outline" size="lg" className="w-full rounded-full">
             <Link href="/login?returnTo=/dashboard">{cta.login}</Link>
           </Button>
         </div>
