@@ -3,9 +3,10 @@
 import { Children, isValidElement, type ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 import { cn } from "@/shared/lib/cn";
+import { overflowScrollLeft, overflowThumb } from "@/shared/lib/overflow-thumb";
 import { toPersianDigits } from "@/shared/lib/persian";
 
-/** نوار افقی با اسنپ و نقطه‌های طلایی؛ بدون دانش دامنه. */
+/** نوار افقی با اسنپ و نشانگر تناسبی طول محتوا؛ بدون دانش دامنه. */
 export function SnapSlideTrack({
   labelledBy,
   slideClassName,
@@ -24,17 +25,27 @@ export function SnapSlideTrack({
   const slides = Children.toArray(children);
   const scrollerRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [thumb, setThumb] = useState({ overflow: false, start: 0, size: 1 });
   const isCenter = align === "center";
 
-  const syncActive = useCallback(() => {
+  const syncMetrics = useCallback(() => {
     const root = scrollerRef.current;
     if (!root) return;
+    const rtl = getComputedStyle(root).direction === "rtl";
+    setThumb(
+      overflowThumb({
+        clientWidth: root.clientWidth,
+        scrollWidth: root.scrollWidth,
+        scrollLeft: root.scrollLeft,
+        rtl,
+      }),
+    );
+
     const nodes = [...root.querySelectorAll<HTMLElement>("[data-snap-slide]")];
     if (nodes.length === 0) return;
 
     const rootRect = root.getBoundingClientRect();
-    const isRtl = getComputedStyle(root).direction === "rtl";
-    const edge = isRtl ? rootRect.right : rootRect.left;
+    const edge = rtl ? rootRect.right : rootRect.left;
     const mid = (rootRect.left + rootRect.right) / 2;
 
     let best = 0;
@@ -43,7 +54,7 @@ export function SnapSlideTrack({
       const rect = slide.getBoundingClientRect();
       const dist = isCenter
         ? Math.abs((rect.left + rect.right) / 2 - mid)
-        : Math.abs((isRtl ? rect.right : rect.left) - edge);
+        : Math.abs((rtl ? rect.right : rect.left) - edge);
       if (dist < bestDist) {
         bestDist = dist;
         best = index;
@@ -55,22 +66,29 @@ export function SnapSlideTrack({
   useEffect(() => {
     const root = scrollerRef.current;
     if (!root) return;
-    syncActive();
-    root.addEventListener("scroll", syncActive, { passive: true });
-    const observer = new ResizeObserver(syncActive);
+    syncMetrics();
+    root.addEventListener("scroll", syncMetrics, { passive: true });
+    const observer = new ResizeObserver(syncMetrics);
     observer.observe(root);
+    const list = root.querySelector("ul");
+    if (list) observer.observe(list);
     return () => {
-      root.removeEventListener("scroll", syncActive);
+      root.removeEventListener("scroll", syncMetrics);
       observer.disconnect();
     };
-  }, [syncActive, slides.length]);
+  }, [syncMetrics, slides.length]);
 
-  const scrollToIndex = (index: number) => {
+  const jumpToRatio = (ratio: number) => {
     const root = scrollerRef.current;
-    const slide = root?.querySelectorAll<HTMLElement>("[data-snap-slide]")[index];
-    slide?.scrollIntoView({
-      inline: isCenter ? "center" : "start",
-      block: "nearest",
+    if (!root) return;
+    const rtl = getComputedStyle(root).direction === "rtl";
+    root.scrollTo({
+      left: overflowScrollLeft({
+        clientWidth: root.clientWidth,
+        scrollWidth: root.scrollWidth,
+        ratio,
+        rtl,
+      }),
       behavior: "smooth",
     });
   };
@@ -107,31 +125,29 @@ export function SnapSlideTrack({
         </ul>
       </div>
 
-      {slides.length > 1 ? (
-        <ol className="mt-4 flex items-center justify-center gap-0.5">
-          {slides.map((_, index) => {
-            const isActive = index === activeIndex;
-            return (
-              <li key={index}>
-                <button
-                  type="button"
-                  aria-label={`${slideKind} ${toPersianDigits(index + 1)} از ${toPersianDigits(slides.length)}`}
-                  aria-current={isActive ? "true" : undefined}
-                  onClick={() => scrollToIndex(index)}
-                  className="flex size-5 items-center justify-center rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                >
-                  <span
-                    aria-hidden
-                    className={cn(
-                      "rounded-full transition-[width,background-color] duration-300",
-                      isActive ? "h-1 w-3.5 bg-gold" : "size-1 bg-gold/35 hover:bg-gold/55",
-                    )}
-                  />
-                </button>
-              </li>
-            );
-          })}
-        </ol>
+      {thumb.overflow ? (
+        <div className="mt-3 px-1">
+          <button
+            type="button"
+            aria-label={`پیمایش ${slideKind}، ${toPersianDigits(activeIndex + 1)} از ${toPersianDigits(slides.length)}`}
+            className="relative block h-1 w-full overflow-hidden rounded-full bg-gold/20 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+            onClick={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect();
+              const rtl = getComputedStyle(event.currentTarget).direction === "rtl";
+              const x = rtl ? rect.right - event.clientX : event.clientX - rect.left;
+              jumpToRatio(x / rect.width);
+            }}
+          >
+            <span
+              aria-hidden
+              className="absolute inset-y-0 rounded-full bg-gold transition-[inset-inline-start,width] duration-200"
+              style={{
+                width: `${thumb.size * 100}%`,
+                insetInlineStart: `${thumb.start * 100}%`,
+              }}
+            />
+          </button>
+        </div>
       ) : null}
     </div>
   );

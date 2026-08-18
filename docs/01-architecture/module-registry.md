@@ -79,7 +79,7 @@ flowchart TD
 | بررسی نقش و مجوز | `server/auth/rbac.ts` |
 | ذخیره و خواندن فایل آپلودی | `server/storage/file-storage.ts` |
 | لاگ ساخت‌یافته | `server/logger.ts` |
-| اسلایدر افقی با نقطه | `shared/ui/snap-slide-track.tsx` |
+| اسلایدر افقی با نشانگر تناسبی | `shared/ui/snap-slide-track.tsx` |
 | سربرگ بخش با «مشاهده همه» | `shared/ui/section-head.tsx` |
 | نوار پایین اپ مشتری | `shared/ui/app-tab-bar.tsx` |
 | اندازه تصویر داخل ستون اپ | `shared/config/site.ts` — `customerImageSizes` |

@@ -36,6 +36,9 @@ export const copy = {
   homeOccasions: {
     heading: "برای کدام مناسبت طلا می‌خرید؟",
   },
+  homeCategories: {
+    kicker: "دسته‌ها",
+  },
   vitrine: {
     kicker: "قطعه‌ها",
     title: "قطعه‌ای که فردا هم برایش می‌ماند",
@@ -78,6 +81,10 @@ export const copy = {
       "از روی مناسبت انتخاب کنید، نه از روی سردرگمی. هر قطعه می‌تواند اولین گرم گنجینه او باشد.",
     emptyTitle: "با این انتخاب قطعه‌ای پیدا نشد",
     emptyDescription: "مناسبت یا دسته را عوض کنید؛ یا همه قطعه‌ها را ببینید.",
+    filter: "فیلتر",
+    filterAll: "همه قطعه‌ها",
+    filterCategories: "نوع قطعه",
+    filterOccasions: "مناسبت",
   },
   occasions: {
     title: "هدیه را از روی مناسبت انتخاب کنید",

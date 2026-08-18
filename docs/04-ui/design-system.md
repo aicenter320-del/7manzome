@@ -113,7 +113,9 @@
 - نوار قیمت `.hero-price-strip` بعد از هیرو می‌آید، با `translateY` منفی روی لبه می‌نشیند و کامل دیده می‌شود (`--night-mid`).
 - ابروی بخش‌های روشن خانه kicker وسط‌چین `SectionHead` است: متن طلایی با خط تا دو طرف.
 - سربرگ بخش‌ها با `SectionHead` است: عنوان در شروع، دکمهٔ outline کپسولی «مشاهده همه» در پایان.
-- ویترین خانه: `SectionHead`، قطعهٔ شاخص سفید بردردار، سپس اسلایدر peek (`~78cqi`) با لبهٔ کارت بعدی. اسلایدر داخل ستون اپ breakpoint دسکتاپ ندارد.
+- ویترین خانه فشرده است: بالای آن نوار دایره‌ای دسته‌ها (`CategoryExplorer`) با آیکون Lucide؛ بعد `SectionHead` با توضیح کوتاه، کارت شاخص سفید بردردار با عکس کوتاه (`h-56`) که کلش لینک محصول است، اسلایدر peek کارت‌های کوتاه (`~78cqi`، عکس `h-38`) نه مربع `ProductCard` کاتالوگ، و دکمهٔ طلایی تمام‌عرض به `/products`. اسلایدر داخل ستون اپ breakpoint دسکتاپ ندارد.
+- اسلایدرهای افقی (`SnapSlideTrack`) به‌جای یک نقطه برای هر اسلاید، نوار طلایی با شست تناسبی طول ردیف دارند؛ اگر همه جا شوند نوار نیست.
+- صفحهٔ قطعه‌ها چیپ فیلتر بالای صفحه ندارد؛ دسته و مناسبت در شیت پایین (`ProductFilterSheet`) انتخاب می‌شوند. نوار «فیلتر» بالای تب اپ می‌ماند.
 - مناسبت‌های خانه اسلایدر وسط‌چین است: کارت کرم با حلقهٔ آیکون طلایی؛ کارت فعال بزرگ‌تر در وسط.
 - دعوت هدیه یک کارت `.hero-gold-band` است با فهرست ستاره‌ای و دو دکمه.
 - شعار پایانی خانه `.home-final-cta` روی night است با دو CTA.
@@ -173,6 +175,7 @@
 | `PriceBreakdownTable` | `modules/pricing/ui/` | جدول شفاف اجزای قیمت |
 | `TreasureProgress` | `modules/treasury/ui/` | نوار پیشرفت گنجینه |
 | `OccasionIcon` / `OccasionLabel` / `OccasionCard` / `OccasionSlider` | `modules/catalog/ui/` | آیکون مناسبت؛ کارت گرد سفید؛ اسلایدر وسط‌چین خانه با peek دو طرفه |
+| `CategoryIcon` / `CategoryCircle` / `CategoryExplorer` / `ProductFilterSheet` | `modules/catalog/ui/` | دایرهٔ دسته با آیکون؛ نوار افقی خانه؛ فیلتر شیت پایین `/products` |
 | `ProductCard` / `ProductSlider` / `ProductGallery` / `ProductDetailHeading` / `ProductStory` | `modules/catalog/ui/` | کارت و اسلایدر ویترین؛ گالری و سربرگ/داستان صفحهٔ محصول |
 | `CartSheet` / `CartPanel` | `modules/orders/ui/` | شیت سبد از پایین؛ محتوای مشترک با `/cart` |
 

@@ -86,4 +86,8 @@ export { VariantSelector } from "./ui/variant-selector";
 export { OccasionIcon, OccasionLabel } from "./ui/occasion-icon";
 export { OccasionCard } from "./ui/occasion-card";
 export { OccasionSlider } from "./ui/occasion-slider";
+export { CategoryIcon, CategoryCircle } from "./ui/category-icon";
+export { CategoryExplorer } from "./ui/category-explorer";
+export { ProductFilterSheet } from "./ui/product-filter-sheet";
 export { occasionIconKey } from "./domain/occasion-icon";
+export { categoryIconKey } from "./domain/category-icon";
