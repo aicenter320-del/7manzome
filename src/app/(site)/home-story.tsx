@@ -1,13 +1,10 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { Link2Icon, PenLineIcon, ScaleIcon } from "lucide-react";
 
 import { copy, cta } from "@/shared/config/copy";
 import { site } from "@/shared/config/site";
 import { toPersianDigits } from "@/shared/lib/persian";
 import { Button } from "@/shared/ui/button";
 import { SectionHead } from "@/shared/ui/section-head";
-import { SnapSlideTrack } from "@/shared/ui/snap-slide-track";
 
 function Step({
   index,
@@ -28,28 +25,6 @@ function Step({
         <p className="text-xs leading-relaxed text-muted-foreground">{body}</p>
       </div>
     </li>
-  );
-}
-
-function TrustCard({
-  icon,
-  title,
-  body,
-}: {
-  icon: ReactNode;
-  title: string;
-  body: string;
-}) {
-  return (
-    <article className="flex h-full gap-3 rounded-2xl border border-border bg-card p-4">
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-gold bg-gold/10 text-gold-deep">
-        {icon}
-      </span>
-      <div className="grid min-w-0 gap-1">
-        <h3 className="text-sm font-bold">{title}</h3>
-        <p className="text-xs leading-relaxed text-muted-foreground">{body}</p>
-      </div>
-    </article>
   );
 }
 
@@ -111,40 +86,6 @@ export function HomeGiftBand() {
             </Link>
           </Button>
         </div>
-      </div>
-    </section>
-  );
-}
-
-const TRUST_ICONS = [ScaleIcon, PenLineIcon, Link2Icon] as const;
-
-/** اعتماد: کارت افقی با حلقهٔ طلایی. */
-export function HomeTrustBand() {
-  return (
-    <section className="bg-background px-5 py-8">
-      <div className="grid gap-5">
-        <SectionHead
-          headingId="home-trust-heading"
-          title={copy.trust.title}
-          description={copy.trust.body}
-        />
-        <SnapSlideTrack
-          labelledBy="home-trust-heading"
-          slideClassName="w-[86cqi] shrink-0 snap-start"
-          slideKind="نکته اعتماد"
-        >
-          {copy.trust.cards.map((card, index) => {
-            const Icon = TRUST_ICONS[index] ?? ScaleIcon;
-            return (
-              <TrustCard
-                key={card.title}
-                icon={<Icon className="size-4" aria-hidden />}
-                title={card.title}
-                body={card.body}
-              />
-            );
-          })}
-        </SnapSlideTrack>
       </div>
     </section>
   );
