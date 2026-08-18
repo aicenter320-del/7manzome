@@ -5,7 +5,7 @@ import { useEffect, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { ArrowRightIcon, Loader2Icon, SmartphoneIcon } from "lucide-react";
 
-import { formatPhoneFa, toEnglishDigits, toPersianDigits } from "@/shared/lib/persian";
+import { formatPhoneFa, isolateLtr, toEnglishDigits, toPersianDigits } from "@/shared/lib/persian";
 import { Alert, AlertDescription } from "@/shared/ui/alert";
 import { Button } from "@/shared/ui/button";
 import { FormField } from "@/shared/ui/form-field";
@@ -104,10 +104,12 @@ export function LoginForm({ returnTo }: { returnTo?: string }) {
             inputMode="numeric"
             autoComplete="tel"
             placeholder="۰۹۱۲۳۴۵۶۷۸۹"
-            className="ltr-nums text-center text-lg tracking-widest"
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-            maxLength={13}
+            className="phone-fa text-center text-lg tracking-widest"
+            value={toPersianDigits(phone)}
+            onChange={(event) =>
+              setPhone(toEnglishDigits(event.target.value).replace(/\D/g, "").slice(0, 11))
+            }
+            maxLength={11}
             autoFocus
             required
           />
@@ -135,7 +137,8 @@ export function LoginForm({ returnTo }: { returnTo?: string }) {
     >
       <div className="rounded-2xl glass px-4 py-3 text-sm">
         کد تایید به شماره{" "}
-        <span className="font-medium">{formatPhoneFa(phone)}</span> ارسال شد.
+        <span className="phone-fa font-medium">{isolateLtr(formatPhoneFa(phone))}</span>{" "}
+        ارسال شد.
         <button
           type="button"
           className="ms-2 text-gold-deep underline underline-offset-4"

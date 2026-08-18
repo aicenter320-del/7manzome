@@ -325,6 +325,13 @@
     font-family: var(--font-pinar-latin), Tahoma, ui-sans-serif, sans-serif;
   }
 
+  /* شماره موبایل فارسی وسط متن RTL؛ ارقام فارسی می‌مانند */
+  .phone-fa {
+    direction: ltr;
+    unicode-bidi: isolate-override;
+    display: inline-block;
+  }
+
   :focus-visible {
     outline: 2px solid var(--ring);
     outline-offset: 2px;

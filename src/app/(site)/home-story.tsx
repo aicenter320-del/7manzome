@@ -54,7 +54,7 @@ export function HomeHowItWorks() {
 /** دعوت به هدیه مهمان؛ کارت طلایی با دکمهٔ سفید. */
 export function HomeGiftBand() {
   return (
-    <section className="bg-background px-5 pb-8">
+    <section className="bg-background px-5 py-8">
       <div className="hero-gold-band relative overflow-hidden rounded-[1.4rem] px-5 py-6">
         <h2 className="relative text-xl font-extrabold text-balance">{copy.giftBand.title}</h2>
         <p className="relative mt-2.5 text-xs leading-loose">{copy.giftBand.body}</p>

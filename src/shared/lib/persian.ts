@@ -12,6 +12,10 @@ const ARABIC_DIGITS = ["٠", "١", "٢", "٣", "٤", "٥", "٦", "٧", "٨", "٩
 /** نیم‌فاصله؛ برای درست نوشتن «می‌شود» و مانند آن. */
 export const ZWNJ = "\u200c";
 
+/** جداسازی چپ‌به‌راست یونیکد؛ شماره داخل متن فارسی برعکس دیده نشود. */
+export const LRI = "\u2066";
+export const PDI = "\u2069";
+
 /** تبدیل ارقام لاتین به فارسی. برای هر عددی که کاربر می‌بیند لازم است. */
 export function toPersianDigits(input: string | number): string {
   return String(input).replace(/\d/g, (digit) => PERSIAN_DIGITS[Number(digit)] ?? digit);
@@ -146,6 +150,11 @@ export function formatPhoneFa(phone: string): string {
   return toPersianDigits(
     `${digits.slice(0, 4)} ${digits.slice(4, 7)} ${digits.slice(7)}`,
   );
+}
+
+/** متن را در ایزولهٔ چپ‌به‌راست می‌گذارد؛ برای نمایش شماره وسط جملهٔ فارسی. */
+export function isolateLtr(text: string): string {
+  return `${LRI}${text}${PDI}`;
 }
 
 /** نمایش شماره کارت بانکی در چهار گروه چهاررقمی. */

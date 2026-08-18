@@ -23,6 +23,9 @@ export default async function HomePage() {
     <main className="relative">
       <HomeHero goldPrice={goldPrice} />
       <HomeProductsSection products={products} categories={categories} />
+      <HomeGiftBand />
+
+      <HomeHowItWorks />
 
       <section className="bg-background px-5 py-8">
         <div className="grid gap-5">
@@ -34,8 +37,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <HomeHowItWorks />
-      <HomeGiftBand />
       <HomeSloganBand />
     </main>
   );

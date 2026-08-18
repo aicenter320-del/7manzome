@@ -5,8 +5,11 @@ import {
   formatCardNumber,
   formatNumberFa,
   formatPhoneFa,
+  isolateLtr,
+  LRI,
   maskMiddle,
   normalizePersianText,
+  PDI,
   sanitizeText,
   slugify,
   toEnglishDigits,
@@ -112,6 +115,16 @@ describe("maskMiddle", () => {
 describe("formatPhoneFa", () => {
   it("شماره موبایل را با فاصله خوانا نمایش می‌دهد", () => {
     expect(formatPhoneFa("09123456789")).toBe("۰۹۱۲ ۳۴۵ ۶۷۸۹");
+  });
+
+  it("از ابتدای شماره گروه‌بندی می‌کند نه از انتها", () => {
+    expect(formatPhoneFa("09344934444")).toBe("۰۹۳۴ ۴۹۳ ۴۴۴۴");
+  });
+});
+
+describe("isolateLtr", () => {
+  it("جداساز چپ‌به‌راست یونیکد می‌گذارد", () => {
+    expect(isolateLtr("۰۹۳۴ ۴۹۳ ۴۴۴۴")).toBe(`${LRI}۰۹۳۴ ۴۹۳ ۴۴۴۴${PDI}`);
   });
 });
 
