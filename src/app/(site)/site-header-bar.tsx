@@ -1,9 +1,12 @@
 import Link from "next/link";
+import { LogInIcon } from "lucide-react";
 
 import { site } from "@/shared/config/site";
 import { Button } from "@/shared/ui/button";
 
-/** نوار بالای اپ مشتری: نام برند وسط؛ ورود مهمان در پایان. */
+import { LogoutButton } from "./logout-button";
+
+/** نوار بالای اپ مشتری: نام برند وسط؛ ورود یا خروج در پایان. */
 export function SiteHeaderBar({ signedIn }: { signedIn: boolean }) {
   return (
     <header className="site-nav-bar shrink-0 pt-[env(safe-area-inset-top,0px)]">
@@ -17,9 +20,14 @@ export function SiteHeaderBar({ signedIn }: { signedIn: boolean }) {
           {site.name}
         </Link>
         <div className="flex items-center justify-end">
-          {signedIn ? null : (
+          {signedIn ? (
+            <LogoutButton variant="gold" className="rounded-2xl" />
+          ) : (
             <Button asChild variant="gold" size="sm" className="rounded-2xl">
-              <Link href="/login">ورود</Link>
+              <Link href="/login">
+                <LogInIcon />
+                ورود
+              </Link>
             </Button>
           )}
         </div>

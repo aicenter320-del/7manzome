@@ -2,18 +2,25 @@
 
 import { useRouter } from "next/navigation";
 import { useTransition } from "react";
+import { LogOutIcon } from "lucide-react";
 
 import { logout } from "@/modules/identity/actions/auth.actions";
 import { Button } from "@/shared/ui/button";
 
-export function LogoutButton({ className }: { className?: string }) {
+export function LogoutButton({
+  className,
+  variant = "ghost",
+}: {
+  className?: string;
+  variant?: "ghost" | "gold";
+}) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
   return (
     <Button
       type="button"
-      variant="ghost"
+      variant={variant}
       size="sm"
       className={className}
       disabled={isPending}
@@ -25,6 +32,7 @@ export function LogoutButton({ className }: { className?: string }) {
         });
       }}
     >
+      <LogOutIcon />
       خروج
     </Button>
   );
