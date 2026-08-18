@@ -22,6 +22,7 @@ export const customerAppMaxWidth = "36rem";
 export const customerImageSizes = {
   column: `(max-width: ${customerAppMaxWidth}) 100vw, ${customerAppMaxWidth}`,
   halfColumn: `(max-width: ${customerAppMaxWidth}) 50vw, 18rem`,
+  thirdColumn: `(max-width: ${customerAppMaxWidth}) 40vw, 15rem`,
 } as const;
 
 export type SiteNavItem = {

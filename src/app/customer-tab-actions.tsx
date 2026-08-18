@@ -95,6 +95,9 @@ function CartTab({ cartCount }: { cartCount: number }) {
           ) : null}
         </span>
         سبد
+        {active ? (
+          <span className="absolute bottom-1 h-0.5 w-7 rounded-full bg-gold-400" aria-hidden />
+        ) : null}
       </button>
     </li>
   );
@@ -126,6 +129,9 @@ function MoreTab({
             <MenuIcon />
           </span>
           بیشتر
+          {menuOpen || onMorePage ? (
+            <span className="absolute bottom-1 h-0.5 w-7 rounded-full bg-gold-400" aria-hidden />
+          ) : null}
         </button>
         <GlassSheetContent side="bottom" className="app-column-sheet">
           <div className="flex items-start justify-between gap-3">

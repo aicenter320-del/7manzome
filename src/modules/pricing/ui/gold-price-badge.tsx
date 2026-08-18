@@ -19,7 +19,7 @@ export function GoldPriceBadge({
   className,
 }: {
   price: GoldPriceView | null;
-  variant?: "soft" | "gold";
+  variant?: "soft" | "gold" | "night";
   className?: string;
 }) {
   if (!price) {
@@ -32,6 +32,21 @@ export function GoldPriceBadge({
       >
         <AlertTriangleIcon className="size-3.5" />
         قیمت طلا ثبت نشده است
+      </div>
+    );
+  }
+
+  if (variant === "night") {
+    return (
+      <div className={cn("hero-price-strip text-xs", className)}>
+        <span className="flex items-center gap-1.5 text-night-muted">
+          {price.isStale ? <AlertTriangleIcon className="size-3.5 text-warning" /> : null}
+          طلای {formatKarat(price.karat)}{" "}
+          <span className="font-bold text-gold-300">هر گرم</span>
+        </span>
+        <span className="ltr-nums text-sm font-extrabold text-night-foreground">
+          <Money rial={price.pricePerGramRial} />
+        </span>
       </div>
     );
   }

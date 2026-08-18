@@ -33,7 +33,7 @@ export function hidesCustomerTabBar(pathname: string) {
 
 export function customerTabClass(active: boolean) {
   return cn(
-    "flex h-full min-h-11 w-full flex-col items-center justify-center gap-0.5 text-[11px] font-medium",
+    "relative flex h-full min-h-11 w-full flex-col items-center justify-center gap-0.5 text-[11px] font-semibold",
     active ? "text-gold-deep" : "text-muted-foreground",
   );
 }
@@ -78,6 +78,9 @@ export function AppTabBar({
                       {TAB_ICONS[tab.id]}
                     </span>
                     {tab.title}
+                    {active ? (
+                      <span className="absolute bottom-1 h-0.5 w-7 rounded-full bg-gold-400" aria-hidden />
+                    ) : null}
                   </Link>
                 </li>
               );

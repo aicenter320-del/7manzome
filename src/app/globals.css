@@ -60,6 +60,9 @@
   --gold-bright: #d4af37;
   --gold-soft: #f3ebd8;
   --gold-deep: #9a7530;
+  --gold-400: #d9b36a;
+  --gold-300: #e8cd93;
+  --gold-200: #edd9a8;
   --treasure: #2c2c2c;
   --treasure-soft: #f6efe4;
   --product-card-wash: var(--card);
@@ -89,6 +92,18 @@
     0 12px 40px -16px rgb(197 160 89 / 0.22), 0 4px 14px -6px rgb(26 26 26 / 0.06);
   --shadow-product-hover:
     0 22px 52px -16px rgb(197 160 89 / 0.34), 0 8px 18px -6px rgb(26 26 26 / 0.08);
+  --hero-sticker-shadow:
+    drop-shadow(0 10px 22px rgb(26 26 26 / 0.12)) drop-shadow(0 2px 8px rgb(197 160 89 / 0.2));
+
+  /* نوارهای تیرهٔ خانه (هیرو و CTA پایانی)؛ تم کل سایت روشن می‌ماند */
+  --cream: #fbf5ea;
+  --night: #181433;
+  --night-ink: #120f26;
+  --night-mid: #221c45;
+  --night-lift: #2e2657;
+  --night-foreground: #fbf5ea;
+  --night-muted: #c9c3de;
+  --night-line: rgb(255 255 255 / 0.14);
 
   /* نوار بالای اپ مشتری */
   --nav-frost: rgb(255 255 255 / 0.92);
@@ -197,10 +212,18 @@
   --color-gold-bright: var(--gold-bright);
   --color-gold-soft: var(--gold-soft);
   --color-gold-deep: var(--gold-deep);
+  --color-gold-400: var(--gold-400);
+  --color-gold-300: var(--gold-300);
+  --color-gold-200: var(--gold-200);
   --color-treasure: var(--treasure);
   --color-treasure-soft: var(--treasure-soft);
   --color-section-stone: var(--section-stone);
   --color-section-stone-foreground: var(--section-stone-foreground);
+  --color-night: var(--night);
+  --color-night-mid: var(--night-mid);
+  --color-night-lift: var(--night-lift);
+  --color-night-foreground: var(--night-foreground);
+  --color-night-muted: var(--night-muted);
   --color-glass: var(--glass);
   --color-glass-strong: var(--glass-strong);
   --color-hero-overlay-foreground: var(--hero-overlay-foreground);
@@ -382,19 +405,36 @@
       radial-gradient(ellipse 90% 70% at 50% 8%, rgb(197 160 89 / 0.36) 0%, transparent 58%);
   }
 
-  /* گرادیان شامپاین فقط برای دکمهٔ طلایی؛ پر کردن سکشن ممنوع */
+  /* دکمهٔ طلایی: گرادیان + درخشش شیشه؛ پر کردن سکشن ممنوع */
   .btn-gold-fill {
-    background-image: linear-gradient(
-      180deg,
-      var(--gold-bright) 0%,
-      var(--gold) 55%,
-      var(--gold-deep) 100%
-    );
+    background-image:
+      var(--glass-sheen),
+      linear-gradient(180deg, var(--gold-400) 0%, var(--gold) 55%, var(--gold-deep) 100%);
     color: var(--accent-foreground);
+    border: 1px solid color-mix(in srgb, var(--gold-200) 55%, transparent);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.45),
+      0 8px 20px rgb(176 134 59 / 0.35);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
   }
 
   .btn-gold-fill:hover {
     filter: brightness(1.06);
+  }
+
+  .btn-night-outline {
+    background-image: none;
+    background-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    box-shadow: none;
+    border: 1px solid var(--night-line);
+    color: var(--night-foreground);
+  }
+
+  .btn-night-outline:hover {
+    background-color: rgb(255 255 255 / 0.08);
   }
 
   .hero-overlay {
@@ -405,7 +445,7 @@
     color: var(--hero-overlay-foreground);
   }
 
-  /* نوار پایین کارت هیرو؛ تنها جای پر کردن طلا در صفحه */
+  /* نوار طلایی کارت دعوت هدیه و نشان قیمت؛ هیرو خانه دیگر از این استفاده نمی‌کند */
   .hero-gold-band {
     background-image: linear-gradient(
       180deg,
@@ -418,6 +458,201 @@
 
   .hero-card-in {
     animation: var(--animate-hero-card-in);
+  }
+
+  .home-hero {
+    position: relative;
+    overflow: hidden;
+    padding-inline: 1.25rem;
+    padding-top: 1.5rem;
+    color: var(--night-foreground);
+    background-image: radial-gradient(
+      120% 90% at 50% -10%,
+      var(--night-lift) 0%,
+      var(--night) 60%,
+      var(--night-ink) 100%
+    );
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-bottom: 0.85rem;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    border: 1px solid color-mix(in srgb, var(--gold-400) 35%, transparent);
+    background-color: color-mix(in srgb, var(--gold-400) 12%, transparent);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--gold-300);
+  }
+
+  .hero-eyebrow::before {
+    content: "";
+    width: 0.3rem;
+    height: 0.3rem;
+    border-radius: 999px;
+    background-color: var(--gold-400);
+  }
+
+  .hero-eyebrow-light {
+    color: var(--gold-deep);
+    background-color: color-mix(in srgb, var(--gold) 8%, transparent);
+    border-color: color-mix(in srgb, var(--gold) 25%, transparent);
+  }
+
+  .hero-eyebrow-light::before {
+    background-color: var(--gold);
+  }
+
+  .hero-stage {
+    position: relative;
+    height: 21.25rem;
+    margin-inline: -1.25rem;
+  }
+
+  .hero-constellation {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    color: var(--gold-400);
+  }
+
+  .hero-constellation .star {
+    fill: var(--night-foreground);
+    opacity: 0.35;
+  }
+
+  .hero-constellation .line {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1;
+    stroke-dasharray: 3 4;
+    opacity: 0.55;
+  }
+
+  .hero-portrait-well {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 1;
+    display: flex;
+    width: 14.5rem;
+    height: 17rem;
+    margin-inline: auto;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--gold-400) 30%, transparent);
+    border-bottom: none;
+    border-radius: 7.5rem 7.5rem 0 0;
+    background-image: linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--gold-400) 16%, transparent),
+      color-mix(in srgb, var(--gold-400) 2%, transparent)
+    );
+  }
+
+  .hero-portrait {
+    width: 11.5rem;
+    height: auto;
+    object-fit: contain;
+    object-position: bottom center;
+    filter: var(--hero-sticker-shadow);
+  }
+
+  .hero-node {
+    position: absolute;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+    translate: -50% -50%;
+  }
+
+  .hero-node-dot {
+    display: flex;
+    width: 2.125rem;
+    height: 2.125rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--gold-400);
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--night) 55%, transparent);
+    color: var(--gold-200);
+  }
+
+  /* مختصات فیزیکی viewBox صورت‌فلکی؛ آینهٔ RTL خط‌ها را جابه‌جا نمی‌کند */
+  .hero-node[data-spot="bracelet"] {
+    left: calc(100% * 60 / 390);
+    top: calc(100% * 70 / 340);
+  }
+
+  .hero-node[data-spot="necklace"] {
+    left: calc(100% * 330 / 390);
+    top: calc(100% * 55 / 340);
+  }
+
+  .hero-node[data-spot="coin"] {
+    left: calc(100% * 60 / 390);
+    top: calc(100% * 240 / 340);
+  }
+
+  .hero-node[data-spot="bar"] {
+    left: calc(100% * 335 / 390);
+    top: calc(100% * 255 / 340);
+  }
+
+  .hero-node[data-spot="plaque"] {
+    left: calc(100% * 195 / 390);
+    top: calc(100% * 18 / 340);
+    translate: -50% -1.0625rem;
+  }
+
+  .hero-node-label {
+    white-space: nowrap;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--night) 55%, transparent);
+    padding: 0.1rem 0.45rem;
+    font-size: 0.625rem;
+    font-weight: 600;
+    color: var(--gold-200);
+  }
+
+  .hero-price-strip {
+    position: relative;
+    z-index: 3;
+    display: flex;
+    margin-inline: 1.25rem;
+    margin-bottom: -0.625rem;
+    translate: 0 -1.375rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--gold-400) 25%, transparent);
+    border-radius: 1rem;
+    background-color: var(--night-mid);
+    padding: 0.75rem 1rem;
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--night-ink) 55%, transparent);
+    color: var(--night-foreground);
+  }
+
+  .gift-star {
+    display: inline-block;
+    width: 0.85rem;
+    height: 0.85rem;
+    flex: none;
+    margin-top: 0.15rem;
+    background-color: currentColor;
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  }
+
+  .home-final-cta {
+    background-image: radial-gradient(120% 100% at 50% 0%, var(--night-lift), var(--night));
+    color: var(--night-foreground);
   }
 
   .product-card-wash {
@@ -472,7 +707,8 @@
 
 /* پوسته مسیر مشتری: ستون گوشی سفید روی کاغذ کرم صفحه. */
 .customer-shell {
-  --background: #ffffff;
+  --background: var(--cream);
+  --nav-frost: var(--night);
   --site-header-height: 3.5rem;
   width: 100%;
   max-width: var(--customer-app-width);
@@ -483,6 +719,11 @@
   flex-direction: column;
   overflow: hidden;
   background-color: var(--background);
+}
+
+.customer-shell .site-nav-bar {
+  background-color: var(--night);
+  color: var(--night-foreground);
 }
 
 @media (width > 36rem) {
@@ -541,6 +782,10 @@
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     background-color: var(--card);
+  }
+
+  .customer-shell .site-nav-bar {
+    background-color: var(--night);
   }
 
   .hero-overlay {

@@ -11,7 +11,7 @@ const buttonVariants = cva(
       variant: {
         default:
           "rounded-lg bg-primary text-primary-foreground shadow-glow hover:bg-primary/90",
-        gold: "btn-gold-fill rounded-lg shadow-glow",
+        gold: "btn-gold-fill rounded-2xl shadow-glow",
         secondary:
           "glass rounded-lg text-secondary-foreground hover:bg-gold-soft/40",
         outline:

@@ -1,12 +1,11 @@
 import Link from "next/link";
 
 import { cn } from "@/shared/lib/cn";
-import { CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 
 import type { Occasion } from "../domain/types";
 import { OccasionIcon } from "./occasion-icon";
 
-/** کارت مناسبت سفید، بدون شیشه؛ آیکون واترمارک در انتها. */
+/** کارت مناسبت کرم با حلقهٔ آیکون طلایی. */
 export function OccasionCard({
   occasion,
   className,
@@ -16,17 +15,15 @@ export function OccasionCard({
 }) {
   return (
     <Link href={`/occasions/${occasion.slug}`} className={cn("block h-full", className)}>
-      <div className="relative h-full min-h-40 overflow-hidden rounded-3xl bg-card text-card-foreground shadow-product transition-transform motion-safe:hover:-translate-y-1">
-        <OccasionIcon slug={occasion.slug} emoji={occasion.emoji} variant="watermark" />
-        <CardHeader className="relative z-10">
-          <CardTitle className="text-base font-bold text-foreground">{occasion.title}</CardTitle>
-        </CardHeader>
+      <div className="relative h-full min-h-40 overflow-hidden rounded-[1.25rem] border border-border from-card to-gold-soft/40 bg-linear-to-br p-5 text-card-foreground">
+        <span className="mb-3 flex size-10 items-center justify-center rounded-full border border-gold bg-gold/10 text-gold-deep">
+          <OccasionIcon slug={occasion.slug} emoji={occasion.emoji} variant="plain" size="sm" />
+        </span>
+        <h3 className="text-base font-bold text-foreground">{occasion.title}</h3>
         {occasion.description ? (
-          <CardContent className="relative z-10">
-            <p className="line-clamp-3 max-w-[85%] text-sm font-medium text-foreground">
-              {occasion.description}
-            </p>
-          </CardContent>
+          <p className="mt-2 line-clamp-3 text-xs leading-relaxed text-muted-foreground">
+            {occasion.description}
+          </p>
         ) : null}
       </div>
     </Link>

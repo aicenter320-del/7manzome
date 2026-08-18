@@ -22,9 +22,9 @@ export function SectionHead({
   return (
     <header className="grid gap-3">
       {kicker ? (
-        <p className="flex items-center gap-3 text-xs font-medium tracking-wide text-gold-deep">
-          <span className="h-px w-8 shrink-0 bg-gold" aria-hidden />
+        <p className="flex items-center gap-2 text-xs font-bold tracking-wide text-gold-deep">
           {kicker}
+          <span className="h-px min-w-8 flex-1 bg-border" aria-hidden />
         </p>
       ) : null}
       <div className="flex items-center justify-between gap-3">
