@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SparklesIcon } from "lucide-react";
 
+import { customerImageSizes } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 import { formatMg } from "@/shared/lib/gold";
 import { PRODUCT_KIND_LABELS } from "@/shared/types/enums";
@@ -41,7 +42,7 @@ export function ProductCard({
             heroFileId={product.heroFileId}
             hoverFileId={product.hoverFileId}
             alt={product.title}
-            sizes="50vw"
+            sizes={customerImageSizes.halfColumn}
           />
 
           <div className="absolute end-3 top-3 z-10 flex flex-col items-end gap-1">

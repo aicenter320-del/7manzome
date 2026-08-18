@@ -12,6 +12,7 @@ import {
   uploadProductImage,
 } from "@/modules/catalog/actions/catalog.actions";
 import { MAX_PRODUCT_IMAGES } from "@/modules/catalog/domain/product-gallery";
+import { customerImageSizes } from "@/shared/config/site";
 import { cn } from "@/shared/lib/cn";
 import { toPersianDigits } from "@/shared/lib/persian";
 import { Button } from "@/shared/ui/button";
@@ -46,7 +47,7 @@ export function ProductGallery({
             src={`/api/files/${active.fileId}`}
             alt={active.alt ?? title}
             fill
-            sizes="(max-width: 1024px) 100vw, 50vw"
+            sizes={customerImageSizes.column}
             className="object-contain p-8 sm:p-10"
             priority
           />

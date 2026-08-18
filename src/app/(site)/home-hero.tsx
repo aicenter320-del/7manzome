@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import babyGoldHeroNatural from "@/assets/images/baby-gold-hero-natural.jpg";
 import { copy, cta } from "@/shared/config/copy";
+import { customerImageSizes } from "@/shared/config/site";
 import { Button } from "@/shared/ui/button";
 
 /** کارت هیرو: عکس با عنوان روی آن، نوار طلایی و دکمهٔ سفید. */
@@ -18,7 +19,7 @@ export function HomeHero() {
             priority
             unoptimized
             quality={100}
-            sizes="100vw"
+            sizes={customerImageSizes.column}
             className="object-cover object-[78%_center]"
           />
           <div className="hero-overlay pointer-events-none absolute inset-0" aria-hidden />

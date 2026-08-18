@@ -15,6 +15,15 @@ export const site = {
   direction: "rtl",
 } as const;
 
+/** عرض ستون اپ؛ باید با `--customer-app-width` در globals.css یکی بماند. */
+export const customerAppMaxWidth = "36rem";
+
+/** `sizes` تصاویر داخل ستون اپ؛ نه تمام عرض ویوپورت. */
+export const customerImageSizes = {
+  column: `(max-width: ${customerAppMaxWidth}) 100vw, ${customerAppMaxWidth}`,
+  halfColumn: `(max-width: ${customerAppMaxWidth}) 50vw, 18rem`,
+} as const;
+
 export type SiteNavItem = {
   title: string;
   href: string;

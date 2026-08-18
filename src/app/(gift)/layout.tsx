@@ -5,7 +5,7 @@ import { copy } from "@/shared/config/copy";
 import { site } from "@/shared/config/site";
 import { GoldGlow } from "@/shared/ui/gold-glow";
 
-/** مهمان تب فروشگاه نمی‌بیند؛ همان ستون اپ سفید روی کاغذ کرم. */
+/** مهمان تب فروشگاه نمی‌بیند؛ همان ستون اپ سفید روی گاتر کرم. */
 export default function GiftLayout({ children }: { children: ReactNode }) {
   return (
     <div className="customer-shell relative">

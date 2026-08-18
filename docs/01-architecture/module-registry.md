@@ -82,6 +82,7 @@ flowchart TD
 | اسلایدر افقی با نقطه | `shared/ui/snap-slide-track.tsx` |
 | سربرگ بخش با «مشاهده همه» | `shared/ui/section-head.tsx` |
 | نوار پایین اپ مشتری | `shared/ui/app-tab-bar.tsx` |
+| اندازه تصویر داخل ستون اپ | `shared/config/site.ts` — `customerImageSizes` |
 | استان و شهر ایران | `shared/data/iran-places.ts` |
 | فهرست بانک‌های ایران | `shared/data/iran-banks.ts` |
 

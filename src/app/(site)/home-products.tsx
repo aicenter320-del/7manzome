@@ -3,6 +3,7 @@ import { SparklesIcon } from "lucide-react";
 
 import { ProductHoverImage, ProductSlider, type ProductListItem } from "@/modules/catalog";
 import { copy, cta } from "@/shared/config/copy";
+import { customerImageSizes } from "@/shared/config/site";
 import { formatMg } from "@/shared/lib/gold";
 import { PRODUCT_KIND_LABELS } from "@/shared/types/enums";
 import { Badge } from "@/shared/ui/badge";
@@ -33,7 +34,7 @@ function FeaturedProduct({ product }: { product: ProductListItem }) {
           heroFileId={product.heroFileId}
           hoverFileId={product.hoverFileId}
           alt={product.title}
-          sizes="100vw"
+          sizes={customerImageSizes.column}
         />
         <div className="absolute end-3 top-3 z-10 flex flex-col items-end gap-1">
           {product.brandLine === "signature" ? (
